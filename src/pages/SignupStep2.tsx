@@ -13,7 +13,7 @@ import {
   Comment,
   CommentLink,
   ErrorMessage,
-} from '@/components/signup/SignupStep1.style';
+} from '@/components/signup/SignupStep.style';
 
 export default function SignupStep2() {
   const {
@@ -45,7 +45,7 @@ export default function SignupStep2() {
             />
             {errors.email && <ErrorMessage>필수로 채워야 하는 항목입니다.</ErrorMessage>}
           </FormGroup>
-          
+
           <FormGroup>
             <Label>비밀번호</Label>
             <Input

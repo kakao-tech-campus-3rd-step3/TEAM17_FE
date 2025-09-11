@@ -17,7 +17,7 @@ import {
   Comment,
   CommentLink,
   ErrorMessage,
-} from '@/components/signup/SignupStep1.style';
+} from '@/components/signup/SignupStep.style';
 
 export default function SignupStep1() {
   const navigate = useNavigate();
