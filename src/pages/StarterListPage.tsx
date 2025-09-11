@@ -1,5 +1,5 @@
 import React from 'react';
-import StarterpackCard from '@/components/card/StarterpackCard';
+import StarterpackCard from '@/components/card/StarterPackCard';
 import StarterpackModal from '@/components/StarterPackList/StarterPackDetail';
 import { useLikedPacks } from '../hooks/useLikedPacks';
 import { useStarterPackModal } from '../hooks/useStarterPackModal';

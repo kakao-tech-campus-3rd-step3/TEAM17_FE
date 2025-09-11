@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from '@/pages/Home';
-import StartListPage from '@/pages/StartListPage';
+import StarterListPage from '@/pages/StarterListPage';
 import Layout from '@/components/common/Layout';
 
 export const Router = () => (
@@ -8,7 +8,7 @@ export const Router = () => (
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/starter-pack" element={<StartListPage />} />
+        <Route path="/starter-pack" element={<StarterListPage />} />
       </Route>
     </Routes>
   </BrowserRouter>
