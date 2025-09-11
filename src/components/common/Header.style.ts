@@ -1,15 +1,26 @@
 import styled from 'styled-components';
 
-export const HeaderWrapper = styled.header`
+export const HeaderWrapper = styled.header<{ $sticky?: boolean; $elevated?: boolean }>`
+  position: ${({ $sticky }) => ($sticky ? 'sticky' : 'static')};
+  top: 0;
+  z-index: 1000;
+
   width: 100%;
   height: 70px;
-  background-color: #ffffff;
+
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: saturate(180%) blur(6px);
+
   border-bottom: 1px solid rgba(153, 65, 65, 0.81);
 
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 1rem;
+
+  /* 스크롤 시 살짝 그림자 */
+  box-shadow: ${({ $elevated }) => ($elevated ? '0 4px 12px rgba(0,0,0,0.08)' : 'none')};
+  transition: box-shadow 150ms ease, background-color 150ms ease;
 `;
 
 export const LogoImg = styled.img`

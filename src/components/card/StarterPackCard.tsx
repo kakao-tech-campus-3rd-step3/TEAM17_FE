@@ -1,6 +1,6 @@
 import React from 'react';
 import { Eye, ShoppingCart } from 'lucide-react';
-import type { StarterPack } from '../../types/StartPackType';
+import type { StarterPack } from '../../types/StarterPackType';
 import {
   Card,
   LikeButton,
@@ -29,7 +29,7 @@ import {
   PriceRow,
   PriceCol,
   CountText,
-} from './StartpackCard.styles';
+} from './StarterPackCard.styles';
 
 type Props = {
   pack: StarterPack;
@@ -38,7 +38,7 @@ type Props = {
   onOpen: (pack: StarterPack) => void;
 };
 
-const StartpackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen }) => {
+const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen }) => {
   return (
     <Card>
       <LikeButton
@@ -109,4 +109,4 @@ const StartpackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen })
   );
 };
 
-export default StartpackCard;
+export default StarterPackCard;
