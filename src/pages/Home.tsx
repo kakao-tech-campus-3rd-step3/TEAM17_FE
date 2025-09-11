@@ -2,6 +2,7 @@ import React from 'react';
 import Banner from '@/pages/banner/Banner';
 import Category from '@/pages/category/Category';
 import StarterPreview from '@/components/starterpreview/StarterPreview';
+import FeedPreview from '@/components/feedpreview/FeedPreview';
 
 const HomePage = () => {
   return (
@@ -10,6 +11,7 @@ const HomePage = () => {
         <Banner />
         <Category />
         <StarterPreview />
+        <FeedPreview />
       </main>
     </div>
   );
