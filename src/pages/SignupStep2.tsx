@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
-import type { Step2Values } from '@/types/SignupType';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { step2Schema, type Step2Values } from '@/types/SignupZodSchema';
 
 import {
   SignupContainer,
@@ -20,7 +21,10 @@ export default function SignupStep2() {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<Step2Values>({ mode: 'onChange' });
+  } = useForm<Step2Values>({
+    mode: 'onChange',
+    resolver: zodResolver(step2Schema),
+  });
 
   const onSubmit = (data: Step2Values) => {
     //step1+step2 데이터 합쳐서 최종 제출
@@ -43,7 +47,7 @@ export default function SignupStep2() {
               {...register('email', { required: true })}
               placeholder="이메일을 입력해주세요"
             />
-            {errors.email && <ErrorMessage>필수로 채워야 하는 항목입니다.</ErrorMessage>}
+            {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
           </FormGroup>
 
           <FormGroup>
@@ -53,7 +57,7 @@ export default function SignupStep2() {
               {...register('password', { required: true })}
               placeholder="비밀번호를 입력해주세요"
             />
-            {errors.password && <ErrorMessage>필수로 채워야 하는 항목입니다.</ErrorMessage>}
+            {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
           </FormGroup>
 
           <FormGroup>
@@ -63,7 +67,7 @@ export default function SignupStep2() {
               {...register('confirmPassword', { required: true })}
               placeholder="비밀번호를 한번 더 제대로 입력해주세요"
             />
-            {errors.confirmPassword && <ErrorMessage>필수로 채워야 하는 항목입니다.</ErrorMessage>}
+            {errors.confirmPassword && <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>}
           </FormGroup>
 
           <NextButton type="submit" disabled={!isValid}>

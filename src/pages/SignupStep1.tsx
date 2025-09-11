@@ -1,7 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { step1Schema, type Step1Values } from '@/types/SignupZodSchema';
 
-import type { Step1Values } from '@/types/SignupType';
 import {
   SignupContainer,
   Title,
@@ -21,11 +22,15 @@ import {
 
 export default function SignupStep1() {
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<Step1Values>({ mode: 'onChange' });
+  } = useForm<Step1Values>({
+    mode: 'onChange',
+    resolver: zodResolver(step1Schema),
+  });
 
   const onNext = (data: Step1Values) => {
     // Step1 데이터를 저장 (localStorage)
@@ -46,7 +51,7 @@ export default function SignupStep1() {
                 {...register('name', { required: true })}
                 placeholder="이름을 입력해주세요"
               />
-              {errors.name && <ErrorMessage>필수로 채워야 하는 항목입니다.</ErrorMessage>}
+              {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
             </FormGroup>
             <RadioGroup>
               <FormGroup>
@@ -56,7 +61,7 @@ export default function SignupStep1() {
                   {...register('birthDate', { required: true })}
                   placeholder="-/-/-"
                 />
-                {errors.birthDate && <ErrorMessage>필수로 채워야 하는 항목입니다.</ErrorMessage>}
+                {errors.birthDate && <ErrorMessage>{errors.birthDate.message}</ErrorMessage>}
               </FormGroup>
 
               <FormGroup>
@@ -68,7 +73,7 @@ export default function SignupStep1() {
                   <option value="male">남성</option>
                   <option value="female">여성</option>
                 </Select>
-                {errors.gender && <ErrorMessage>필수로 채워야 하는 항목입니다.</ErrorMessage>}
+                {errors.gender && <ErrorMessage>{errors.gender.message}</ErrorMessage>}
               </FormGroup>
             </RadioGroup>
             <FormGroup>
@@ -78,7 +83,7 @@ export default function SignupStep1() {
                 {...register('telephone', { required: true })}
                 placeholder="전화번호를 입력해주세요"
               />
-              {errors.telephone && <ErrorMessage>필수로 채워야 하는 항목입니다.</ErrorMessage>}
+              {errors.telephone && <ErrorMessage>{errors.telephone.message}</ErrorMessage>}
             </FormGroup>
 
             <NextButton type="submit" disabled={!isValid}>
