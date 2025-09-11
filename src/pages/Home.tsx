@@ -1,11 +1,14 @@
-import { Link } from 'react-router-dom';
+import React from 'react';
+import Banner from '@/components/banner/Banner';
 
-const Home = () => {
+const HomePage = () => {
   return (
-    <div>
-      <Link to="/starter-pack">스타터팩 목록으로 가기</Link>
+    <div className="min-h-screen bg-gray-50">
+      <main className="p-4 space-y-3">
+        <Banner />
+      </main>
     </div>
   );
 };
 
-export default Home;
+export default HomePage;
