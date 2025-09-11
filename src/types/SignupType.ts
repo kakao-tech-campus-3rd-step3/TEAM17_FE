@@ -5,3 +5,8 @@ export interface Step1Values {
   telephone: string;
 };
 
+export interface Step2Values {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
