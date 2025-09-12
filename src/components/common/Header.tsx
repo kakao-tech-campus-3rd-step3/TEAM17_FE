@@ -9,6 +9,7 @@ import {
   Avatar,
   LogoutButton,
 } from './Header.styles';
+import { Link } from 'react-router-dom';
 
 import { User as UserIcon } from 'lucide-react';
 
@@ -33,7 +34,10 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <HeaderWrap>
-      <Brand>장비빨🔥</Brand>
+      {/* 나중에 로고 이미지 제작하면 그걸로 바꾸기 */}
+      <Brand as={Link} to="/" aria-label="홈으로 이동" title="홈으로 이동">
+        장비빨🔥
+      </Brand>
 
       <Actions>
         {isAuthenticated ? (

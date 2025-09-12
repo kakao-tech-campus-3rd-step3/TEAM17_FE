@@ -8,7 +8,7 @@ export const Router = () => (
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/starter-pack" element={<StarterListPage />} />
+        <Route path="/starterpack" element={<StarterListPage />} />
       </Route>
     </Routes>
   </BrowserRouter>
