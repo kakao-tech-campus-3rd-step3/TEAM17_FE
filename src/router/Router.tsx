@@ -4,6 +4,7 @@ import SignupStep1 from '@/pages/SignupStep1';
 import SignupStep2 from '@/pages/SignupStep2';
 import StartListPage from '@/pages/StartListPage';
 import Layout from '@/components/common/Layout';
+import Login from '@/pages/Login';
 
 export const Router = () => (
   <BrowserRouter>
@@ -12,6 +13,7 @@ export const Router = () => (
         <Route path="/" element={<Home />} />
         <Route path="/signup/step1" element={<SignupStep1 />} />
         <Route path="/signup/step2" element={<SignupStep2 />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/starter-pack" element={<StartListPage />} />
       </Route>
     </Routes>
