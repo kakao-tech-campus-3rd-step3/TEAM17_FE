@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import StarterpackCard from '@/components/card/StarterPackCard';
-import StarterpackModal from '@/components/StarterPackList/StarterPackDetail';
+import StarterpackModal from '@/components/home/StarterPackList/StarterPackDetail';
 import { useLikedPacks } from '@/hooks/useLikedPacks';
 import { useStarterPackModal } from '@/hooks/useStarterPackModal';
 import { mockStartPacks } from '@/mocks/mock';
