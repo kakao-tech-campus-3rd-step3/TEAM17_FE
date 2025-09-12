@@ -36,6 +36,16 @@ export const Emoji = styled.span`
 export const Button = styled.button`
   font-size: 0.875rem;
   color: #3b82f6;
+  margin-left: auto;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  padding: 4px 8px;
+  border-radius: 6px;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 export const Grid = styled.div`
@@ -60,6 +70,11 @@ export const ImageBox = styled.div`
   position: relative;
 `;
 
+export const PlaceholderText = styled.span`
+  font-size: 0.75rem;
+  color: #9ca3af;
+`;
+
 export const CounterWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -76,6 +91,9 @@ export const Counter = styled.div`
 export const Icon = styled.div`
   width: 1rem;
   height: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const UserInfo = styled.div`

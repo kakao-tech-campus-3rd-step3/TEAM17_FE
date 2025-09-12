@@ -13,6 +13,7 @@ export const tokens = {
       },
       black: '#000000',
       white: '#FFFFFF',
+      warning:'#ef4444',
     },
 
     line: {
@@ -25,5 +26,10 @@ export const tokens = {
       default: '#FFFFFF',
       gray: '#D9D9D9',
     },
+
+    button:{
+      default: '#EB6B18',
+      disabled:'#E5E7EB'
+    }
   },
 };
