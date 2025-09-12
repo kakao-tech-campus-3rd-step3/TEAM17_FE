@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+import { login as loginApi } from '@/api/auth';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 import { loginSchema, type LoginValues } from '@/types/LoginZodSchema';
 
 import {
@@ -34,9 +38,22 @@ export default function LoginForm() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit = (data: LoginValues) => {
-    console.log('로그인 요청 데이터:', data);
-    //여기서 API 요청 (/api/auth/login)
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const onSubmit = async (data: LoginValues) => {
+    try {
+      const res = await loginApi(data);
+      console.log('로그인 성공:', res);
+
+      login(res.accessToken, res.refreshToken);
+
+      alert('로그인 성공!');
+      navigate('/');
+    } catch (err) {
+      console.error('로그인 실패:', err);
+      alert('이메일/비밀번호를 확인해주세요.');
+    }
   };
 
   return (
