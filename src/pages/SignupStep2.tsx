@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { step2Schema, type Step2Values } from '@/types/SignupZodSchema';
@@ -13,8 +14,11 @@ import {
   NextButton,
   Comment,
   CommentLink,
-  ErrorMessage,
+  ErrorMessage,ToggleButton,InputWrapper
 } from '@/components/signup/SignupStep.style';
+
+import EyeOn from '@/assets/icon-eye.svg';
+import EyeOff from '@/assets/icon-eye-off.svg';
 
 export default function SignupStep2() {
   const {
@@ -26,7 +30,9 @@ export default function SignupStep2() {
     resolver: zodResolver(step2Schema),
   });
 
-  const onSubmit = (data: Step2Values) => {
+ const [showPassword, setShowPassword] = useState(false);
+  
+ const onSubmit = (data: Step2Values) => {
     //step1+step2 데이터 합쳐서 최종 제출
     const step1 = JSON.parse(localStorage.getItem('signupStep1') || '{}');
     const finalData = { ...step1, ...data };
@@ -52,21 +58,37 @@ export default function SignupStep2() {
 
           <FormGroup>
             <Label>비밀번호</Label>
+            <InputWrapper>
             <Input
               type="text"
               {...register('password', { required: true })}
               placeholder="비밀번호를 입력해주세요"
             />
+            <ToggleButton type="button" onClick={() => setShowPassword((prev) => !prev)}>
+              <img
+                src={showPassword ? EyeOn : EyeOff}
+                alt={showPassword ? '비밀번호 보기' : '비밀번호 숨기기'}
+              />
+            </ToggleButton>
+            </InputWrapper>
             {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
           </FormGroup>
 
           <FormGroup>
             <Label>비밀번호 확인</Label>
+            <InputWrapper>
             <Input
               type="text"
               {...register('confirmPassword', { required: true })}
               placeholder="비밀번호를 한번 더 제대로 입력해주세요"
             />
+            <ToggleButton type="button" onClick={() => setShowPassword((prev) => !prev)}>
+              <img
+                src={showPassword ? EyeOn : EyeOff}
+                alt={showPassword ? '비밀번호 보기' : '비밀번호 숨기기'}
+              />
+            </ToggleButton>
+            </InputWrapper>
             {errors.confirmPassword && <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>}
           </FormGroup>
 
