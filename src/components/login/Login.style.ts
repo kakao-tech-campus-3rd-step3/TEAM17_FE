@@ -48,6 +48,22 @@ export const Input = styled.input`
   }
 `;
 
+export const InputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+export const ToggleButton = styled.button`
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+`;
+
 export const SubmitButton = styled.button`
   border-radius: 12px;
   border: none;
