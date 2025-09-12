@@ -1,6 +1,7 @@
 import React from 'react';
 import { Eye, ShoppingCart } from 'lucide-react';
-import type { StarterPack } from '../../types/StarterPackType';
+import { formatCurrency } from '@/utils/currency';
+import type { StarterPack } from '@/types/StarterPackType';
 import {
   Card,
   LikeButton,
@@ -88,9 +89,9 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
         <PriceRow>
           <PriceCol>
             {pack.originalPrice !== pack.salePrice && (
-              <PriceOriginal>{pack.originalPrice}</PriceOriginal>
+              <PriceOriginal>{formatCurrency(pack.originalPrice)}</PriceOriginal>
             )}
-            <PriceCurrent>{pack.salePrice}</PriceCurrent>
+            <PriceCurrent>{formatCurrency(pack.salePrice)}</PriceCurrent>
           </PriceCol>
           <CountText>{pack.products.length}개 구성</CountText>
         </PriceRow>
