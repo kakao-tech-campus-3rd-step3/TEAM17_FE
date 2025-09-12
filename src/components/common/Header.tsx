@@ -3,8 +3,8 @@ import {
   HeaderWrap,
   Brand,
   Actions,
-  GhostButton,
-  PrimaryButton,
+  GhostLink,
+  PrimaryLink,
   IconButton,
   Avatar,
   LogoutButton,
@@ -65,8 +65,12 @@ const Header: React.FC<HeaderProps> = ({
           </>
         ) : (
           <>
-            <GhostButton onClick={onLoginClick}>로그인</GhostButton>
-            <PrimaryButton onClick={onSignUpClick}>회원가입</PrimaryButton>
+            <GhostLink to="/login" onClick={onLoginClick} aria-label="로그인 페이지로 이동">
+              로그인
+            </GhostLink>
+            <PrimaryLink to="/signup/step1" onClick={onSignUpClick} aria-label="회원가입 시작">
+              회원가입
+            </PrimaryLink>
           </>
         )}
       </Actions>

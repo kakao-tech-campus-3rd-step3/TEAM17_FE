@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 export const HeaderWrap = styled.header`
@@ -33,6 +34,8 @@ export const GhostButton = styled.button`
   }
 `;
 
+export const GhostLink = GhostButton.withComponent(Link);
+
 export const PrimaryButton = styled.button`
   font-size: 0.875rem;
   color: #ffffff;
@@ -44,6 +47,8 @@ export const PrimaryButton = styled.button`
     background-color: #ea580c;
   }
 `;
+
+export const PrimaryLink = PrimaryButton.withComponent(Link);
 
 export const IconButton = styled.button`
   width: 2rem;
