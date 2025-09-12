@@ -3,12 +3,13 @@ import {
   HeaderWrap,
   Brand,
   Actions,
-  GhostButton,
-  PrimaryButton,
+  GhostLink,
+  PrimaryLink,
   IconButton,
   Avatar,
   LogoutButton,
 } from './Header.styles';
+import { Link } from 'react-router-dom';
 
 import { User as UserIcon } from 'lucide-react';
 
@@ -33,7 +34,10 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <HeaderWrap>
-      <Brand>장비빨🔥</Brand>
+      {/* 나중에 로고 이미지 제작하면 그걸로 바꾸기 */}
+      <Brand as={Link} to="/" aria-label="홈으로 이동" title="홈으로 이동">
+        장비빨🔥
+      </Brand>
 
       <Actions>
         {isAuthenticated ? (
@@ -61,8 +65,12 @@ const Header: React.FC<HeaderProps> = ({
           </>
         ) : (
           <>
-            <GhostButton onClick={onLoginClick}>로그인</GhostButton>
-            <PrimaryButton onClick={onSignUpClick}>회원가입</PrimaryButton>
+            <GhostLink to="/login" onClick={onLoginClick} aria-label="로그인 페이지로 이동">
+              로그인
+            </GhostLink>
+            <PrimaryLink to="/signup/step1" onClick={onSignUpClick} aria-label="회원가입 시작">
+              회원가입
+            </PrimaryLink>
           </>
         )}
       </Actions>

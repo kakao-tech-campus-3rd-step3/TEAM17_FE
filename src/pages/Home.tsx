@@ -1,8 +1,8 @@
 import React from 'react';
 import Banner from '@/pages/banner/Banner';
 import Category from '@/pages/category/Category';
-import StarterPreview from '@/components/starterpreview/StarterPreview';
-import FeedPreview from '@/components/feedpreview/FeedPreview';
+import StarterPreview from '@/components/home/starterpreview/StarterPreview';
+import FeedPreview from '@/components/home/feedpreview/FeedPreview';
 
 const HomePage = () => {
   return (

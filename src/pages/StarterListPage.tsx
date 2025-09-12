@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import StarterpackCard from '@/components/card/StarterPackCard';
-import StarterpackModal from '@/components/StarterPackList/StarterPackDetail';
-import { useLikedPacks } from '../hooks/useLikedPacks';
-import { useStarterPackModal } from '../hooks/useStarterPackModal';
-import { mockStartPacks } from '../mocks/mock';
+import StarterpackModal from '@/components/home/StarterPackList/StarterPackDetail';
+import { useLikedPacks } from '@/hooks/useLikedPacks';
+import { useStarterPackModal } from '@/hooks/useStarterPackModal';
+import { mockStartPacks } from '@/mocks/mock';
 import {
   PageWrap,
   Header,
@@ -11,16 +11,38 @@ import {
   HeaderRow,
   HeaderTitle,
   TitleIcon,
-  TitleH1,
-  Subtitle,
   Meta,
   Main,
   Grid,
+  CategoryTabs,
+  CategoryBtn,
 } from './StarterListPage.styles';
+
+// 카테고리
+type CategoryKey = '전체' | '베이킹' | '캠핑' | '독서' | '헬스' | '요리' | '러닝';
+const CATEGORIES: CategoryKey[] = ['전체', '베이킹', '캠핑', '독서', '헬스', '요리', '러닝'];
+
+const matchCategory = (pack: any, active: CategoryKey) => {
+  if (active === '전체') return true;
+  const cat: string = pack.category ?? '';
+  const tags: string[] = pack.tags ?? [];
+  return cat === active || tags.includes(active);
+};
 
 const StarterListPage: React.FC = () => {
   const { isLiked, toggleLike } = useLikedPacks();
   const { selectedPack, open, close } = useStarterPackModal();
+
+  // 현재 선택된 카테고리
+  const [active, setActive] = useState<CategoryKey>('전체');
+
+  // 선택된 카테고리에 따른 필터링
+  const filtered = useMemo(() => mockStartPacks.filter((p) => matchCategory(p, active)), [active]);
+
+  const metaText =
+    active === '전체'
+      ? `총 ${filtered.length}개의 스타터팩`
+      : `${active} 카테고리 ${filtered.length}개`;
 
   return (
     <PageWrap>
@@ -29,19 +51,29 @@ const StarterListPage: React.FC = () => {
           <HeaderRow>
             <HeaderTitle>
               <TitleIcon />
-              <div>
-                <TitleH1>스타터팩 마켓</TitleH1>
-                <Subtitle>당신의 새로운 시작을 위한 완벽한 세트</Subtitle>
-              </div>
+              <CategoryTabs role="tablist" aria-label="스타터팩 카테고리">
+                {CATEGORIES.map((c) => (
+                  <CategoryBtn
+                    key={c}
+                    role="tab"
+                    aria-selected={active === c}
+                    active={active === c}
+                    onClick={() => setActive(c)}
+                  >
+                    {c}
+                  </CategoryBtn>
+                ))}
+              </CategoryTabs>
             </HeaderTitle>
-            <Meta>총 {mockStartPacks.length}개의 스타터팩</Meta>
+
+            <Meta>{metaText}</Meta>
           </HeaderRow>
         </HeaderInner>
       </Header>
 
       <Main>
         <Grid>
-          {mockStartPacks.map((pack) => (
+          {filtered.map((pack) => (
             <StarterpackCard
               key={pack.id}
               pack={pack}
