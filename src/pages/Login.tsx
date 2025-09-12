@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, type LoginValues } from '@/types/LoginZodSchema';
@@ -14,7 +15,12 @@ import {
   CommentLink,
   SocialButton,
   Line,
+  ToggleButton,
+  InputWrapper,
 } from '@/components/login/Login.style';
+
+import EyeOn from '@/assets/icon-eye.svg';
+import EyeOff from '@/assets/icon-eye-off.svg';
 
 export default function LoginForm() {
   const {
@@ -25,6 +31,8 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
     mode: 'onChange',
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = (data: LoginValues) => {
     console.log('로그인 요청 데이터:', data);
@@ -41,7 +49,19 @@ export default function LoginForm() {
           {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
 
           <Label>비밀번호</Label>
-          <Input type="password" {...register('password')} placeholder="비밀번호를 입력해주세요" />
+          <InputWrapper>
+            <Input
+              type={showPassword ? 'text' : 'password'}
+              {...register('password')}
+              placeholder="비밀번호를 입력해주세요"
+            />
+            <ToggleButton type="button" onClick={() => setShowPassword((prev) => !prev)}>
+              <img
+                src={showPassword ? EyeOn : EyeOff}
+                alt={showPassword ? '비밀번호 보기' : '비밀번호 숨기기'}
+              />
+            </ToggleButton>
+          </InputWrapper>
           {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
 
           <SubmitButton type="submit" disabled={!isValid}>
