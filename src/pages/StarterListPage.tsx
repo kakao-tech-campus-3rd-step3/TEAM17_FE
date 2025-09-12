@@ -1,9 +1,9 @@
 import React from 'react';
-import StartpackCard from '@/components/Card/StartpackCard';
-import StartpackModal from '@/components/Card/StartpackModal';
+import StarterpackCard from '@/components/card/StarterPackCard';
+import StarterpackModal from '@/components/StarterPackList/StarterPackDetail';
 import { useLikedPacks } from '../hooks/useLikedPacks';
-import { useStarterPackModal } from '../hooks/useStartpackModal';
-import { mockStartPacks } from '../mock/mock';
+import { useStarterPackModal } from '../hooks/useStarterPackModal';
+import { mockStartPacks } from '../mocks/mock';
 import {
   PageWrap,
   Header,
@@ -16,9 +16,9 @@ import {
   Meta,
   Main,
   Grid,
-} from './StartListPage.styles';
+} from './StarterListPage.styles';
 
-const StartListPage: React.FC = () => {
+const StarterListPage: React.FC = () => {
   const { isLiked, toggleLike } = useLikedPacks();
   const { selectedPack, open, close } = useStarterPackModal();
 
@@ -42,7 +42,7 @@ const StartListPage: React.FC = () => {
       <Main>
         <Grid>
           {mockStartPacks.map((pack) => (
-            <StartpackCard
+            <StarterpackCard
               key={pack.id}
               pack={pack}
               isLiked={isLiked(pack.id)}
@@ -53,9 +53,9 @@ const StartListPage: React.FC = () => {
         </Grid>
       </Main>
 
-      {selectedPack && <StartpackModal pack={selectedPack} onClose={close} />}
+      {selectedPack && <StarterpackModal pack={selectedPack} onClose={close} />}
     </PageWrap>
   );
 };
 
-export default StartListPage;
+export default StarterListPage;

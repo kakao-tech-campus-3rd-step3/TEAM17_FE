@@ -1,52 +1,72 @@
-import Logo from '@/assets/Logo.png';
-import CommunityIcon from '@/assets/CommunityIcon.svg';
-import PlaceIcon from '@/assets/PlaceIcon.svg';
-import CategoryIcon from '@/assets/CategoryIcon.svg';
-
+import React from 'react';
 import {
-  HeaderWrapper,
-  LogoImg,
-  NavWrapper,
-  NavButton,
-  NavText,
-  Gap,
-  LoginButton,
-  LoginText,
-  RegisterButton,
-  RegisterText,
-} from './Header.style';
+  HeaderWrap,
+  Brand,
+  Actions,
+  GhostButton,
+  PrimaryButton,
+  IconButton,
+  Avatar,
+  LogoutButton,
+} from './Header.styles';
 
-const Header = () => {
+import { User as UserIcon } from 'lucide-react';
+
+type HeaderProps = {
+  isAuthenticated?: boolean;
+  userName?: string;
+  avatarUrl?: string;
+  onLoginClick?: () => void;
+  onSignUpClick?: () => void;
+  onLogoutClick?: () => void;
+  onProfileClick?: () => void;
+};
+
+const Header: React.FC<HeaderProps> = ({
+  isAuthenticated = false,
+  userName,
+  avatarUrl,
+  onLoginClick,
+  onSignUpClick,
+  onLogoutClick,
+  onProfileClick,
+}) => {
   return (
-    <HeaderWrapper>
-      <LogoImg src={Logo} />
+    <HeaderWrap>
+      <Brand>장비빨🔥</Brand>
 
-      <NavWrapper>
-        <NavButton>
-          <img src={CommunityIcon} />
-          <NavText>게시판</NavText>
-        </NavButton>
+      <Actions>
+        {isAuthenticated ? (
+          <>
+            <LogoutButton onClick={onLogoutClick}>로그아웃</LogoutButton>
 
-        <NavButton>
-          <img src={PlaceIcon} />
-          <NavText>장소</NavText>
-        </NavButton>
-
-        <NavButton>
-          <img src={CategoryIcon} />
-          <NavText>카테고리</NavText>
-        </NavButton>
-
-        <Gap />
-
-        <LoginButton>
-          <LoginText>로그인</LoginText>
-        </LoginButton>
-        <RegisterButton>
-          <RegisterText>회원가입</RegisterText>
-        </RegisterButton>
-      </NavWrapper>
-    </HeaderWrapper>
+            {avatarUrl ? (
+              <IconButton
+                onClick={onProfileClick}
+                aria-label={userName ? `${userName} 프로필 열기` : '프로필 열기'}
+                title={userName}
+              >
+                <Avatar src={avatarUrl} alt={userName ?? 'User'} />
+              </IconButton>
+            ) : (
+              <IconButton
+                onClick={onProfileClick}
+                aria-label={userName ? `${userName} 프로필 열기` : '프로필 열기'}
+                title={userName}
+              >
+                <UserIcon size={16} />
+                <span style={{ fontSize: 12, fontWeight: 700 }}>{userName?.[0] ?? 'U'}</span>
+              </IconButton>
+            )}
+          </>
+        ) : (
+          <>
+            <GhostButton onClick={onLoginClick}>로그인</GhostButton>
+            <PrimaryButton onClick={onSignUpClick}>회원가입</PrimaryButton>
+          </>
+        )}
+      </Actions>
+    </HeaderWrap>
   );
 };
 

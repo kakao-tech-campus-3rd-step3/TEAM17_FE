@@ -3,6 +3,7 @@ import Home from '@/pages/Home';
 import SignupStep1 from '@/pages/SignupStep1';
 import SignupStep2 from '@/pages/SignupStep2';
 import StartListPage from '@/pages/StartListPage';
+import StarterListPage from '@/pages/StarterListPage';
 import Layout from '@/components/common/Layout';
 
 export const Router = () => (
@@ -13,6 +14,7 @@ export const Router = () => (
         <Route path="/signup/step1" element={<SignupStep1 />} />
         <Route path="/signup/step2" element={<SignupStep2 />} />
         <Route path="/starter-pack" element={<StartListPage />} />
+        <Route path="/starter-pack" element={<StarterListPage />} />
       </Route>
     </Routes>
   </BrowserRouter>
