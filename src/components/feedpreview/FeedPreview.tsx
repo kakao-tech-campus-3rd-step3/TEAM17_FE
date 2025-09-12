@@ -9,6 +9,7 @@ import {
   Grid,
   FeedItem,
   ImageBox,
+  PlaceholderText,
   CounterWrapper,
   Counter,
   Icon,
@@ -32,7 +33,7 @@ const FeedPreview = () => {
         {[1, 2, 3, 4, 5, 6].map((item) => (
           <FeedItem key={item}>
             <ImageBox>
-              <span className="text-gray-400 text-xs">이미지</span>
+              <PlaceholderText>이미지</PlaceholderText>
             </ImageBox>
 
             <CounterWrapper>
