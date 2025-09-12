@@ -1,0 +1,74 @@
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema, type LoginValues } from '@/types/LoginZodSchema';
+
+import {
+  LoginContainer,
+  Inputfield,
+  Title,
+  Label,
+  Input,
+  SubmitButton,
+  ErrorMessage,
+  Comment,
+  CommentLink,
+  SocialButton,
+  Line,
+} from '@/components/login/Login.style';
+
+export default function LoginForm() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<LoginValues>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onChange',
+  });
+
+  const onSubmit = (data: LoginValues) => {
+    console.log('로그인 요청 데이터:', data);
+    //여기서 API 요청 (/api/auth/login)
+  };
+
+  return (
+    <>
+      <LoginContainer>
+        <Title>로그인</Title>
+        <Inputfield onSubmit={handleSubmit(onSubmit)}>
+          <Label>이메일</Label>
+          <Input type="email" {...register('email')} placeholder="youremail@example.com" />
+          {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
+
+          <Label>비밀번호</Label>
+          <Input type="password" {...register('password')} placeholder="비밀번호를 입력해주세요" />
+          {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
+
+          <SubmitButton type="submit" disabled={!isValid}>
+            로그인
+          </SubmitButton>
+
+          <Line />
+        </Inputfield>
+        <SocialButton bgColor=" #E5E7EB" color="#000">
+          <img src="/src/assets/google.png" alt="Google" />
+          Google 계정으로 로그인
+        </SocialButton>
+
+        <SocialButton bgColor="#FEE500">
+          <img src="/src/assets/kakao.svg" alt="Kakao" />
+          카카오 계정으로 로그인
+        </SocialButton>
+
+        <SocialButton bgColor="#03C75A" color="#fff">
+          <img src="/src/assets/naver.png" alt="Naver" />
+          네이버 계정으로 로그인
+        </SocialButton>
+
+        <Comment>
+          이미 계정이 있으신가요? <CommentLink to="/signup/step1">회원가입</CommentLink>
+        </Comment>
+      </LoginContainer>
+    </>
+  );
+}
