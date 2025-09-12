@@ -1,4 +1,3 @@
-import React from 'react';
 import { Heart, MessageSquare, Share } from 'lucide-react';
 import {
   Wrap,
