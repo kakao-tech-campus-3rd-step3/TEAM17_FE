@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StarterPack } from '../../types/StartPackType';
+import type { StarterPack } from '@/types/StarterPackType';
 import {
   Backdrop,
   Shell,
@@ -13,11 +13,11 @@ import {
   RatingStar,
   RatingValue,
   CartIcon,
-} from './StartpackModal.styles';
+} from './StarterpackDetail.styles';
 
 type Props = { pack: StarterPack; onClose: () => void };
 
-const StartpackModal: React.FC<Props> = ({ pack, onClose }) => {
+const StarterPackDetail: React.FC<Props> = ({ pack, onClose }) => {
   const total = pack.products.reduce((sum, p) => sum + p.price, 0);
   const save = total - pack.salePrice;
 
@@ -85,4 +85,4 @@ const StartpackModal: React.FC<Props> = ({ pack, onClose }) => {
   );
 };
 
-export default StartpackModal;
+export default StarterPackDetail;

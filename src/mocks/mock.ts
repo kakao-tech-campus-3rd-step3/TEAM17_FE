@@ -1,4 +1,4 @@
-import type { StarterPack } from '../types/StartPackType';
+import type { StarterPack } from '../types/StarterPackType';
 
 export const mockStartPacks: StarterPack[] = [
   {
