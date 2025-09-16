@@ -7,7 +7,7 @@ import Layout from '@/components/common/Layout';
 import Login from '@/pages/Login';
 
 export const Router = () => (
-  <BrowserRouter>
+  <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
