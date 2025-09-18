@@ -1,3 +1,4 @@
+import styled from 'styled-components';
 import Banner from '@/pages/banner/Banner';
 import Category from '@/pages/category/Category';
 import StarterPreview from '@/components/home/starterpreview/StarterPreview';
@@ -5,15 +6,27 @@ import FeedPreview from '@/components/home/feedpreview/FeedPreview';
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="p-4 space-y-3">
+    <PageWrapper>
+      <Main>
         <Banner />
         <Category />
         <StarterPreview />
         <FeedPreview />
-      </main>
-    </div>
+      </Main>
+    </PageWrapper>
   );
 };
+
+const PageWrapper = styled.div`
+  min-height: 100vh;
+  background-color: #f9fafb;
+`;
+
+const Main = styled.main`
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
 
 export default HomePage;
