@@ -6,6 +6,7 @@ import StarterListPage from '@/pages/StarterListPage';
 import Layout from '@/components/common/Layout';
 import Login from '@/pages/Login';
 //import ProtectedRoute from '@/components/common/ProtectedRoute';
+import MyPage from '@/pages/Mypage';
 
 export const Router = () => (
   <BrowserRouter>
@@ -16,7 +17,7 @@ export const Router = () => (
         <Route path="/signup/step2" element={<SignupStep2 />} />
         <Route path="/login" element={<Login />} />
         <Route path="/starterpack" element={<StarterListPage />} />
-
+        <Route path="/mypage" element={<MyPage />} />
         {/* 보호할 페이지 이런식으로 작성하기*/}
         {/* 
         <Route 
