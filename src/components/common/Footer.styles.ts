@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 
 export const FooterWrap = styled.footer`
   background-color: #1f2937;

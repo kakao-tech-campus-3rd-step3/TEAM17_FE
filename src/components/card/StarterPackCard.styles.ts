@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 import { Heart, Eye, Star } from 'lucide-react';
 
 export const Card = styled.div`
@@ -8,6 +8,7 @@ export const Card = styled.div`
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+
   &:hover {
     transform: translateY(-6px);
     box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
@@ -26,16 +27,17 @@ export const LikeButton = styled.button`
   backdrop-filter: blur(6px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
   cursor: pointer;
+
   &:hover {
     background: #fff;
   }
 `;
 
-export const HeartIcon = styled(Heart)<{ liked?: boolean }>`
+export const HeartIcon = styled(Heart)<{ $liked?: boolean }>`
   width: 20px;
   height: 20px;
-  color: ${({ liked }) => (liked ? '#ef4444' : '#9ca3af')};
-  fill: ${({ liked }) => (liked ? '#ef4444' : 'none')};
+  color: ${({ $liked }) => ($liked ? '#ef4444' : '#9ca3af')};
+  fill: ${({ $liked }) => ($liked ? '#ef4444' : 'none')};
   transition: color 0.2s ease, fill 0.2s ease;
 `;
 
@@ -65,6 +67,7 @@ export const MainImage = styled.img`
   object-fit: cover;
   transform: scale(1);
   transition: transform 0.3s ease;
+
   ${Card}:hover & {
     transform: scale(1.08);
   }
@@ -80,6 +83,7 @@ export const HoverOverlay = styled.div`
   align-items: center;
   justify-content: center;
   transition: opacity 0.25s ease;
+
   ${Card}:hover & {
     opacity: 1;
   }
@@ -143,6 +147,7 @@ export const Title = styled.h3`
   font-weight: 800;
   color: #111827;
   transition: color 0.2s ease;
+
   ${Card}:hover & {
     color: #2563eb;
   }
@@ -205,6 +210,7 @@ export const PrimaryBtn = styled.button`
   background: #2563eb;
   cursor: pointer;
   transition: background 0.2s ease;
+
   &:hover {
     background: #1d4ed8;
   }
@@ -221,6 +227,7 @@ export const GhostBtn = styled.button`
   color: #374151;
   cursor: pointer;
   transition: background 0.2s ease;
+
   &:hover {
     background: #e5e7eb;
   }
@@ -239,6 +246,7 @@ export const Thumb = styled.div`
   backdrop-filter: blur(6px);
   border-radius: 8px;
   padding: 8px;
+
   img {
     width: 100%;
     height: 48px;
@@ -246,6 +254,7 @@ export const Thumb = styled.div`
     border-radius: 6px;
     margin-bottom: 4px;
   }
+
   p {
     font-size: 12px;
     white-space: nowrap;

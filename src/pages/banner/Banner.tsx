@@ -1,4 +1,3 @@
-import React from 'react';
 import { Grid, Card, Overlay, BottomLeft, TopRight, Kicker, Title, Badge } from './Banner.styles';
 
 const Banner = () => {
