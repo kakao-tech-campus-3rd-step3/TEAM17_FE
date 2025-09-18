@@ -1,15 +1,15 @@
 export const tokens = {
   colors: {
     logo: '#FF6400',
-    orange:'#EB6B18',
+    orange: '#EB6B18',
     blue: '#174A7E',
     disabledblue: 'rgba(23, 74, 126, 0.2)',
 
     text: {
-      primary: '#EB6B18',  
+      primary: '#EB6B18',
       blue: {
         default: '#174A7E',
-        disabled: 'rgba(23, 74, 126, 0.5)', 
+        disabled: 'rgba(23, 74, 126, 0.5)',
       },
       black: '#000000',
       white: '#FFFFFF',
@@ -17,9 +17,9 @@ export const tokens = {
     },
 
     line: {
-      primary: '#EB6B18',   
-      blue: '#174A7E',      
-      gray: '#E5E7EB',      
+      primary: '#EB6B18',
+      blue: '#174A7E',
+      gray: '#E5E7EB',
     },
 
     background: {

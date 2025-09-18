@@ -1,4 +1,7 @@
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+
+import { signup } from '@/api/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { step2Schema, type Step2Values } from '@/types/SignupZodSchema';
 
@@ -26,13 +29,22 @@ export default function SignupStep2() {
     resolver: zodResolver(step2Schema),
   });
 
-  const onSubmit = (data: Step2Values) => {
-    //step1+step2 데이터 합쳐서 최종 제출
-    const step1 = JSON.parse(localStorage.getItem('signupStep1') || '{}');
-    const finalData = { ...step1, ...data };
+  const navigate = useNavigate();
 
-    alert(JSON.stringify(finalData, null, 2));
-    //여기서 API 요청(호출) 보내기 -> finalData 전달
+  const onSubmit = async (data: Step2Values) => {
+    try {
+      const step1 = JSON.parse(localStorage.getItem('signupStep1') || '{}');
+      const finalData = { ...step1, ...data };
+
+      const res = await signup(finalData);
+      console.log('회원가입 성공:', res);
+
+      alert('회원가입 성공! 로그인 페이지로 이동합니다.');
+      navigate('/login');
+    } catch (err) {
+      console.error('회원가입 실패:', err);
+      alert('회원가입에 실패했습니다.');
+    }
   };
 
   return (
@@ -67,7 +79,9 @@ export default function SignupStep2() {
               {...register('confirmPassword', { required: true })}
               placeholder="비밀번호를 한번 더 제대로 입력해주세요"
             />
-            {errors.confirmPassword && <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>}
+            {errors.confirmPassword && (
+              <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>
+            )}
           </FormGroup>
 
           <NextButton type="submit" disabled={!isValid}>
