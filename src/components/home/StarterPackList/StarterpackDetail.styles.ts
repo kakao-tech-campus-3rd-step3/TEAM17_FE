@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 import { X, Star, ShoppingCart } from 'lucide-react';
 
 export const Backdrop = styled.div`

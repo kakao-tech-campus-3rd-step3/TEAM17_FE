@@ -1,5 +1,16 @@
 import { Link } from 'react-router-dom';
-import styled from '@emotion/styled';
+import styled, { css } from 'styled-components';
+
+const baseButtonStyles = css`
+  font-size: 0.875rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
 
 export const HeaderWrap = styled.header`
   background-color: #ffffff;
@@ -23,32 +34,46 @@ export const Actions = styled.div`
 `;
 
 export const GhostButton = styled.button`
-  font-size: 0.875rem;
+  ${baseButtonStyles};
   color: #4b5563;
-  padding: 0.25rem 0.75rem;
   background: transparent;
-  border-radius: 0.375rem;
-  transition: color 0.2s ease;
+
   &:hover {
     color: #f97316;
   }
 `;
 
-export const GhostLink = GhostButton.withComponent(Link);
+export const GhostLink = styled(Link)`
+  ${baseButtonStyles};
+  color: #4b5563;
+  background: transparent;
+  text-decoration: none;
+
+  &:hover {
+    color: #f97316;
+  }
+`;
 
 export const PrimaryButton = styled.button`
-  font-size: 0.875rem;
+  ${baseButtonStyles};
   color: #ffffff;
-  padding: 0.25rem 0.75rem;
   background-color: #f97316;
-  border-radius: 0.375rem;
-  transition: background-color 0.2s ease;
+
   &:hover {
     background-color: #ea580c;
   }
 `;
 
-export const PrimaryLink = PrimaryButton.withComponent(Link);
+export const PrimaryLink = styled(Link)`
+  ${baseButtonStyles};
+  color: #ffffff;
+  background-color: #f97316;
+  text-decoration: none;
+
+  &:hover {
+    background-color: #ea580c;
+  }
+`;
 
 export const IconButton = styled.button`
   width: 2rem;
@@ -59,6 +84,7 @@ export const IconButton = styled.button`
   align-items: center;
   justify-content: center;
   transition: filter 0.15s ease;
+
   &:hover {
     filter: brightness(0.95);
   }
@@ -73,12 +99,10 @@ export const Avatar = styled.img`
 `;
 
 export const LogoutButton = styled.button`
-  font-size: 0.875rem;
+  ${baseButtonStyles};
   color: #ffffff;
-  padding: 0.25rem 0.75rem;
   background-color: #111827;
-  border-radius: 0.375rem;
-  transition: background-color 0.15s ease;
+
   &:hover {
     background-color: #0b1220;
   }

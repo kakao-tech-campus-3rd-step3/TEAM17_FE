@@ -49,7 +49,7 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
         }}
         aria-label={isLiked ? '찜 취소' : '찜하기'}
       >
-        <HeartIcon liked={isLiked} />
+        <HeartIcon $liked />
       </LikeButton>
 
       {pack.discountRate > 0 && <DiscountBadge>{pack.discountRate}% 할인</DiscountBadge>}
