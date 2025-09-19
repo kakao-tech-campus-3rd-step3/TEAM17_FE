@@ -25,6 +25,9 @@ import {
 
 import EyeOn from '@/assets/icon-eye.svg';
 import EyeOff from '@/assets/icon-eye-off.svg';
+import google from '@/assets/google.png';
+import kakao from '@/assets/kakao.svg';
+import naver from '@/assets/naver.png';
 
 export default function LoginForm() {
   const {
@@ -88,17 +91,17 @@ export default function LoginForm() {
           <Line />
         </Inputfield>
         <SocialButton bgColor=" #E5E7EB" color="#000">
-          <img src="/src/assets/google.png" alt="Google" />
+          <img src={google} alt="Google" />
           Google 계정으로 로그인
         </SocialButton>
 
         <SocialButton bgColor="#FEE500">
-          <img src="/src/assets/kakao.svg" alt="Kakao" />
+          <img src={kakao} alt="Kakao" />
           카카오 계정으로 로그인
         </SocialButton>
 
         <SocialButton bgColor="#03C75A" color="#fff">
-          <img src="/src/assets/naver.png" alt="Naver" />
+          <img src={naver} alt="Naver" />
           네이버 계정으로 로그인
         </SocialButton>
 

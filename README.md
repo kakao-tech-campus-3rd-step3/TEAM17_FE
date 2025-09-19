@@ -9,7 +9,7 @@
 |                                 프로필                                |    이름    |    역할    |                  GitHub                 |
 | :----------------------------------------------------------------: | :------: | :------: | :-------------------------------------: |
 | <img src="https://github.com/ppre1ude.png?size=100" width="100" /> | ppre1ude | Frontend (Team Leader) | [ppre1ude](https://github.com/ppre1ude) |
-|  <img src="https://github.com/s_sumin.png?size=100" width="100" /> | s\_sumin | Frontend (Tech Leader) |  [s-sumin](https://github.com/s-sumin) |
+|  <img src="https://github.com/s-sumin.png?size=100" width="100" /> | s-sumin | Frontend (Tech Leader) |  [s-sumin](https://github.com/s-sumin) |
 
 
 ---
