@@ -1,4 +1,3 @@
-// 피드 관련 타입 정의 (API 스키마 기반)
 export interface FeedPost {
   feedId: number;
   author: {
@@ -14,6 +13,7 @@ export interface FeedPost {
     categoryName: string;
   };
   likeCount: number;
+  isLiked: boolean;
   createdAt: string;
   products: {
     productId: number;
@@ -42,5 +42,11 @@ export interface CreatePostRequest {
 
 export interface LikePostRequest {
   feedId: number;
+  isLiked: boolean;
+}
+
+export interface LikePostResponse {
+  success: boolean;
+  likeCount: number;
   isLiked: boolean;
 }

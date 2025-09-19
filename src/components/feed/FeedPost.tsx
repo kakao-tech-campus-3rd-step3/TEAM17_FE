@@ -1,5 +1,5 @@
 import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useCallback, memo } from 'react';
 import type { FeedPost as FeedPostType } from '@/types/Feed';
 import { likePost } from '@/mocks/feedData';
 import {
@@ -25,43 +25,77 @@ import {
 
 interface FeedPostProps {
   post: FeedPostType;
-  onLike?: (feedId: number, isLiked: boolean) => void;
+  onLike?: (feedId: number, isLiked: boolean, likeCount: number) => void;
 }
 
 const FeedPost = ({ post, onLike }: FeedPostProps) => {
-  const [isLiked, setIsLiked] = useState(false);
+  // 서버에서 받은 초기 상태를 사용
+  const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLike = async () => {
+  const handleLike = useCallback(async () => {
     if (isLoading) return;
 
-    setIsLoading(true);
+    // 낙관적 업데이트: 즉시 UI 업데이트
     const newIsLiked = !isLiked;
+    const newLikeCount = newIsLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
+
+    // 이전 상태 저장 (롤백용)
+    const previousIsLiked = isLiked;
+    const previousLikeCount = likeCount;
+
+    // 즉시 UI 업데이트
+    setIsLiked(newIsLiked);
+    setLikeCount(newLikeCount);
+    setIsLoading(true);
+
+    // 부모에게도 즉시 알림
+    onLike?.(post.feedId, newIsLiked, newLikeCount);
 
     try {
       const response = await likePost(post.feedId, newIsLiked);
-      setIsLiked(newIsLiked);
+
+      // 서버 응답으로 최종 상태 동기화
+      setIsLiked(response.isLiked);
       setLikeCount(response.likeCount);
-      onLike?.(post.feedId, newIsLiked);
+      onLike?.(post.feedId, response.isLiked, response.likeCount);
     } catch (error) {
+      // 실패 시 롤백
       console.error('Failed to like post:', error);
+      setIsLiked(previousIsLiked);
+      setLikeCount(previousLikeCount);
+
+      onLike?.(post.feedId, previousIsLiked, previousLikeCount);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isLiked, likeCount, isLoading, post.feedId, onLike]);
 
-  const formatTimeAgo = (dateString: string): string => {
+  const formatTimeAgo = useCallback((dateString: string): string => {
     const now = new Date();
     const postDate = new Date(dateString);
     const diffInSeconds = Math.floor((now.getTime() - postDate.getTime()) / 1000);
 
-    if (diffInSeconds < 60) return '방금 전';
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}분 전`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}시간 전`;
-    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}일 전`;
-    return `${Math.floor(diffInSeconds / 2592000)}개월 전`;
-  };
+    const rtf = new Intl.RelativeTimeFormat('ko', { numeric: 'auto' });
+
+    if (diffInSeconds < 60) {
+      return rtf.format(-diffInSeconds, 'second');
+    }
+    if (diffInSeconds < 3600) {
+      return rtf.format(-Math.floor(diffInSeconds / 60), 'minute');
+    }
+    if (diffInSeconds < 86400) {
+      return rtf.format(-Math.floor(diffInSeconds / 3600), 'hour');
+    }
+    if (diffInSeconds < 2592000) {
+      return rtf.format(-Math.floor(diffInSeconds / 86400), 'day');
+    }
+    if (diffInSeconds < 31536000) {
+      return rtf.format(-Math.floor(diffInSeconds / 2592000), 'month');
+    }
+    return rtf.format(-Math.floor(diffInSeconds / 31536000), 'year');
+  }, []);
 
   return (
     <PostContainer>
@@ -78,20 +112,26 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
       <PostImage src={post.imageUrl} alt={`Post by ${post.author.name}`} />
 
       <PostActions>
-        <ActionButton onClick={handleLike} disabled={isLoading}>
+        <ActionButton
+          onClick={handleLike}
+          disabled={isLoading}
+          type="button"
+          aria-label={isLiked ? '좋아요 취소' : '좋아요'}
+          aria-pressed={isLiked}
+        >
           <Heart
             size={24}
             fill={isLiked ? '#ef4444' : 'none'}
             color={isLiked ? '#ef4444' : '#000'}
           />
         </ActionButton>
-        <ActionButton>
+        <ActionButton type="button" aria-label="댓글 달기">
           <MessageSquare size={24} />
         </ActionButton>
-        <ActionButton>
+        <ActionButton type="button" aria-label="공유하기">
           <Share size={24} />
         </ActionButton>
-        <ActionButton style={{ marginLeft: 'auto' }}>
+        <ActionButton type="button" aria-label="저장" style={{ marginLeft: 'auto' }}>
           <Bookmark size={24} />
         </ActionButton>
       </PostActions>
@@ -112,12 +152,16 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
       {post.products.length > 0 && (
         <ProductsSection>
           <h4>관련 제품</h4>
-          {post.products.map((product) => (
-            <ProductItem key={product.productId}>
-              <ProductImage src={product.imageUrl} alt={product.name} />
-              <ProductName>{product.name}</ProductName>
-            </ProductItem>
-          ))}
+          <ul role="list" aria-label="관련 제품 목록">
+            {post.products.map((product) => (
+              <li key={product.productId}>
+                <ProductItem>
+                  <ProductImage src={product.imageUrl} alt={product.name} />
+                  <ProductName>{product.name}</ProductName>
+                </ProductItem>
+              </li>
+            ))}
+          </ul>
         </ProductsSection>
       )}
 
@@ -126,4 +170,4 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
   );
 };
 
-export default FeedPost;
+export default memo(FeedPost);

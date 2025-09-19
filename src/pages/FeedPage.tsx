@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import FeedPost from '@/components/feed/FeedPost';
 import type { FeedPost as FeedPostType, FeedResponse } from '@/types/Feed';
 import { fetchFeedPosts } from '@/mocks/feedData';
@@ -23,53 +23,51 @@ const FeedPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNext, setHasNext] = useState(false);
 
-  const loadPosts = async (page: number = 1, append: boolean = false) => {
-    try {
-      if (page === 1) {
+  useEffect(() => {
+    const loadInitialPosts = async () => {
+      try {
         setLoading(true);
         setError(null);
-      } else {
-        setLoadingMore(true);
-      }
 
-      const response: FeedResponse = await fetchFeedPosts(page, 10);
+        const response: FeedResponse = await fetchFeedPosts(1, 10);
 
-      if (append) {
-        setPosts((prev) => [...prev, ...response.feeds]);
-      } else {
         setPosts(response.feeds);
+        setCurrentPage(response.currentPage);
+        setHasNext(response.hasNext);
+      } catch (err) {
+        setError('피드를 불러오는데 실패했습니다.');
+        console.error('Failed to load posts:', err);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      setCurrentPage(response.currentPage);
-      setHasNext(response.hasNext);
-    } catch (err) {
-      setError('피드를 불러오는데 실패했습니다.');
-      console.error('Failed to load posts:', err);
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  };
-
-  useEffect(() => {
-    loadPosts(1);
+    loadInitialPosts();
   }, []);
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(async () => {
     if (hasNext && !loadingMore) {
-      loadPosts(currentPage + 1, true);
-    }
-  };
+      try {
+        setLoadingMore(true);
+        const response: FeedResponse = await fetchFeedPosts(currentPage + 1, 10);
 
-  const handleLike = (feedId: number, isLiked: boolean) => {
+        setPosts((prev) => [...prev, ...response.feeds]);
+        setCurrentPage(response.currentPage);
+        setHasNext(response.hasNext);
+      } catch (err) {
+        setError('피드를 불러오는데 실패했습니다.');
+        console.error('Failed to load more posts:', err);
+      } finally {
+        setLoadingMore(false);
+      }
+    }
+  }, [hasNext, loadingMore, currentPage]);
+
+  const handleLike = useCallback((feedId: number, isLiked: boolean, likeCount: number) => {
     setPosts((prev) =>
-      prev.map((post) =>
-        post.feedId === feedId
-          ? { ...post, likeCount: isLiked ? post.likeCount + 1 : post.likeCount - 1 }
-          : post
-      )
+      prev.map((post) => (post.feedId === feedId ? { ...post, isLiked, likeCount } : post))
     );
-  };
+  }, []);
 
   if (loading) {
     return (
@@ -111,23 +109,25 @@ const FeedPage = () => {
   }
 
   return (
-    <FeedContainer>
-      <FeedHeader>
-        <FeedTitle>피드</FeedTitle>
-      </FeedHeader>
+    <>
+      <FeedContainer>
+        <FeedHeader>
+          <FeedTitle>피드</FeedTitle>
+        </FeedHeader>
 
-      <FeedGrid>
-        {posts.map((post) => (
-          <FeedPost key={post.feedId} post={post} onLike={handleLike} />
-        ))}
-      </FeedGrid>
+        <FeedGrid>
+          {posts.map((post) => (
+            <FeedPost key={post.feedId} post={post} onLike={handleLike} />
+          ))}
+        </FeedGrid>
 
-      {hasNext && (
-        <LoadMoreButton onClick={handleLoadMore} disabled={loadingMore}>
-          {loadingMore ? '로딩 중...' : '더 보기'}
-        </LoadMoreButton>
-      )}
-    </FeedContainer>
+        {hasNext && (
+          <LoadMoreButton onClick={handleLoadMore} disabled={loadingMore}>
+            {loadingMore ? '로딩 중...' : '더 보기'}
+          </LoadMoreButton>
+        )}
+      </FeedContainer>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import type { FeedPost, FeedResponse } from '@/types/Feed';
+import type { FeedPost, FeedResponse, LikePostResponse } from '@/types/Feed';
 
 // Mock 카테고리 데이터
 const mockCategories = [
@@ -88,14 +88,12 @@ export const generateMockFeedPosts = (count: number = 20): FeedPost[] => {
   ];
 
   for (let i = 1; i <= count; i++) {
-    const user = mockUsers[Math.floor(Math.random() * mockUsers.length)];
-    const category = mockCategories[Math.floor(Math.random() * mockCategories.length)];
-    const feedType = feedTypes[Math.floor(Math.random() * feedTypes.length)];
-    const description = descriptions[Math.floor(Math.random() * descriptions.length)];
+    const user = mockUsers[(i - 1) % mockUsers.length];
+    const category = mockCategories[(i - 1) % mockCategories.length];
+    const feedType = feedTypes[(i - 1) % feedTypes.length];
+    const description = descriptions[(i - 1) % descriptions.length];
 
-    // 랜덤 제품 선택 (0-3개)
-    const productCount = Math.floor(Math.random() * 4);
-    const selectedProducts = mockProducts.sort(() => 0.5 - Math.random()).slice(0, productCount);
+    const selectedProducts = mockProducts.slice(0, 2);
 
     posts.push({
       feedId: i,
@@ -104,8 +102,9 @@ export const generateMockFeedPosts = (count: number = 20): FeedPost[] => {
       imageUrl: `https://picsum.photos/600/600?random=${i}`,
       feedType,
       category,
-      likeCount: Math.floor(Math.random() * 1000) + 10,
-      createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+      likeCount: 100 + i * 50,
+      isLiked: i % 3 === 0,
+      createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
       products: selectedProducts,
     });
   }
@@ -134,24 +133,21 @@ export const fetchFeedPosts = async (
   limit: number = 10
 ): Promise<FeedResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 800));
-
   return generateMockFeedResponse(page, limit);
 };
 
-export const likePost = async (
-  feedId: number,
-  isLiked: boolean
-): Promise<{ success: boolean; likeCount: number }> => {
+export const likePost = async (feedId: number, isLiked: boolean): Promise<LikePostResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
 
   // 실제 mock 데이터에서 해당 피드의 현재 좋아요 수를 기반으로 계산
   const allFeeds = generateMockFeedPosts(50);
   const targetFeed = allFeeds.find((feed) => feed.feedId === feedId);
-  const currentLikes = targetFeed ? targetFeed.likeCount : Math.floor(Math.random() * 1000) + 10;
+  const currentLikes = targetFeed ? targetFeed.likeCount : 100 + feedId * 50;
   const newLikeCount = isLiked ? currentLikes + 1 : Math.max(0, currentLikes - 1);
 
   return {
     success: true,
     likeCount: newLikeCount,
+    isLiked,
   };
 };
