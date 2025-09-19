@@ -90,17 +90,17 @@ export default function LoginForm() {
 
           <Line />
         </Inputfield>
-        <SocialButton bgColor=" #E5E7EB" color="#000">
+        <SocialButton $bgColor=" #E5E7EB" $color="#000">
           <img src={google} alt="Google" />
           Google 계정으로 로그인
         </SocialButton>
 
-        <SocialButton bgColor="#FEE500">
+        <SocialButton $bgColor="#FEE500" $color="#000">
           <img src={kakao} alt="Kakao" />
           카카오 계정으로 로그인
         </SocialButton>
 
-        <SocialButton bgColor="#03C75A" color="#fff">
+        <SocialButton $bgColor="#03C75A" $color="#fff">
           <img src={naver} alt="Naver" />
           네이버 계정으로 로그인
         </SocialButton>
