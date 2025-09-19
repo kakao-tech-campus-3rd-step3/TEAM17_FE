@@ -65,6 +65,8 @@ export default function SignupStep2() {
       <Title>회원가입</Title>
       <Container>
         <FormWrapper>
+          {/* 접근성 경고 해결용 */}
+          <input type="text" name="username" autoComplete="username" style={{ display: 'none' }} />
           <FormGroup>
             <Label>이메일</Label>
             <Input
