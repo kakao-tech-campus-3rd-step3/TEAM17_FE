@@ -33,9 +33,8 @@ export default function SignupStep1() {
   });
 
   const onNext = (data: Step1Values) => {
-    // Step1 데이터를 저장 (localStorage)
     localStorage.setItem('signupStep1', JSON.stringify(data));
-    navigate('/signup/step2');
+    navigate('/signup/account');
   };
 
   return (

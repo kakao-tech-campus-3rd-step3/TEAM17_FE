@@ -68,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({
             <GhostLink to="/login" onClick={onLoginClick} aria-label="로그인 페이지로 이동">
               로그인
             </GhostLink>
-            <PrimaryLink to="/signup/step1" onClick={onSignUpClick} aria-label="회원가입 시작">
+            <PrimaryLink to="/signup/profile" onClick={onSignUpClick} aria-label="회원가입 시작">
               회원가입
             </PrimaryLink>
           </>

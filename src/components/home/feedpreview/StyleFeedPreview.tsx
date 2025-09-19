@@ -16,9 +16,9 @@ import {
   UserInfo,
   Avatar,
   Username,
-} from './FeedPreview.styles';
+} from './StyleFeedPreview.styles';
 
-const FeedPreview = () => {
+const StyleFeedPreview = () => {
   return (
     <Wrap>
       <Header>
@@ -68,4 +68,4 @@ const FeedPreview = () => {
   );
 };
 
-export default FeedPreview;
+export default StyleFeedPreview;

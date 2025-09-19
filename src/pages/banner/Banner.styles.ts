@@ -1,26 +1,26 @@
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 
 export const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem; /* 12px */
+  gap: 0.75rem;
 `;
 
-export const Card = styled.div<{ variant: 'left' | 'right' }>`
+export const Card = styled.div<{ $variant: 'left' | 'right' }>`
   position: relative;
   height: 10rem;
   border-radius: 0.5rem;
   overflow: hidden;
-  background-image: ${({ variant }) =>
-    variant === 'left'
-      ? 'linear-gradient(135deg, #1e3a8a 0%, #581c87 100%)' /* from-blue-900 to-purple-900 */
-      : 'linear-gradient(135deg, #22d3ee 0%, #2563eb 100%)'}; /* from-cyan-400 to-blue-600 */
+  background-image: ${({ $variant }) =>
+    $variant === 'left'
+      ? 'linear-gradient(135deg, #1e3a8a 0%, #581c87 100%)' 
+      : 'linear-gradient(135deg, #22d3ee 0%, #2563eb 100%)'};
 `;
 
-export const Overlay = styled.div<{ alpha?: number }>`
+export const Overlay = styled.div<{ $alpha?: number }>`
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, ${({ alpha = 0.25 }) => alpha});
+  background: rgba(0, 0, 0, ${({ $alpha = 0.25 }) => $alpha});
 `;
 
 export const BottomLeft = styled.div`
@@ -32,7 +32,7 @@ export const BottomLeft = styled.div`
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
-  padding-right: 2.25rem; /* ~36px */
+  padding-right: 2.25rem; 
   max-width: calc(100% - 3rem);
 `;
 
@@ -42,7 +42,6 @@ export const TopRight = styled.div`
   top: 0.75rem;
 `;
 
-/* 카테고리 작은 글씨 */
 export const Kicker = styled.div`
   font-size: 0.75rem;
   opacity: 0.8;
