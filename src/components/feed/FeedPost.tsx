@@ -29,7 +29,7 @@ interface FeedPostProps {
 }
 
 const FeedPost = ({ post, onLike }: FeedPostProps) => {
-  const [isLiked, setIsLiked] = useState(false); // 기본값을 false로 설정
+  const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [isLoading, setIsLoading] = useState(false);
 
