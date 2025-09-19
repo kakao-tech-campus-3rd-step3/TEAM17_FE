@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,6 +19,10 @@ import {
   CommentLink,
   ErrorMessage,
 } from '@/components/signup/SignupStep.style';
+import { ToggleButton, InputWrapper } from '@/components/login/Login.style';
+
+import EyeOn from '@/assets/icon-eye.svg';
+import EyeOff from '@/assets/icon-eye-off.svg';
 
 export default function SignupStep2() {
   const {
@@ -29,12 +34,18 @@ export default function SignupStep2() {
     resolver: zodResolver(step2Schema),
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async (data: Step2Values) => {
     try {
-      const step1 = JSON.parse(localStorage.getItem('signupStep1') || '{}');
-      const finalData = { ...step1, ...data };
+      const step1 = JSON.parse(sessionStorage.getItem('signupStep1') || '{}');
+
+      const finalData = {
+        email: data.email,
+        password: data.password,
+        name: step1.name,
+      };
 
       const res = await signup(finalData);
       console.log('회원가입 성공:', res);
@@ -56,6 +67,7 @@ export default function SignupStep2() {
             <Label>이메일</Label>
             <Input
               type="text"
+              autoComplete="username"
               {...register('email', { required: true })}
               placeholder="이메일을 입력해주세요"
             />
@@ -64,21 +76,39 @@ export default function SignupStep2() {
 
           <FormGroup>
             <Label>비밀번호</Label>
-            <Input
-              type="text"
-              {...register('password', { required: true })}
-              placeholder="비밀번호를 입력해주세요"
-            />
+            <InputWrapper>
+              <Input
+                type="password"
+                autoComplete="new-password"
+                {...register('password', { required: true })}
+                placeholder="비밀번호를 입력해주세요"
+              />
+              <ToggleButton type="button" onClick={() => setShowPassword((prev) => !prev)}>
+                <img
+                  src={showPassword ? EyeOn : EyeOff}
+                  alt={showPassword ? '비밀번호 보기' : '비밀번호 숨기기'}
+                />
+              </ToggleButton>
+            </InputWrapper>
             {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
           </FormGroup>
 
           <FormGroup>
             <Label>비밀번호 확인</Label>
-            <Input
-              type="text"
-              {...register('confirmPassword', { required: true })}
-              placeholder="비밀번호를 한번 더 제대로 입력해주세요"
-            />
+            <InputWrapper>
+              <Input
+                type="password"
+                autoComplete="new-password"
+                {...register('confirmPassword', { required: true })}
+                placeholder="비밀번호를 한번 더 입력해주세요"
+              />
+              <ToggleButton type="button" onClick={() => setShowPassword((prev) => !prev)}>
+                <img
+                  src={showPassword ? EyeOn : EyeOff}
+                  alt={showPassword ? '비밀번호 보기' : '비밀번호 숨기기'}
+                />
+              </ToggleButton>
+            </InputWrapper>
             {errors.confirmPassword && (
               <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>
             )}

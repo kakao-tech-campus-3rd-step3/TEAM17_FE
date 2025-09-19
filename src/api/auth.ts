@@ -1,15 +1,20 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-});
-
-export const signup = async (data: { email: string; password: string; name: string }) => {
-  const res = await api.post('/api/auth/signup', data);
+export const signup = async (data: {
+  email: string;
+  password: string;
+  name: string;
+}) => {
+  const res = await axiosInstance.post('/api/auth/signup', data);
   return res.data;
 };
 
 export const login = async (data: { email: string; password: string }) => {
-  const res = await api.post('/api/auth/login', data);
+  const res = await axiosInstance.post('/api/auth/login', data);
+
+  if (res.data?.accessToken) {
+    localStorage.setItem('accessToken', res.data.accessToken);
+  }
+
   return res.data;
 };
