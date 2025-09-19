@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import Banner from '@/pages/banner/Banner';
-import Category from '@/pages/category/Category';
+import Banner from '@/components/home/banner/Banner';
+import Category from '@/components/category/Category';
 import StarterPreview from '@/components/home/starterpreview/StarterPreview';
 import StyleFeedPreview from '@/components/home/feedpreview/StyleFeedPreview';
 

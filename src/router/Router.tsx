@@ -3,18 +3,22 @@ import Home from '@/pages/Home';
 import SignupProfile from '@/pages/SignupProfile';
 import SignupAccount from '@/pages/SignupAccount';
 import StarterListPage from '@/pages/StarterListPage';
+import FeedPage from '@/pages/FeedPage';
 import Layout from '@/components/common/Layout';
 import Login from '@/pages/Login';
+import MyPage from '@/pages/MyPage';
 
 export const Router = () => (
   <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/signup/profile" element={<SignupProfile />} /> 
+        <Route path="/signup/profile" element={<SignupProfile />} />
         <Route path="/signup/account" element={<SignupAccount />} />
         <Route path="/login" element={<Login />} />
         <Route path="/starterpack" element={<StarterListPage />} />
+        <Route path="/mypage/*" element={<MyPage />} />
+        <Route path="/feed" element={<FeedPage />} />
       </Route>
     </Routes>
   </BrowserRouter>

@@ -7,7 +7,7 @@ import {
   Kicker,
   Title,
   Badge,
-} from '@/pages/banner/Banner.styles';
+} from '@/components/home/banner/Banner.styles';
 
 const Banner = () => {
   return (

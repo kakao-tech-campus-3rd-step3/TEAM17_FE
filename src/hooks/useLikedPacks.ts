@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react';
+import { useStarterPackLike } from './useStarterPacks';
 
 export function useLikedPacks() {
-  const [likedPacks, setLikedPacks] = useState<Set<string>>(new Set());
+  const [likedPacks, setLikedPacks] = useState<Set<number>>(new Set());
 
-  const toggleLike = useCallback((id: string) => {
+  const toggleLike = useCallback((id: number) => {
     setLikedPacks((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -15,7 +16,19 @@ export function useLikedPacks() {
     });
   }, []);
 
-  const isLiked = useCallback((id: string) => likedPacks.has(id), [likedPacks]);
+  const isLiked = useCallback((id: number) => likedPacks.has(id), [likedPacks]);
 
   return { likedPacks, isLiked, toggleLike };
+}
+
+// 특정 스타터팩의 좋아요 상태를 관리하는 훅
+export function useStarterPackLikeStatus(id: number, initialLike: number = 0) {
+  const { likesCount, isLiked, loading, toggleLike } = useStarterPackLike(id, initialLike);
+
+  return {
+    likesCount,
+    isLiked,
+    loading,
+    toggleLike,
+  };
 }
