@@ -92,7 +92,7 @@ export const ErrorMessage = styled.span`
   margin-top: 0.25rem;
 `;
 
-export const SocialButton = styled.button<{ bgColor: string; color?: string }>`
+export const SocialButton = styled.button<{ $bgColor: string; $color?: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,8 +107,8 @@ export const SocialButton = styled.button<{ bgColor: string; color?: string }>`
   font-size: 1rem;
   font-weight: 500;
 
-  background-color: ${({ bgColor }) => bgColor};
-  color: ${({ color }) => color || '#000'};
+  background-color: ${({ $bgColor }) => $bgColor};
+  color: ${({ $color }) => $color || '#000'};
 
   cursor: pointer;
 
