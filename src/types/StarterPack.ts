@@ -1,9 +1,4 @@
-export interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-}
+import type { Product } from './Product';
 
 export interface StarterPack {
   id: number;

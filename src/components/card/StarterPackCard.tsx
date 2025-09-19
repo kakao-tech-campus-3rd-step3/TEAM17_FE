@@ -63,7 +63,7 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
             <GridPreview>
               {pack.products.slice(0, 4).map((p) => (
                 <Thumb key={p.id}>
-                  <img src={p.image} alt={p.name} />
+                  <img src={p.src} alt={p.name} />
                   <p>{p.name}</p>
                 </Thumb>
               ))}

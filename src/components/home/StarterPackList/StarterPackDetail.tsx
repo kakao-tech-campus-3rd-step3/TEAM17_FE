@@ -18,7 +18,7 @@ import {
 type Props = { pack: StarterPack; onClose: () => void };
 
 const StarterPackDetail: React.FC<Props> = ({ pack, onClose }) => {
-  const total = pack.products.reduce((sum, p) => sum + p.price, 0);
+  const total = pack.products.reduce((sum, p) => sum + p.cost, 0);
   const save = total - pack.salePrice;
 
   return (
@@ -63,10 +63,10 @@ const StarterPackDetail: React.FC<Props> = ({ pack, onClose }) => {
             <h3>구성품 상세</h3>
             {pack.products.map((p) => (
               <div key={p.id} className="item">
-                <img src={p.image} alt={p.name} />
+                <img src={p.src} alt={p.name} />
                 <div className="content">
                   <h4>{p.name}</h4>
-                  <div className="price">{p.price}</div>
+                  <div className="price">{p.cost.toLocaleString()}원</div>
                 </div>
               </div>
             ))}
