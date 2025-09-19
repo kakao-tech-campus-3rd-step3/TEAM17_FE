@@ -28,10 +28,15 @@ export const FeedTitle = styled.h1`
 
 export const FeedGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   max-width: 1200px;
   margin: 0 auto;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;

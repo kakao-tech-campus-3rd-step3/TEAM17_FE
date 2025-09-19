@@ -29,7 +29,6 @@ interface FeedPostProps {
 }
 
 const FeedPost = ({ post, onLike }: FeedPostProps) => {
-  // 서버에서 받은 초기 상태를 사용
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,18 +44,15 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
     const previousIsLiked = isLiked;
     const previousLikeCount = likeCount;
 
-    // 즉시 UI 업데이트
     setIsLiked(newIsLiked);
     setLikeCount(newLikeCount);
     setIsLoading(true);
 
-    // 부모에게도 즉시 알림
     onLike?.(post.feedId, newIsLiked, newLikeCount);
 
     try {
       const response = await likePost(post.feedId, newIsLiked);
 
-      // 서버 응답으로 최종 상태 동기화
       setIsLiked(response.isLiked);
       setLikeCount(response.likeCount);
       onLike?.(post.feedId, response.isLiked, response.likeCount);
