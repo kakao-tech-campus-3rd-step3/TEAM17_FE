@@ -3,7 +3,6 @@ import styled from 'styled-components';
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid black;
   padding: 1rem;
   margin-top: 3rem;
 `;
@@ -12,13 +11,14 @@ export const FeedList = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  border: 1px solid black;
+
 `;
 
 export const FeedContainer = styled.div`
   width: 24%;
   border: 3px solid ${({ theme }) => theme.colors.blue};
   border-radius: 10px;
+  padding-bottom: 1rem;
 `;
 
 export const TopContainer = styled.div`
