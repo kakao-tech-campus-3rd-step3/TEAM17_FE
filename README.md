@@ -9,7 +9,7 @@
 |                                 프로필                                |    이름    |    역할    |                  GitHub                 |
 | :----------------------------------------------------------------: | :------: | :------: | :-------------------------------------: |
 | <img src="https://github.com/ppre1ude.png?size=100" width="100" /> | ppre1ude | Frontend (Team Leader) | [ppre1ude](https://github.com/ppre1ude) |
-|  <img src="https://github.com/s_sumin.png?size=100" width="100" /> | s\_sumin | Frontend (Tech Leader) |  [s\_sumin](https://github.com/s_sumin) |
+|  <img src="https://github.com/s-sumin.png?size=100" width="100" /> | s-sumin | Frontend (Tech Leader) |  [s-sumin](https://github.com/s-sumin) |
 
 
 ---
@@ -162,9 +162,9 @@ export const isProd = import.meta.env.PROD;
 
 ## ✅ PR 체크리스트 (권장)
 
-* [ ] 기능/수정에 대한 설명이 포함되어 있다
-* [ ] 스크린샷/동영상(시각적 변화가 있을 경우)
-* [ ] 테스트/빌드 통과
+* [ ] 기능/수정에 대한 설명이 포함되어 있는가?
+* [ ] 스크린샷/동영상(시각적 변화가 있을 경우)이 있는가?
+* [ ] 테스트/빌드를 통과했는가?
 * [ ] 관련 이슈 연결(`#123`)
 * [ ] 셀프리뷰 후 린트/포맷 적용(`npm run lint`, `npm run format` 등 팀 스크립트 기준)
 
@@ -173,9 +173,3 @@ export const isProd = import.meta.env.PROD;
 ## 📄 라이선스
 
 사내/학습 프로젝트 성격에 맞게 추후 결정합니다. 오픈소스 공개 시에는 `MIT` 또는 `Apache-2.0`을 고려하세요.
-
----
-
-### 메모
-
-* 본 문서는 기존 레퍼런스를 참고해 **표현과 구성**을 재정리했습니다. 필요 시 팀 컨텍스트에 맞게 더 간결하게 다듬어도 좋습니다.

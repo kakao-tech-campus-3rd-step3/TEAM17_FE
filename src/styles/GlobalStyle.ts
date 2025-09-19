@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 import 'pretendard/dist/web/static/pretendard.css';
 
 export const GlobalStyle = createGlobalStyle`
@@ -8,8 +8,8 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0; 
     line-height: 1.5;
     font-family: 'Pretendard', sans-serif;
-    background-color: #fff;
-    color: #111;
+     background-color: ${({ theme }) => theme.colors.background.default};
+    color: ${({ theme }) => theme.colors.text.black};
   }
 
   img, picture { max-width: 100%; display: block; }

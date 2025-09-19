@@ -1,6 +1,7 @@
 import React from 'react';
 import { Eye, ShoppingCart } from 'lucide-react';
-import type { StarterPack } from '../../types/StartPackType';
+import { formatCurrency } from '@/utils/currency';
+import type { StarterPack } from '@/types/StarterPackType';
 import {
   Card,
   LikeButton,
@@ -29,7 +30,7 @@ import {
   PriceRow,
   PriceCol,
   CountText,
-} from './StartpackCard.styles';
+} from './StarterPackCard.styles';
 
 type Props = {
   pack: StarterPack;
@@ -38,7 +39,7 @@ type Props = {
   onOpen: (pack: StarterPack) => void;
 };
 
-const StartpackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen }) => {
+const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen }) => {
   return (
     <Card>
       <LikeButton
@@ -48,7 +49,7 @@ const StartpackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen })
         }}
         aria-label={isLiked ? '찜 취소' : '찜하기'}
       >
-        <HeartIcon liked={isLiked} />
+        <HeartIcon $liked />
       </LikeButton>
 
       {pack.discountRate > 0 && <DiscountBadge>{pack.discountRate}% 할인</DiscountBadge>}
@@ -88,9 +89,9 @@ const StartpackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen })
         <PriceRow>
           <PriceCol>
             {pack.originalPrice !== pack.salePrice && (
-              <PriceOriginal>{pack.originalPrice}</PriceOriginal>
+              <PriceOriginal>{formatCurrency(pack.originalPrice)}</PriceOriginal>
             )}
-            <PriceCurrent>{pack.salePrice}</PriceCurrent>
+            <PriceCurrent>{formatCurrency(pack.salePrice)}</PriceCurrent>
           </PriceCol>
           <CountText>{pack.products.length}개 구성</CountText>
         </PriceRow>
@@ -109,4 +110,4 @@ const StartpackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen })
   );
 };
 
-export default StartpackCard;
+export default StarterPackCard;

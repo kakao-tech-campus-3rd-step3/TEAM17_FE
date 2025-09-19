@@ -1,11 +1,32 @@
-import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import Banner from '@/pages/banner/Banner';
+import Category from '@/pages/category/Category';
+import StarterPreview from '@/components/home/starterpreview/StarterPreview';
+import StyleFeedPreview from '@/components/home/feedpreview/StyleFeedPreview';
 
-const Home = () => {
+const HomePage = () => {
   return (
-    <div>
-      <Link to="/starter-pack">스타터팩 목록으로 가기</Link>
-    </div>
+    <PageWrapper>
+      <Main>
+        <Banner />
+        <Category />
+        <StarterPreview />
+        <StyleFeedPreview />
+      </Main>
+    </PageWrapper>
   );
 };
 
-export default Home;
+const PageWrapper = styled.div`
+  min-height: 100vh;
+  background-color: #f9fafb;
+`;
+
+const Main = styled.main`
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+export default HomePage;
