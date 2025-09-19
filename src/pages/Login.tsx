@@ -65,13 +65,19 @@ export default function LoginForm() {
         <Title>로그인</Title>
         <Inputfield onSubmit={handleSubmit(onSubmit)}>
           <Label>이메일</Label>
-          <Input type="email" {...register('email')} placeholder="youremail@example.com" />
+          <Input
+            type="email"
+            autoComplete="username"
+            {...register('email')}
+            placeholder="youremail@example.com"
+          />
           {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
 
           <Label>비밀번호</Label>
           <InputWrapper>
             <Input
               type={showPassword ? 'text' : 'password'}
+              autoComplete="current-password"
               {...register('password')}
               placeholder="비밀번호를 입력해주세요"
             />
