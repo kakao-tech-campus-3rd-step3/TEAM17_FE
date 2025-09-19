@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import Banner from '@/pages/banner/Banner';
 import Category from '@/pages/category/Category';
 import StarterPreview from '@/components/home/starterpreview/StarterPreview';
-import FeedPreview from '@/components/home/feedpreview/FeedPreview';
+import StyleFeedPreview from '@/components/home/feedpreview/StyleFeedPreview';
 
 const HomePage = () => {
   return (
@@ -11,7 +11,7 @@ const HomePage = () => {
         <Banner />
         <Category />
         <StarterPreview />
-        <FeedPreview />
+        <StyleFeedPreview />
       </Main>
     </PageWrapper>
   );
