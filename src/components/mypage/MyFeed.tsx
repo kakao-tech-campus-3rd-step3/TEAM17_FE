@@ -11,6 +11,7 @@ import {
   Image,
 } from '@/components/mypage/MyFeed.style';
 import ReactionBar from '@/components/mypage/ReactionBar';
+import Content from '@/components/mypage/Content';
 import homeBaking from '@/assets/homeBaking.jpg';
 import example from '@/assets/example.jpg';
 
@@ -30,6 +31,7 @@ const MyFeed = () => {
             <Line />
             <Image src={example} />
             <ReactionBar />
+            <Content />
           </FeedContainer>
         ))}
       </FeedList>
