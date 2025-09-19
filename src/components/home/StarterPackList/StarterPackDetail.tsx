@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StarterPack } from '@/types/StarterPackType';
+import type { StarterPack } from '@/types/StarterPack';
 import {
   Backdrop,
   Shell,
@@ -54,7 +54,7 @@ const StarterPackDetail: React.FC<Props> = ({ pack, onClose }) => {
             </div>
             <div className="rating">
               <RatingStar />
-              <RatingValue>{pack.rating}</RatingValue>
+              <RatingValue>{pack.likes}</RatingValue>
               <span className="review">{pack.reviewCount}개 리뷰</span>
             </div>
           </PriceBox>

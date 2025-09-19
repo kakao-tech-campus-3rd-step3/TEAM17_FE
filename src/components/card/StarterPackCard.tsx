@@ -1,7 +1,7 @@
 import React from 'react';
 import { Eye, ShoppingCart } from 'lucide-react';
 import { formatCurrency } from '@/utils/currency';
-import type { StarterPack } from '@/types/StarterPackType';
+import type { StarterPack } from '@/types/StarterPack';
 import {
   Card,
   LikeButton,
@@ -35,7 +35,7 @@ import {
 type Props = {
   pack: StarterPack;
   isLiked: boolean;
-  onToggleLike: (id: string) => void;
+  onToggleLike: (id: number) => void;
   onOpen: (pack: StarterPack) => void;
 };
 
@@ -78,7 +78,7 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
           <CategoryPill>{pack.category}</CategoryPill>
           <Rating>
             <StarIcon />
-            <span style={{ fontWeight: 600 }}>{pack.rating}</span>
+            <span style={{ fontWeight: 600 }}>{pack.likes}</span>
             <span>({pack.reviewCount})</span>
           </Rating>
         </HeaderRow>

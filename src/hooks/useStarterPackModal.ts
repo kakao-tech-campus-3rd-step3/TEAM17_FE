@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { StarterPack } from '@/types/StarterPackType';
+import type { StarterPack } from '@/types/StarterPack';
 
 export function useStarterPackModal() {
   const [selectedPack, setSelectedPack] = useState<StarterPack | null>(null);
