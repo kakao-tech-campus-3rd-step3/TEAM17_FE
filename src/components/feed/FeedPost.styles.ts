@@ -86,6 +86,7 @@ export const LikesCount = styled.div`
   font-size: 14px;
   color: #262626;
   padding: 0 16px 8px;
+  text-align: left;
 `;
 
 export const Caption = styled.div`
