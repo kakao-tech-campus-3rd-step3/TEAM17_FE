@@ -35,6 +35,8 @@ export default function SignupStep2() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const navigate = useNavigate();
 
   const onSubmit = async (data: Step2Values) => {
@@ -78,7 +80,7 @@ export default function SignupStep2() {
             <Label>비밀번호</Label>
             <InputWrapper>
               <Input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 autoComplete="new-password"
                 {...register('password', { required: true })}
                 placeholder="비밀번호를 입력해주세요"
@@ -97,15 +99,15 @@ export default function SignupStep2() {
             <Label>비밀번호 확인</Label>
             <InputWrapper>
               <Input
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 autoComplete="new-password"
                 {...register('confirmPassword', { required: true })}
                 placeholder="비밀번호를 한번 더 입력해주세요"
               />
-              <ToggleButton type="button" onClick={() => setShowPassword((prev) => !prev)}>
+              <ToggleButton type="button" onClick={() => setShowConfirmPassword((prev) => !prev)}>
                 <img
-                  src={showPassword ? EyeOn : EyeOff}
-                  alt={showPassword ? '비밀번호 보기' : '비밀번호 숨기기'}
+                  src={showConfirmPassword ? EyeOn : EyeOff}
+                  alt={showConfirmPassword ? '비밀번호 보기' : '비밀번호 숨기기'}
                 />
               </ToggleButton>
             </InputWrapper>
