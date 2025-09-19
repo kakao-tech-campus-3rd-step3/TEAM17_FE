@@ -10,6 +10,7 @@ import {
   Line,
   Image,
 } from '@/components/mypage/MyFeed.style';
+import ReactionBar from '@/components/mypage/ReactionBar';
 import homeBaking from '@/assets/homeBaking.jpg';
 import example from '@/assets/example.jpg';
 
@@ -28,6 +29,7 @@ const MyFeed = () => {
             </TopContainer>
             <Line />
             <Image src={example} />
+            <ReactionBar />
           </FeedContainer>
         ))}
       </FeedList>
