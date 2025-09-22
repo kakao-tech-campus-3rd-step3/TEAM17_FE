@@ -2,7 +2,7 @@ import axiosInstance from './axiosInstance';
 import type { StarterPack, StarterPackResponse, StarterPackRequest } from '@/types/StarterPack';
 
 // 모든 스타터팩 목록 조회
-export const fetchStarterPacks = async (): Promise<StarterPackResponse> => {
+export const fetchStarterPack = async (): Promise<StarterPackResponse> => {
   try {
     const response = await axiosInstance.get<StarterPackResponse>('/api/packs');
     return response.data;
