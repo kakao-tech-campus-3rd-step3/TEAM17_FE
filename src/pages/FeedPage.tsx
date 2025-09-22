@@ -15,12 +15,18 @@ import {
   EmptyState,
 } from './FeedPage.styles';
 
+const FEED_CONSTANTS = {
+  INITIAL_PAGE: 1,
+  INITIAL_PAGE_SIZE: 10, // 일단 10개로 표시되도록 설정했는데, FEED 테스트하며 적절한 숫자 찾아볼 것!
+  LOAD_MORE_PAGE_SIZE: 10, // 이것도 위와 마찬가지!
+} as const;
+
 const FeedPage = () => {
   const [posts, setPosts] = useState<FeedPostType[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(FEED_CONSTANTS.INITIAL_PAGE);
   const [hasNext, setHasNext] = useState(false);
 
   useEffect(() => {
@@ -29,7 +35,10 @@ const FeedPage = () => {
         setLoading(true);
         setError(null);
 
-        const response: FeedResponse = await fetchFeedPosts(1, 10);
+        const response: FeedResponse = await fetchFeedPosts(
+          FEED_CONSTANTS.INITIAL_PAGE,
+          FEED_CONSTANTS.INITIAL_PAGE_SIZE
+        );
 
         setPosts(response.feeds);
         setCurrentPage(response.currentPage);
@@ -49,7 +58,10 @@ const FeedPage = () => {
     if (hasNext && !loadingMore) {
       try {
         setLoadingMore(true);
-        const response: FeedResponse = await fetchFeedPosts(currentPage + 1, 10);
+        const response: FeedResponse = await fetchFeedPosts(
+          currentPage + 1,
+          FEED_CONSTANTS.LOAD_MORE_PAGE_SIZE
+        );
 
         setPosts((prev) => [...prev, ...response.feeds]);
         setCurrentPage(response.currentPage);

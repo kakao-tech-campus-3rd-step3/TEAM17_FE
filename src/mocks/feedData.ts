@@ -1,5 +1,10 @@
 import type { FeedPost, FeedResponse, LikePostResponse } from '@/types/Feed';
 
+const FEED_API_DEFAULTS = {
+  DEFAULT_PAGE: 1,
+  DEFAULT_PAGE_SIZE: 10,
+} as const;
+
 // Mock 카테고리 데이터
 const mockCategories = [
   { categoryId: 1, categoryName: '패션' },
@@ -129,8 +134,8 @@ export const generateMockFeedResponse = (page: number = 1, limit: number = 10): 
 };
 
 export const fetchFeedPosts = async (
-  page: number = 1,
-  limit: number = 10
+  page: number = FEED_API_DEFAULTS.DEFAULT_PAGE,
+  limit: number = FEED_API_DEFAULTS.DEFAULT_PAGE_SIZE
 ): Promise<FeedResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 800));
   return generateMockFeedResponse(page, limit);
