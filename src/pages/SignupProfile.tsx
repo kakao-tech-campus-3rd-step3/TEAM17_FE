@@ -33,7 +33,7 @@ export default function SignupStep1() {
   });
 
   const onNext = (data: Step1Values) => {
-    localStorage.setItem('signupStep1', JSON.stringify(data));
+    sessionStorage.setItem('signupStep1', JSON.stringify(data));
     navigate('/signup/account');
   };
 
