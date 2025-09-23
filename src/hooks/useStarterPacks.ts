@@ -1,149 +1,87 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
+import { useAsync, useAsyncActions } from './useAsync';
 import {
-  fetchStarterPacks,
+  fetchStarterPack,
   fetchStarterPackById,
   createStarterPack,
   updateStarterPack,
   deleteStarterPack,
   toggleStarterPackLike,
 } from '@/api/starterPackApi';
-import type { StarterPack, StarterPackResponse, StarterPackRequest } from '@/types/StarterPack';
+import type { StarterPackRequest } from '@/types/StarterPack';
 
 // 모든 스타터팩 목록 관리하는 훅
-export const useStarterPacks = () => {
-  const [starterPacks, setStarterPacks] = useState<StarterPackResponse>({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const loadStarterPacks = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await fetchStarterPacks();
-      setStarterPacks(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '스타터팩을 불러오는데 실패했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadStarterPacks();
-  }, [loadStarterPacks]);
-
-  const refresh = useCallback(() => {
-    loadStarterPacks();
-  }, [loadStarterPacks]);
-
-  return {
-    starterPacks,
+export const useStarterPack = () => {
+  const {
+    data: starterPack,
     loading,
     error,
-    refresh,
+    execute,
+    reset,
+  } = useAsync(fetchStarterPack, {
+    initialData: {},
+    errorMessage: () => '스타터팩을 불러오는데 실패했습니다.',
+  });
+
+  return {
+    starterPack: starterPack || {},
+    loading,
+    error,
+    refresh: execute,
+    reset,
   };
 };
 
 // 단일 스타터팩 관리하는 훅
-export const useStarterPack = (id: number) => {
-  const [starterPack, setStarterPack] = useState<StarterPack | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const loadStarterPack = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await fetchStarterPackById(id);
-      setStarterPack(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '스타터팩을 불러오는데 실패했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    if (id) {
-      loadStarterPack();
-    }
-  }, [id, loadStarterPack]);
-
-  const refresh = useCallback(() => {
-    loadStarterPack();
-  }, [loadStarterPack]);
+export const useStarterPackById = (id: number) => {
+  const {
+    data: starterPack,
+    loading,
+    error,
+    execute,
+    reset,
+  } = useAsync(() => fetchStarterPackById(id), {
+    immediate: !!id,
+    errorMessage: () => '스타터팩을 불러오는데 실패했습니다.',
+  });
 
   return {
     starterPack,
     loading,
     error,
-    refresh,
+    refresh: execute,
+    reset,
   };
 };
 
 // 스타터팩 CRUD 작업 관리하는 훅
 export const useStarterPackActions = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { loading, error, execute, clearError } = useAsyncActions({
+    errorMessage: (error: unknown) =>
+      error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.',
+  });
 
-  const create = useCallback(async (data: StarterPackRequest) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const result = await createStarterPack(data);
-      return result;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '스타터팩 생성에 실패했습니다.';
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const create = async (data: StarterPackRequest) => {
+    const result = await execute(() => createStarterPack(data));
+    if (!result) throw new Error('스타터팩 생성에 실패했습니다.');
+    return result;
+  };
 
-  const update = useCallback(async (id: number, data: Partial<StarterPackRequest>) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const result = await updateStarterPack(id, data);
-      return result;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '스타터팩 수정에 실패했습니다.';
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const update = async (id: number, data: Partial<StarterPackRequest>) => {
+    const result = await execute(() => updateStarterPack(id, data));
+    if (!result) throw new Error('스타터팩 수정에 실패했습니다.');
+    return result;
+  };
 
-  const remove = useCallback(async (id: number) => {
-    try {
-      setLoading(true);
-      setError(null);
-      await deleteStarterPack(id);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '스타터팩 삭제에 실패했습니다.';
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const remove = async (id: number) => {
+    await execute(() => deleteStarterPack(id));
+  };
 
-  const toggleLike = useCallback(async (id: number) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const result = await toggleStarterPackLike(id);
-      return result;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '좋아요 처리에 실패했습니다.';
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const toggleLike = async (id: number) => {
+    const result = await execute(() => toggleStarterPackLike(id));
+    if (!result) throw new Error('좋아요 처리에 실패했습니다.');
+    return result;
+  };
 
   return {
     create,
@@ -152,16 +90,22 @@ export const useStarterPackActions = () => {
     toggleLike,
     loading,
     error,
+    clearError,
   };
 };
 
 // 스타터팩 좋아요 관리 훅
 export const useStarterPackLike = (id: number, initialLike: number = 0) => {
+  const { loading, error, execute } = useAsync(() => toggleStarterPackLike(id), {
+    immediate: false, // 수동 실행만
+    errorMessage: () => '좋아요 처리에 실패했습니다.',
+  });
+
+  // 로컬 상태로 낙관적 업데이트 관리
   const [likesCount, setLikesCount] = useState(initialLike);
   const [isLiked, setIsLiked] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  const handleToggleLike = useCallback(async () => {
+  const handleToggleLike = async () => {
     if (loading) return;
 
     // 낙관적 업데이트
@@ -170,26 +114,25 @@ export const useStarterPackLike = (id: number, initialLike: number = 0) => {
 
     setIsLiked(newIsLiked);
     setLikesCount(newLikesCount);
-    setLoading(true);
 
-    try {
-      const result = await toggleStarterPackLike(id);
+    // 서버 요청
+    const result = await execute();
+
+    if (result) {
       setLikesCount(result.likes);
       setIsLiked(result.likes > likesCount);
-    } catch (error) {
+    } else {
       // 실패 시 롤백
       setIsLiked(!newIsLiked);
       setLikesCount(likesCount);
-      console.error('Failed to toggle like:', error);
-    } finally {
-      setLoading(false);
     }
-  }, [id, isLiked, likesCount, loading]);
+  };
 
   return {
     likesCount,
     isLiked,
     loading,
+    error,
     toggleLike: handleToggleLike,
   };
 };
