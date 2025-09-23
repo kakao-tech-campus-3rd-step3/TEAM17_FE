@@ -17,8 +17,8 @@ import {
 
 const FEED_CONSTANTS = {
   INITIAL_PAGE: 1,
-  INITIAL_PAGE_SIZE: 10, // 일단 10개로 표시되도록 설정했는데, FEED 테스트하며 적절한 숫자 찾아볼 것!
-  LOAD_MORE_PAGE_SIZE: 10, // 이것도 위와 마찬가지!
+  INITIAL_PAGE_SIZE: 12,
+  LOAD_MORE_PAGE_SIZE: 12,
 } as const;
 
 const FeedPage = () => {
