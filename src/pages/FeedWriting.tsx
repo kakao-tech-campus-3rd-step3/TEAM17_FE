@@ -1,8 +1,17 @@
+import { TotalContainer, LayoutLine } from '@/components/feedwriting/LayoutLine.style';
+import ThumbnailImage from '@/components/feedwriting/ThumbnailImage';
 
 const FeedWriting = () => {
   return (
-    <div>FeedWriting</div>
-  )
-}
+    <>
+      <TotalContainer>
+        <LayoutLine>
+          
+          <ThumbnailImage />
+        </LayoutLine>
+      </TotalContainer>
+    </>
+  );
+};
 
-export default FeedWriting
+export default FeedWriting;
