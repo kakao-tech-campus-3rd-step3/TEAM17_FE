@@ -6,9 +6,22 @@ export const ImageUploadBox = styled.div`
   align-items: center;
   text-align: center;
 
-  width: 40%;
-  height: 25rem;
+  width: 30%;
+  height: 20rem;
   border: 2px solid ${({ theme }) => theme.colors.line.blue};
+  border-radius: 10%;
+  margin-bottom: 1.5rem;
+`;
 
-  margin-bottom: 2rem;
+export const ContentLinkUploadBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  width: 60%;
+  height: 20rem;
+  border: 2px solid ${({ theme }) => theme.colors.line.blue};
+  border-radius: 10%;
+  margin-bottom: 1rem;
 `;
