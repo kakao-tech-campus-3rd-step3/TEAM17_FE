@@ -5,9 +5,9 @@ import { HashTagBox } from '@/components/feedwriting/HashTag.style';
 const HashTag = () => {
   return (
     <ColumnWrapper>
-      <TitleStyle>설명 글 작성하기(본문내용)</TitleStyle>
+      <TitleStyle>관련 해시태그</TitleStyle>
       <HashTagBox>
-        <Desc>게시물에 대한 이야기를 적어주세요.</Desc>
+        <Desc>해시태그를 작성하고 싶다면<br/>클릭해주세요</Desc>
       </HashTagBox>
     </ColumnWrapper>
   );
