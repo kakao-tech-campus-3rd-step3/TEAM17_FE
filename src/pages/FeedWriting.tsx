@@ -8,6 +8,7 @@ import ThumbnailImage from '@/components/feedwriting/ThumbnailImage';
 import ContentWriting from '@/components/feedwriting/ContentWriting';
 import LinkWriting from '@/components/feedwriting/LinkWriting';
 import HobbyTag from '@/components/feedwriting/HobbyTag';
+import HashTag from '@/components/feedwriting/HashTag';
 const FeedWriting = () => {
   return (
     <>
@@ -20,7 +21,7 @@ const FeedWriting = () => {
           </ContentLinkWrapper>
           <TagWrapper>
             <HobbyTag />
-            <HobbyTag />
+            <HashTag/>
           </TagWrapper>
         </LayoutLine>
       </TotalContainer>
