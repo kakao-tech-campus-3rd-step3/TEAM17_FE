@@ -31,3 +31,12 @@ export const ContentLinkWrapper = styled.div`
   justify-content: space-between;
   width: 100%;
 `;
+
+export const TagWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 1rem;
+  width: 100%;
+`;
