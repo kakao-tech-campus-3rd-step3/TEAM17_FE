@@ -169,7 +169,7 @@ export const FeedTypeTag = styled.div<{ $feedType: string }>`
     }
   }};
   color: ${(props) => {
-    switch (props.feedType) {
+    switch (props.$feedType) {
       case 'INFO':
         return '#1976d2';
       case 'REVIEW':
