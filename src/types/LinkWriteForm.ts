@@ -3,6 +3,6 @@ export type ProductForm = {
     name: string;
     url: string;
     description: string;
-    image: string;
+    image: FileList | null;
   }[];
 };

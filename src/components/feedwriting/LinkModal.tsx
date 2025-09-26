@@ -28,7 +28,7 @@ interface ProductModalProps {
 const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const { register, control, handleSubmit } = useForm<ProductForm>({
     defaultValues: {
-      products: [{ name: '', url: '', description: '', image: '' }],
+      products: [{ name: '', url: '', description: '', image: null }], 
     },
   });
 
@@ -42,12 +42,12 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit }) =
   return (
     <Overlay>
       <Modal>
-        <Header>상품 링크 작성하기 </Header>
+        <Header>상품 링크 작성하기</Header>
         <RowWrapper>
           <Desc>- 상품명과 상품 링크는 "필수", 설명은 "선택"입니다.</Desc>
           <AddButton
             type="button"
-            onClick={() => append({ name: '', url: '', description: '', image: '' })}
+            onClick={() => append({ name: '', url: '', description: '', image: null })}
           >
             상품 추가
           </AddButton>
@@ -90,7 +90,11 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit }) =
 
                 <FormGroup>
                   <label>상품 이미지</label>
-                  <input placeholder="이미지 불러오기..." {...register(`products.${idx}.image`)} />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    {...register(`products.${idx}.image`)} 
+                  />
                 </FormGroup>
               </FieldSet>
             ))}
