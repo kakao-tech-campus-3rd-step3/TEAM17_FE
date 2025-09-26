@@ -2,24 +2,24 @@ import styled from 'styled-components';
 
 export const FeedDetailContainer = styled.div`
   background: white;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
   text-align: left;
 `;
 
 export const UserProfile = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
 `;
 
 export const ProfileImage = styled.img`
-  width: 48px;
-  height: 48px;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
-  margin-right: 12px;
+  margin-right: 0.75rem;
   object-fit: cover;
 `;
 
@@ -30,45 +30,45 @@ export const UserInfo = styled.div`
 
 export const UserName = styled.h3`
   margin: 0;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #333;
   text-align: left;
 `;
 
 export const UserBio = styled.p`
-  margin: 4px 0 0 0;
-  font-size: 14px;
+  margin: 0.25rem 0 0 0;
+  font-size: 0.875rem;
   color: #666;
   text-align: left;
 `;
 
 export const PostContent = styled.div`
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.5;
   color: #333;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   white-space: pre-line;
   text-align: left;
 `;
 
 export const PostDate = styled.div`
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #999;
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
   text-align: left;
 `;
 
 export const ImageCarousel = styled.div`
   position: relative;
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
 `;
 
 export const ImageContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 400px;
-  border-radius: 8px;
+  height: 25rem;
+  border-radius: 0.5rem;
   overflow: hidden;
 
   img {
@@ -93,15 +93,15 @@ export const ImageNavButton = styled.button<{ position: 'left' | 'right' }>`
   background: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;
-  width: 40px;
-  height: 40px;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   pointer-events: auto;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: bold;
 
   &:hover {
@@ -111,27 +111,27 @@ export const ImageNavButton = styled.button<{ position: 'left' | 'right' }>`
 
 export const ImageCounter = styled.div`
   position: absolute;
-  bottom: 12px;
-  right: 12px;
+  bottom: 0.75rem;
+  right: 0.75rem;
   background: rgba(0, 0, 0, 0.7);
   color: white;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
 `;
 
 export const EngagementSection = styled.div`
   display: flex;
-  gap: 24px;
-  margin-bottom: 16px;
-  padding: 12px 0;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 0;
   border-bottom: 1px solid #eee;
 `;
 
 export const EngagementItem = styled.div`
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
   cursor: pointer;
   transition: opacity 0.2s;
 
@@ -141,11 +141,11 @@ export const EngagementItem = styled.div`
 `;
 
 export const EngagementIcon = styled.span`
-  font-size: 18px;
+  font-size: 1.125rem;
 `;
 
 export const EngagementCount = styled.span`
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #666;
   font-weight: 500;
 `;
@@ -153,28 +153,28 @@ export const EngagementCount = styled.span`
 export const HashtagSection = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 20px;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
 `;
 
 export const Hashtag = styled.span`
   background: #f0f0f0;
   color: #007bff;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 14px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 500;
 `;
 
 export const ProductSection = styled.div`
   background: #f8f9fa;
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: 0.5rem;
+  padding: 1rem;
 `;
 
 export const ProductTitle = styled.h4`
-  margin: 0 0 16px 0;
-  font-size: 16px;
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
   font-weight: 600;
   color: #333;
   text-align: left;
@@ -184,7 +184,7 @@ export const ProductItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 0.75rem 0;
   border-bottom: 1px solid #e9ecef;
 
   &:last-child {
@@ -197,15 +197,15 @@ export const ProductInfo = styled.div`
 `;
 
 export const ProductName = styled.div`
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: #333;
-  margin-bottom: 4px;
+  margin-bottom: 0.25rem;
   text-align: left;
 `;
 
 export const ProductDescription = styled.div`
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #666;
   line-height: 1.4;
   text-align: left;
@@ -215,9 +215,9 @@ export const ProductLink = styled.button`
   background: #007bff;
   color: white;
   border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 12px;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
   cursor: pointer;
   transition: background-color 0.2s;
 
@@ -230,13 +230,13 @@ export const MoreProductsButton = styled.button`
   background: none;
   border: none;
   color: #666;
-  font-size: 14px;
+  font-size: 0.875rem;
   cursor: pointer;
-  padding: 8px 0;
-  margin-top: 8px;
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 0.25rem;
   text-align: left;
 
   &:hover {
