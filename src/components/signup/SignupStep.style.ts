@@ -103,12 +103,12 @@ export const NextButton = styled.button`
   border: none;
   border-radius: 8px;
   color: white;
-  background-color: ${({ theme }) => theme.colors.button.default};
+  background-color: ${({ theme }) => theme.colors.orange.primary};
   cursor: pointer;
   transition: background-color 0.2s ease;
 
   &:disabled {
-    background-color: ${({ theme }) => theme.colors.button.disabled};
+    background-color: ${({ theme }) => theme.colors.orange.light};
     cursor: not-allowed;
   }
 `;
