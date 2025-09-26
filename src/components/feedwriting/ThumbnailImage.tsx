@@ -18,6 +18,8 @@ const ThumbnailImage = () => {
 
     const urls = fileArray.map((file) => URL.createObjectURL(file));
     setPreviews(urls);
+
+    e.currentTarget.value='';
   };
 
   useEffect(() => {
