@@ -32,12 +32,15 @@ export const tokens = {
     line: {
       primary: '#EB6B18',
       blue: '#174A7E',
+      disabled: 'rgba(23, 74, 126, 0.5)',
       gray: '#E5E7EB',
       lightGray: '#F0F0F0',
     },
 
     background: {
       default: '#FFFFFF',
+      gray2: '#D9D9D9',
+      blue: '#174A7E',
       gray: '#F5F5F5',
       lightGray: '#FAF9F6',
       card: '#FFFFFF',
