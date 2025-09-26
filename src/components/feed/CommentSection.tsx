@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Heart, Send, Reply as ReplyIcon, Flag } from 'lucide-react';
-import type { Comment, Reply, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
+import type { Comment, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import { formatKoreanDate } from '@/utils/date';
 import {
   CommentContainer,

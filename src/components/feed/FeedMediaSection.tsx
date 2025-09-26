@@ -18,8 +18,8 @@ import {
 
 interface FeedMediaSectionProps {
   feed: FeedDetail;
-  onLike: (feedId: number, isLiked: boolean, likeCount: number) => void;
-  onBookmark: (feedId: number, isBookmarked: boolean, bookmarkCount: number) => void;
+  onLike: (isLiked: boolean, likeCount: number) => void;
+  onBookmark: (isBookmarked: boolean, bookmarkCount: number) => void;
 }
 
 const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({ feed, onLike, onBookmark }) => {
@@ -37,12 +37,11 @@ const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({ feed, onLike, onBoo
   };
 
   const handleLike = () => {
-    onLike(feed.feedId, !feed.isLiked, feed.isLiked ? feed.likeCount - 1 : feed.likeCount + 1);
+    onLike(!feed.isLiked, feed.isLiked ? feed.likeCount - 1 : feed.likeCount + 1);
   };
 
   const handleBookmark = () => {
     onBookmark(
-      feed.feedId,
       !feed.isBookmarked,
       feed.isBookmarked ? feed.bookmarkCount - 1 : feed.bookmarkCount + 1
     );

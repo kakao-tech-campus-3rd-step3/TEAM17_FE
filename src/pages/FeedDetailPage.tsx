@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import FeedMediaSection from '@/components/feed/FeedMediaSection';
 import FeedInfoSection from '@/components/feed/FeedInfoSection';
 import CommentSection from '@/components/feed/CommentSection';
-import type { FeedDetail, Comment, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
+import type { FeedDetail, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import {
   FeedDetailPageContainer,
   PageHeader,
@@ -152,13 +152,13 @@ const FeedDetailPage: React.FC = () => {
     }
   }, [id]);
 
-  const handleLike = (feedId: number, isLiked: boolean, likeCount: number) => {
+  const handleLike = (isLiked: boolean, likeCount: number) => {
     if (feed) {
       setFeed((prev) => (prev ? { ...prev, isLiked, likeCount } : null));
     }
   };
 
-  const handleBookmark = (feedId: number, isBookmarked: boolean, bookmarkCount: number) => {
+  const handleBookmark = (isBookmarked: boolean, bookmarkCount: number) => {
     if (feed) {
       setFeed((prev) => (prev ? { ...prev, isBookmarked, bookmarkCount } : null));
     }

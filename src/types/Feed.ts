@@ -95,7 +95,8 @@ export interface CommentResponse {
 }
 
 // 피드 상세보기용 확장 타입
-export interface FeedDetail extends FeedPost {
+export interface FeedDetail extends Omit<FeedPost, 'imageUrl'> {
+  imageUrl: string[]; // 캐러셀을 위해 배열로 오버라이드
   comments: Comment[];
   commentCount: number;
   bookmarkCount: number;
