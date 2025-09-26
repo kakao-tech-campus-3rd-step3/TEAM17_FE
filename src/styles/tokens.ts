@@ -19,6 +19,7 @@ export const tokens = {
     line: {
       primary: '#EB6B18',
       blue: '#174A7E',
+      disabled: 'rgba(23, 74, 126, 0.5)',
       gray: '#E5E7EB',
     },
 
