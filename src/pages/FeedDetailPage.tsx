@@ -263,6 +263,7 @@ const FeedDetailPage: React.FC = () => {
         <BottomSection>
           <CommentSection
             comments={feed.comments}
+            feedId={feed.feedId}
             onAddComment={handleAddComment}
             onAddReply={handleAddReply}
             onLikeComment={handleLikeComment}

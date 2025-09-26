@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Heart, Send, Reply as ReplyIcon, Flag } from 'lucide-react';
 import type { Comment, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import { formatKoreanDate } from '@/utils/date';
+import { useCommentActions } from '@/hooks/useCommentActions';
 import {
   CommentContainer,
   CommentHeader,
@@ -41,6 +42,7 @@ import {
 
 interface CommentSectionProps {
   comments: Comment[];
+  feedId: number;
   onAddComment: (comment: CreateCommentRequest) => void;
   onAddReply: (reply: CreateReplyRequest) => void;
   onLikeComment: (commentId: number, isLiked: boolean, likeCount: number) => void;
@@ -49,46 +51,32 @@ interface CommentSectionProps {
 
 const CommentSection: React.FC<CommentSectionProps> = ({
   comments,
+  feedId,
   onAddComment,
   onAddReply,
   onLikeComment,
   onLikeReply,
 }) => {
-  const [newComment, setNewComment] = useState('');
-  const [replyingTo, setReplyingTo] = useState<number | null>(null);
-  const [replyContent, setReplyContent] = useState('');
-  const [showReplies, setShowReplies] = useState<{ [key: number]: boolean }>({});
-
-  const handleSubmitComment = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newComment.trim()) {
-      onAddComment({ feedId: 1, content: newComment.trim() }); // feedId는 실제로는 props에서 받아야 함
-      setNewComment('');
-    }
-  };
-
-  const handleSubmitReply = (commentId: number) => {
-    if (replyContent.trim()) {
-      onAddReply({ commentId, content: replyContent.trim() });
-      setReplyContent('');
-      setReplyingTo(null);
-    }
-  };
-
-  const handleLikeComment = (commentId: number, isLiked: boolean, likeCount: number) => {
-    onLikeComment(commentId, !isLiked, isLiked ? likeCount - 1 : likeCount + 1);
-  };
-
-  const handleLikeReply = (replyId: number, isLiked: boolean, likeCount: number) => {
-    onLikeReply(replyId, !isLiked, isLiked ? likeCount - 1 : likeCount + 1);
-  };
-
-  const toggleReplies = (commentId: number) => {
-    setShowReplies((prev) => ({
-      ...prev,
-      [commentId]: !prev[commentId],
-    }));
-  };
+  const {
+    newComment,
+    replyingTo,
+    replyContent,
+    showReplies,
+    setNewComment,
+    setReplyContent,
+    handleSubmitComment,
+    handleSubmitReply,
+    handleLikeComment,
+    handleLikeReply,
+    toggleReplies,
+    startReplying,
+  } = useCommentActions({
+    feedId,
+    onAddComment,
+    onAddReply,
+    onLikeComment,
+    onLikeReply,
+  });
 
   return (
     <CommentContainer>
@@ -130,7 +118,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                   <Heart size={14} fill={comment.isLiked ? 'currentColor' : 'none'} />
                 </CommentAction>
                 <CommentLikeCount>{comment.likeCount}</CommentLikeCount>
-                <ReplyButton onClick={() => setReplyingTo(comment.commentId)}>
+                <ReplyButton onClick={() => startReplying(comment.commentId)}>
                   <ReplyIcon size={12} style={{ marginRight: '4px' }} />
                   답글 달기
                 </ReplyButton>
@@ -177,7 +165,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                               <Heart size={12} fill={reply.isLiked ? 'currentColor' : 'none'} />
                             </ReplyAction>
                             <ReplyLikeCount>{reply.likeCount}</ReplyLikeCount>
-                            <ReplyButton onClick={() => setReplyingTo(comment.commentId)}>
+                            <ReplyButton onClick={() => startReplying(comment.commentId)}>
                               <ReplyIcon size={10} style={{ marginRight: '4px' }} />
                               답글 달기
                             </ReplyButton>
