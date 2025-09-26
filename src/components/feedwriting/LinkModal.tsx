@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 
 import {
@@ -23,19 +23,24 @@ interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: ProductForm) => void;
+  defaultValues: ProductForm;
 }
 
-const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit }) => {
-  const { register, control, handleSubmit } = useForm<ProductForm>({
-    defaultValues: {
-      products: [{ name: '', url: '', description: '', image: null }], 
-    },
+const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, defaultValues }) => {
+  const { register, control, handleSubmit, reset } = useForm<ProductForm>({
+    defaultValues,
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'products',
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      reset(defaultValues);
+    }
+  }, [isOpen, defaultValues, reset]);
 
   if (!isOpen) return null;
 
@@ -90,11 +95,7 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit }) =
 
                 <FormGroup>
                   <label>상품 이미지</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    {...register(`products.${idx}.image`)} 
-                  />
+                  <input type="file" accept="image/*" {...register(`products.${idx}.image`)} />
                 </FormGroup>
               </FieldSet>
             ))}
