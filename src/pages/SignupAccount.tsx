@@ -47,6 +47,9 @@ export default function SignupStep2() {
         email: data.email,
         password: data.password,
         name: step1.name,
+        birthDate: step1.birthDate,
+        gender: step1.gender.toUpperCase(),
+        phoneNumber: step1.telephone, 
       };
 
       const res = await signup(finalData);
