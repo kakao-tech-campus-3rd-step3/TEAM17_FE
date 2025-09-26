@@ -139,7 +139,9 @@ export const CommentAction = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: ${tokens.colors.feed.like};
   transition: all 0.2s;
 
@@ -219,11 +221,15 @@ export const ReplyAction = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 12px;
-  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${tokens.colors.feed.like};
+  transition: all 0.2s;
 
   &:hover {
-    opacity: 0.7;
+    color: ${tokens.colors.orange.hover};
+    transform: scale(1.1);
   }
 `;
 
@@ -239,6 +245,8 @@ export const ReplyButton = styled.button`
   color: ${tokens.colors.feed.comment};
   font-size: 12px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
   transition: all 0.2s;
 
   &:hover {
@@ -252,6 +260,8 @@ export const ReportButton = styled.button`
   color: ${tokens.colors.text.lightGray};
   font-size: 12px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
   transition: all 0.2s;
 
   &:hover {

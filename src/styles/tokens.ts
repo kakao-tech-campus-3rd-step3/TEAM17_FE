@@ -7,7 +7,7 @@ export const tokens = {
       lighter: '#FFB366', // 더 밝은 주황색
       dark: '#CC4F00', // 어두운 주황색
       darker: '#B34400', // 더 어두운 주황색
-      muted: '#FFE5D9', // 연한 주황색
+      muted: '#FFF5F0', // 연한 주황색 (더 연하게)
       hover: '#E55A00',
       active: '#B34400', // 활성 상태
     },

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Heart, MessageCircle, Bookmark, Share2 } from 'lucide-react';
 import type { FeedDetail } from '@/types/Feed';
 import {
   MediaContainer,
@@ -76,19 +77,27 @@ const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({ feed, onLike, onBoo
       {/* 좋아요, 댓글, 북마크, 공유 버튼 */}
       <EngagementSection>
         <EngagementItem onClick={handleLike}>
-          <EngagementIcon>❤️</EngagementIcon>
+          <EngagementIcon>
+            <Heart size={18} fill={feed.isLiked ? 'currentColor' : 'none'} />
+          </EngagementIcon>
           <EngagementCount>{feed.likeCount}</EngagementCount>
         </EngagementItem>
         <EngagementItem>
-          <EngagementIcon>💬</EngagementIcon>
+          <EngagementIcon>
+            <MessageCircle size={18} />
+          </EngagementIcon>
           <EngagementCount>{feed.commentCount}</EngagementCount>
         </EngagementItem>
         <EngagementItem onClick={handleBookmark}>
-          <EngagementIcon>🔖</EngagementIcon>
+          <EngagementIcon>
+            <Bookmark size={18} fill={feed.isBookmarked ? 'currentColor' : 'none'} />
+          </EngagementIcon>
           <EngagementCount>{feed.bookmarkCount}</EngagementCount>
         </EngagementItem>
         <EngagementItem>
-          <EngagementIcon>📤</EngagementIcon>
+          <EngagementIcon>
+            <Share2 size={18} />
+          </EngagementIcon>
           <EngagementCount>공유</EngagementCount>
         </EngagementItem>
       </EngagementSection>

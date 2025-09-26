@@ -93,7 +93,9 @@ export const EngagementItem = styled.div`
 `;
 
 export const EngagementIcon = styled.span`
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: ${tokens.colors.feed.like};
 `;
 

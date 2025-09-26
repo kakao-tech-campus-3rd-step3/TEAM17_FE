@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Heart, Send, Reply as ReplyIcon, Flag } from 'lucide-react';
 import type { Comment, Reply, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import {
   CommentContainer,
@@ -109,7 +110,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="댓글 작성하기"
         />
-        <CommentSubmitButton type="submit">✈️</CommentSubmitButton>
+        <CommentSubmitButton type="submit">
+          <Send size={16} />
+        </CommentSubmitButton>
       </CommentInputSection>
 
       {/* 댓글 목록 */}
@@ -131,13 +134,17 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                     handleLikeComment(comment.commentId, comment.isLiked, comment.likeCount)
                   }
                 >
-                  ❤️
+                  <Heart size={14} fill={comment.isLiked ? 'currentColor' : 'none'} />
                 </CommentAction>
                 <CommentLikeCount>{comment.likeCount}</CommentLikeCount>
                 <ReplyButton onClick={() => setReplyingTo(comment.commentId)}>
+                  <ReplyIcon size={12} style={{ marginRight: '4px' }} />
                   답글 달기
                 </ReplyButton>
-                <ReportButton>신고</ReportButton>
+                <ReportButton>
+                  <Flag size={12} style={{ marginRight: '4px' }} />
+                  신고
+                </ReportButton>
               </CommentActions>
             </CommentMeta>
 
@@ -174,13 +181,17 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                                 handleLikeReply(reply.replyId, reply.isLiked, reply.likeCount)
                               }
                             >
-                              ❤️
+                              <Heart size={12} fill={reply.isLiked ? 'currentColor' : 'none'} />
                             </ReplyAction>
                             <ReplyLikeCount>{reply.likeCount}</ReplyLikeCount>
                             <ReplyButton onClick={() => setReplyingTo(comment.commentId)}>
+                              <ReplyIcon size={10} style={{ marginRight: '4px' }} />
                               답글 달기
                             </ReplyButton>
-                            <ReportButton>신고</ReportButton>
+                            <ReportButton>
+                              <Flag size={10} style={{ marginRight: '4px' }} />
+                              신고
+                            </ReportButton>
                           </ReplyActions>
                         </ReplyMeta>
                       </ReplyItem>
@@ -199,7 +210,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                   placeholder="답글 작성하기"
                 />
                 <ReplySubmitButton onClick={() => handleSubmitReply(comment.commentId)}>
-                  ✈️
+                  <Send size={14} />
                 </ReplySubmitButton>
               </ReplyInputSection>
             )}
