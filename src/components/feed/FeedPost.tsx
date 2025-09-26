@@ -1,5 +1,6 @@
 import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
 import { useState, useCallback, memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { FeedPost as FeedPostType } from '@/types/Feed';
 import { likePost } from '@/mocks/feedData';
 import {
@@ -29,6 +30,7 @@ interface FeedPostProps {
 }
 
 const FeedPost = ({ post, onLike }: FeedPostProps) => {
+  const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,6 +70,10 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
     }
   }, [isLiked, likeCount, isLoading, post.feedId, onLike]);
 
+  const handlePostClick = useCallback(() => {
+    navigate(`/feed/${post.feedId}`);
+  }, [navigate, post.feedId]);
+
   const formatTimeAgo = useCallback((dateString: string): string => {
     const now = new Date();
     const postDate = new Date(dateString);
@@ -105,7 +111,12 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
         </MoreButton>
       </PostHeader>
 
-      <PostImage src={post.imageUrl} alt={`Post by ${post.author.name}`} />
+      <PostImage
+        src={post.imageUrl}
+        alt={`Post by ${post.author.name}`}
+        onClick={handlePostClick}
+        style={{ cursor: 'pointer' }}
+      />
 
       <PostActions>
         <ActionButton
@@ -121,7 +132,7 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
             color={isLiked ? '#ef4444' : '#000'}
           />
         </ActionButton>
-        <ActionButton type="button" aria-label="댓글 달기">
+        <ActionButton type="button" aria-label="댓글 달기" onClick={handlePostClick}>
           <MessageSquare size={24} />
         </ActionButton>
         <ActionButton type="button" aria-label="공유하기">

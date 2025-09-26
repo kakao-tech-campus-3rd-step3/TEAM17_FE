@@ -50,3 +50,55 @@ export interface LikePostResponse {
   likeCount: number;
   isLiked: boolean;
 }
+
+// 댓글 타입 정의
+export interface Comment {
+  commentId: number;
+  author: {
+    userId: number;
+    name: string;
+    profileImageUrl: string;
+  };
+  content: string;
+  createdAt: string;
+  likeCount: number;
+  isLiked: boolean;
+  replies?: Reply[];
+}
+
+export interface Reply {
+  replyId: number;
+  author: {
+    userId: number;
+    name: string;
+    profileImageUrl: string;
+  };
+  content: string;
+  createdAt: string;
+  likeCount: number;
+  isLiked: boolean;
+}
+
+export interface CreateCommentRequest {
+  feedId: number;
+  content: string;
+}
+
+export interface CreateReplyRequest {
+  commentId: number;
+  content: string;
+}
+
+export interface CommentResponse {
+  comments: Comment[];
+  totalCount: number;
+}
+
+// 피드 상세보기용 확장 타입
+export interface FeedDetail extends FeedPost {
+  comments: Comment[];
+  commentCount: number;
+  bookmarkCount: number;
+  isBookmarked: boolean;
+  hashtags: string[];
+}
