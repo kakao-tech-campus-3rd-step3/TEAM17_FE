@@ -26,6 +26,7 @@ export const tokens = {
     background: {
       default: '#FFFFFF',
       gray: '#D9D9D9',
+      blue: '#174A7E',
     },
 
     button:{

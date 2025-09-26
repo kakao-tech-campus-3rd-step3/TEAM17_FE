@@ -14,6 +14,8 @@ import {
   FormGroup,
   AddButton,
   Footer,
+  CancelButton,
+  SubmitButton,
 } from '@/components/feedwriting/LinkModal.style';
 import type { ProductForm } from '@/types/LinkWriteForm';
 
@@ -93,10 +95,10 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit }) =
               </FieldSet>
             ))}
             <Footer>
-              <button type="button" onClick={onClose}>
+              <CancelButton type="button" onClick={onClose}>
                 취소
-              </button>
-              <button type="submit">작성 완료</button>
+              </CancelButton>
+              <SubmitButton type="submit">작성 완료</SubmitButton>
             </Footer>
           </form>
         </FormWrapper>

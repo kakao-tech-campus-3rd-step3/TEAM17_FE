@@ -72,13 +72,13 @@ export const FieldSet = styled.fieldset`
 
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1rem;
 
   input,
   textarea {
     display: block;
     width: 100%;
-    padding: 8px;
+    padding: 0.3rem;
     border: 1px solid ${tokens.colors.line.disabled};
     border-radius: 6px;
   }
@@ -122,19 +122,40 @@ export const FormGroup = styled.div`
     font-size: 0.9rem;
 
     &::placeholder {
-      color: ${tokens.colors.text.blue.disabled}; /* placeholder 색상 */
+      color: ${tokens.colors.text.blue.disabled};
       font-size: 0.85rem;
     }
   }
 
   textarea {
-    min-height: 60px;
+    min-height: 4rem;
     resize: vertical;
   }
 `;
 export const Footer = styled.div`
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 1rem;
+  margin-top: 1rem;
+`;
+
+export const CancelButton = styled.button`
+  width: 5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 5px;
+  background-color: ${tokens.colors.background.default};
+  color: ${tokens.colors.text.blue.default};
+  border: 1px solid ${tokens.colors.line.blue};
+`;
+
+export const SubmitButton = styled.button`
+  width: 8rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 5px;
+  background-color: ${tokens.colors.background.blue};
+  color: ${tokens.colors.text.white};
 `;
