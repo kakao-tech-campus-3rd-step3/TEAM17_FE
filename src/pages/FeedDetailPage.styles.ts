@@ -9,7 +9,7 @@ export const FeedDetailPageContainer = styled.div`
 export const PageHeader = styled.div`
   display: flex;
   align-items: center;
-  padding: 16px 20px;
+  padding: 1rem 1.25rem;
   background: ${tokens.colors.background.card};
   border-bottom: 1px solid ${tokens.colors.line.lightGray};
   position: sticky;
@@ -20,10 +20,10 @@ export const PageHeader = styled.div`
 export const BackButton = styled.button`
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 1.25rem;
   cursor: pointer;
-  margin-right: 16px;
-  padding: 8px;
+  margin-right: 1rem;
+  padding: 0.5rem;
   border-radius: 50%;
   transition: all 0.2s;
   color: ${tokens.colors.text.black};
@@ -36,7 +36,7 @@ export const BackButton = styled.button`
 
 export const PageTitle = styled.h1`
   margin: 0;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
   color: ${tokens.colors.text.black};
   flex: 1;
@@ -44,21 +44,21 @@ export const PageTitle = styled.h1`
 `;
 
 export const ContentContainer = styled.div`
-  max-width: 1200px;
+  max-width: 75rem;
   margin: 0 auto;
-  padding: 20px;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.25rem;
   text-align: left;
   align-items: flex-start;
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - 5rem);
 `;
 
 export const TopSection = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  gap: 1.25rem;
   width: 100%;
 `;
 
@@ -84,14 +84,14 @@ export const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 400px;
+  height: 25rem;
 `;
 
 export const LoadingSpinner = styled.div`
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #007bff;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0.25rem solid #f3f3f3;
+  border-top: 0.25rem solid #007bff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 
@@ -109,15 +109,15 @@ export const ErrorContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 400px;
+  height: 25rem;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
 `;
 
 export const ErrorMessage = styled.p`
   color: #666;
-  font-size: 16px;
+  font-size: 1rem;
   text-align: left;
   margin: 0;
 `;
