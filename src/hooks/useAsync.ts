@@ -59,15 +59,12 @@ export function useAsync<T, Args extends unknown[] = []>(
   const abortControllerRef = useRef<AbortController | null>(null);
   const requestIdRef = useRef(0);
 
-  // 비동기 함수 실행
   const execute = useCallback(
     async (...args: Args): Promise<T | null> => {
-      // 이전 요청 취소
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
 
-      // 새로운 AbortController 생성
       const abortController = new AbortController();
       abortControllerRef.current = abortController;
 
@@ -78,10 +75,8 @@ export function useAsync<T, Args extends unknown[] = []>(
         setLoading(true);
         setError(null);
 
-        // asyncFunction이 AbortSignal을 지원하는지 확인
         const result = await asyncFunction(...args);
 
-        // 요청이 취소되었거나 더 최신 요청이 있으면 무시
         if (abortController.signal.aborted || currentRequestId !== requestIdRef.current) {
           return null;
         }
@@ -90,7 +85,6 @@ export function useAsync<T, Args extends unknown[] = []>(
         onSuccess?.(result);
         return result;
       } catch (err) {
-        // 요청이 취소되었거나 더 최신 요청이 있으면 무시
         if (abortController.signal.aborted || currentRequestId !== requestIdRef.current) {
           return null;
         }
@@ -100,7 +94,6 @@ export function useAsync<T, Args extends unknown[] = []>(
         onError?.(errorMsg);
         return null;
       } finally {
-        // 현재 요청이 최신 요청인 경우에만 로딩 상태 해제
         if (currentRequestId === requestIdRef.current) {
           setLoading(false);
         }
@@ -109,9 +102,7 @@ export function useAsync<T, Args extends unknown[] = []>(
     [asyncFunction, errorMessage, onSuccess, onError]
   );
 
-  // 상태 리셋
   const reset = useCallback(() => {
-    // 진행 중인 요청 취소
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
@@ -121,7 +112,6 @@ export function useAsync<T, Args extends unknown[] = []>(
     setError(null);
   }, [initialData]);
 
-  // 컴포넌트 언마운트 시 취소
   useEffect(() => {
     return () => {
       if (abortControllerRef.current) {
@@ -130,11 +120,8 @@ export function useAsync<T, Args extends unknown[] = []>(
     };
   }, []);
 
-  // immediate가 true면 자동 실행
   useEffect(() => {
     if (immediate) {
-      // immediate 실행 시에는 인자 없이 호출
-      // 타입 레벨에서 인자 없는 함수인지 확인
       void execute(...([] as unknown as Args));
     }
   }, [immediate, execute]);
@@ -150,24 +137,16 @@ export function useAsync<T, Args extends unknown[] = []>(
   };
 }
 
-// CRUD 액션을 위한 useAsyncActions 훅
 export interface UseAsyncActionsOptions {
-  // 에러 메시지 변환 함수
   errorMessage?: (error: unknown) => string;
-  // 성공 시 콜백
   onSuccess?: (action: string, data?: unknown) => void;
-  // 실패 시 콜백
   onError?: (action: string, error: string) => void;
 }
 
 export interface UseAsyncActionsReturn {
-  // 로딩 상태
   loading: boolean;
-  // 에러 상태
   error: string | null;
-  // 액션 실행 함수
   execute: <T>(action: () => Promise<T>) => Promise<T | null>;
-  // 에러 리셋
   clearError: () => void;
 }
 

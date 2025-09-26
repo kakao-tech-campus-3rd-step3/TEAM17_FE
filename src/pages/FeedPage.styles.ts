@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 export const FeedContainer = styled.div`
-  max-width: 1200px;
+  max-width: 75rem;
   margin: 0 auto;
-  padding: 20px;
+  padding: 1.25rem;
   background-color: #fafafa;
   min-height: 100vh;
 `;
@@ -11,15 +11,15 @@ export const FeedContainer = styled.div`
 export const FeedHeader = styled.div`
   background-color: #ffffff;
   border-bottom: 1px solid #dbdbdb;
-  padding: 16px 20px;
-  margin: -20px -20px 20px -20px;
+  padding: 1rem 1.25rem;
+  margin: -1.25rem -1.25rem 1.25rem -1.25rem;
   position: sticky;
   top: 0;
   z-index: 10;
 `;
 
 export const FeedTitle = styled.h1`
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #262626;
   margin: 0;
@@ -29,18 +29,18 @@ export const FeedTitle = styled.h1`
 export const FeedGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  max-width: 1200px;
+  gap: 1.25rem;
+  max-width: 75rem;
   margin: 0 auto;
 
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
+    gap: 1.125rem;
   }
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 1rem;
   }
 `;
 
@@ -48,14 +48,14 @@ export const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 60px 20px;
+  padding: 3.75rem 1.25rem;
 `;
 
 export const LoadingSpinner = styled.div`
-  width: 40px;
-  height: 40px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #0095f6;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0.1875rem solid #f3f3f3;
+  border-top: 0.1875rem solid #0095f6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 
@@ -73,27 +73,27 @@ export const ErrorContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 60px 20px;
+  padding: 3.75rem 1.25rem;
   text-align: center;
 `;
 
 export const ErrorMessage = styled.p`
   color: #8e8e8e;
-  font-size: 16px;
+  font-size: 1rem;
   margin: 0;
 `;
 
 export const LoadMoreButton = styled.button`
   width: 100%;
-  padding: 12px;
+  padding: 0.75rem;
   background-color: #0095f6;
   color: #ffffff;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 1.25rem;
   transition: background-color 0.2s ease;
 
   &:hover:not(:disabled) {
@@ -110,12 +110,12 @@ export const EmptyState = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 60px 20px;
+  padding: 3.75rem 1.25rem;
   text-align: center;
 
   p {
     color: #8e8e8e;
-    font-size: 16px;
+    font-size: 1rem;
     margin: 0;
   }
 `;
