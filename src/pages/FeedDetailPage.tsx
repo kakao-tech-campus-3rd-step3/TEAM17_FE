@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import FeedMediaSection from '@/components/feed/FeedMediaSection';
 import FeedInfoSection from '@/components/feed/FeedInfoSection';
 import CommentSection from '@/components/comment/CommentSection';
-import type { FeedDetail, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
-import { MOCK_FEED_DETAIL } from '@/mocks/feedData';
+import type { CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
+import { useFeedDetail } from '@/hooks/useFeedDetail';
 import {
   FeedDetailPageContainer,
   PageHeader,
@@ -24,40 +24,14 @@ import {
 const FeedDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [feed, setFeed] = useState<FeedDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const loadFeedDetail = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        setFeed(MOCK_FEED_DETAIL);
-      } catch (err) {
-        setError('피드 상세 정보를 불러오는데 실패했습니다.');
-        console.error('Failed to load feed detail:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) {
-      loadFeedDetail();
-    }
-  }, [id]);
+  const { feed, loading, error, updateFeed } = useFeedDetail(id);
 
   const handleLike = (isLiked: boolean, likeCount: number) => {
-    if (feed) {
-      setFeed((prev) => (prev ? { ...prev, isLiked, likeCount } : null));
-    }
+    updateFeed({ isLiked, likeCount });
   };
 
   const handleBookmark = (isBookmarked: boolean, bookmarkCount: number) => {
-    if (feed) {
-      setFeed((prev) => (prev ? { ...prev, isBookmarked, bookmarkCount } : null));
-    }
+    updateFeed({ isBookmarked, bookmarkCount });
   };
 
   const handleAddComment = (comment: CreateCommentRequest) => {
@@ -75,7 +49,7 @@ const FeedDetailPage: React.FC = () => {
       const updatedComments = feed.comments.map((comment) =>
         comment.commentId === commentId ? { ...comment, isLiked, likeCount } : comment
       );
-      setFeed((prev) => (prev ? { ...prev, comments: updatedComments } : null));
+      updateFeed({ comments: updatedComments });
     }
   };
 
@@ -88,7 +62,7 @@ const FeedDetailPage: React.FC = () => {
             reply.replyId === replyId ? { ...reply, isLiked, likeCount } : reply
           ) || [],
       }));
-      setFeed((prev) => (prev ? { ...prev, comments: updatedComments } : null));
+      updateFeed({ comments: updatedComments });
     }
   };
 
