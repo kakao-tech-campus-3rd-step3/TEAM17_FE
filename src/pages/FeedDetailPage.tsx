@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import FeedDetailSection from '@/components/feed/FeedDetailSection';
+import FeedMediaSection from '@/components/feed/FeedMediaSection';
+import FeedInfoSection from '@/components/feed/FeedInfoSection';
 import CommentSection from '@/components/feed/CommentSection';
 import type { FeedDetail, Comment, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import {
@@ -13,6 +14,10 @@ import {
   ErrorContainer,
   ErrorMessage,
   ContentContainer,
+  TopSection,
+  LeftColumn,
+  RightColumn,
+  BottomSection,
 } from './FeedDetailPage.styles';
 
 // 임시 목업 데이터 (실제로는 API에서 가져와야 함)
@@ -21,12 +26,21 @@ const MOCK_FEED_DETAIL: FeedDetail = {
   author: {
     userId: 1,
     name: '빵수니',
-    profileImageUrl: '/api/placeholder/48/48',
+    profileImageUrl:
+      'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=48&h=48&fit=crop&crop=face',
   },
   description: `곧 다가오는 크리스마스를 맞이하여 크리스마스 쿠키를 만들어 보았어요~~
 크리스마스 느낌으로 꾸며보았는데 어떤가요??
 제 레시피를 알고 싶으시다면 댓글로 적어 드릴게요!`,
-  imageUrl: ['/api/placeholder/400/400'],
+  imageUrl: [
+    'https://images.unsplash.com/photo-1578985545062-69928b1c9587?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1578985545062-69928b1c9587?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop',
+  ],
   feedType: 'INFO',
   category: {
     categoryId: 1,
@@ -55,7 +69,8 @@ const MOCK_FEED_DETAIL: FeedDetail = {
       author: {
         userId: 2,
         name: '질문폭격기',
-        profileImageUrl: '/api/placeholder/32/32',
+        profileImageUrl:
+          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&crop=face',
       },
       content: '이 레시피 알려주실 수 있나요?',
       createdAt: '2025.12.01',
@@ -67,7 +82,8 @@ const MOCK_FEED_DETAIL: FeedDetail = {
           author: {
             userId: 1,
             name: '빵수니',
-            profileImageUrl: '/api/placeholder/24/24',
+            profileImageUrl:
+              'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=24&h=24&fit=crop&crop=face',
           },
           content: `기본 쿠키 레시피 (약 20개 분량)
 
@@ -93,7 +109,8 @@ const MOCK_FEED_DETAIL: FeedDetail = {
       author: {
         userId: 3,
         name: '장비파',
-        profileImageUrl: '/api/placeholder/32/32',
+        profileImageUrl:
+          'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face',
       },
       content: '쓰시는 쿠키틀 중에 좋은 것 추천해주실 수 있나요? 저 쿠키틀은 가지고 있어서요..!',
       createdAt: '2025.12.01',
@@ -121,12 +138,6 @@ const FeedDetailPage: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        // 실제로는 API 호출
-        // const response = await fetchFeedDetail(Number(id));
-        // setFeed(response);
-
-        // 임시로 목업 데이터 사용
-        await new Promise((resolve) => setTimeout(resolve, 500)); // 로딩 시뮬레이션
         setFeed(MOCK_FEED_DETAIL);
       } catch (err) {
         setError('피드 상세 정보를 불러오는데 실패했습니다.');
@@ -154,12 +165,12 @@ const FeedDetailPage: React.FC = () => {
   };
 
   const handleAddComment = (comment: CreateCommentRequest) => {
-    // 실제로는 API 호출
+    // TODO: API 호출
     console.log('Adding comment:', comment);
   };
 
   const handleAddReply = (reply: CreateReplyRequest) => {
-    // 실제로는 API 호출
+    // TODO: API 호출
     console.log('Adding reply:', reply);
   };
 
@@ -239,15 +250,25 @@ const FeedDetailPage: React.FC = () => {
       </PageHeader>
 
       <ContentContainer>
-        <FeedDetailSection feed={feed} onLike={handleLike} onBookmark={handleBookmark} />
+        <TopSection>
+          <LeftColumn>
+            <FeedMediaSection feed={feed} onLike={handleLike} onBookmark={handleBookmark} />
+          </LeftColumn>
 
-        <CommentSection
-          comments={feed.comments}
-          onAddComment={handleAddComment}
-          onAddReply={handleAddReply}
-          onLikeComment={handleLikeComment}
-          onLikeReply={handleLikeReply}
-        />
+          <RightColumn>
+            <FeedInfoSection feed={feed} />
+          </RightColumn>
+        </TopSection>
+
+        <BottomSection>
+          <CommentSection
+            comments={feed.comments}
+            onAddComment={handleAddComment}
+            onAddReply={handleAddReply}
+            onLikeComment={handleLikeComment}
+            onLikeReply={handleLikeReply}
+          />
+        </BottomSection>
       </ContentContainer>
     </FeedDetailPageContainer>
   );

@@ -5,6 +5,7 @@ export const CommentContainer = styled.div`
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
 `;
 
 export const CommentHeader = styled.div`
@@ -16,6 +17,7 @@ export const CommentTitle = styled.h3`
   font-size: 18px;
   font-weight: 600;
   color: #333;
+  text-align: left;
 `;
 
 export const CommentInputSection = styled.form`
@@ -97,6 +99,7 @@ export const CommentAuthorName = styled.span`
   font-size: 14px;
   font-weight: 500;
   color: #333;
+  text-align: left;
 `;
 
 export const CommentContent = styled.div`
@@ -105,6 +108,7 @@ export const CommentContent = styled.div`
   color: #333;
   margin-bottom: 8px;
   white-space: pre-line;
+  text-align: left;
 `;
 
 export const CommentMeta = styled.div`
@@ -117,6 +121,7 @@ export const CommentMeta = styled.div`
 export const CommentDate = styled.span`
   font-size: 12px;
   color: #999;
+  text-align: left;
 `;
 
 export const CommentActions = styled.div`
@@ -173,6 +178,7 @@ export const ReplyAuthorName = styled.span`
   font-size: 12px;
   font-weight: 500;
   color: #333;
+  text-align: left;
 `;
 
 export const ReplyContent = styled.div`
@@ -181,6 +187,7 @@ export const ReplyContent = styled.div`
   color: #333;
   margin-bottom: 6px;
   white-space: pre-line;
+  text-align: left;
 `;
 
 export const ReplyMeta = styled.div`
@@ -192,6 +199,7 @@ export const ReplyMeta = styled.div`
 export const ReplyDate = styled.span`
   font-size: 11px;
   color: #999;
+  text-align: left;
 `;
 
 export const ReplyActions = styled.div`
@@ -298,6 +306,7 @@ export const ShowRepliesButton = styled.button`
   cursor: pointer;
   margin-bottom: 8px;
   transition: color 0.2s;
+  text-align: left;
 
   &:hover {
     color: #0056b3;

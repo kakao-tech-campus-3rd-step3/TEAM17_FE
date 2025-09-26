@@ -37,15 +37,44 @@ export const PageTitle = styled.h1`
   font-weight: 600;
   color: #333;
   flex: 1;
+  text-align: left;
 `;
 
 export const ContentContainer = styled.div`
-  max-width: 600px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  text-align: left;
+  align-items: flex-start;
+  min-height: calc(100vh - 80px);
+`;
+
+export const TopSection = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  width: 100%;
+`;
+
+export const LeftColumn = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const RightColumn = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const BottomSection = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const LoadingContainer = styled.div`
@@ -86,6 +115,6 @@ export const ErrorContainer = styled.div`
 export const ErrorMessage = styled.p`
   color: #666;
   font-size: 16px;
-  text-align: center;
+  text-align: left;
   margin: 0;
 `;
