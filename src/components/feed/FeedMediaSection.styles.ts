@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { tokens } from '@/styles/tokens';
 
 export const MediaContainer = styled.div`
   background: white;
@@ -75,7 +76,7 @@ export const EngagementSection = styled.div`
   gap: 24px;
   margin-bottom: 16px;
   padding: 12px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid ${tokens.colors.line.lightGray};
 `;
 
 export const EngagementItem = styled.div`
@@ -83,20 +84,22 @@ export const EngagementItem = styled.div`
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.2s;
 
   &:hover {
-    opacity: 0.7;
+    color: ${tokens.colors.orange.hover};
+    transform: scale(1.05);
   }
 `;
 
 export const EngagementIcon = styled.span`
   font-size: 18px;
+  color: ${tokens.colors.feed.like};
 `;
 
 export const EngagementCount = styled.span`
   font-size: 14px;
-  color: #666;
+  color: ${tokens.colors.text.gray};
   font-weight: 500;
 `;
 
@@ -108,10 +111,16 @@ export const HashtagSection = styled.div`
 `;
 
 export const Hashtag = styled.span`
-  background: #f0f0f0;
-  color: #007bff;
+  background: ${tokens.colors.orange.muted};
+  color: ${tokens.colors.feed.hashtag};
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 14px;
   font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${tokens.colors.orange.light};
+    color: ${tokens.colors.orange.dark};
+  }
 `;

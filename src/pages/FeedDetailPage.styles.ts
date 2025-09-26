@@ -1,16 +1,17 @@
 import styled from 'styled-components';
+import { tokens } from '@/styles/tokens';
 
 export const FeedDetailPageContainer = styled.div`
   min-height: 100vh;
-  background: #f5f5f5;
+  background: ${tokens.colors.background.lightGray};
 `;
 
 export const PageHeader = styled.div`
   display: flex;
   align-items: center;
   padding: 16px 20px;
-  background: white;
-  border-bottom: 1px solid #eee;
+  background: ${tokens.colors.background.card};
+  border-bottom: 1px solid ${tokens.colors.line.lightGray};
   position: sticky;
   top: 0;
   z-index: 100;
@@ -24,10 +25,12 @@ export const BackButton = styled.button`
   margin-right: 16px;
   padding: 8px;
   border-radius: 50%;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
+  color: ${tokens.colors.text.black};
 
   &:hover {
-    background: #f0f0f0;
+    background: ${tokens.colors.orange.muted};
+    color: ${tokens.colors.orange.primary};
   }
 `;
 
@@ -35,7 +38,7 @@ export const PageTitle = styled.h1`
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: ${tokens.colors.text.black};
   flex: 1;
   text-align: left;
 `;

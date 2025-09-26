@@ -1,7 +1,8 @@
 import styled from 'styled-components';
+import { tokens } from '@/styles/tokens';
 
 export const CommentContainer = styled.div`
-  background: white;
+  background: ${tokens.colors.background.card};
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -16,7 +17,7 @@ export const CommentTitle = styled.h3`
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: ${tokens.colors.text.black};
   text-align: left;
 `;
 
@@ -25,31 +26,33 @@ export const CommentInputSection = styled.form`
   gap: 12px;
   margin-bottom: 24px;
   padding: 16px;
-  background: #f8f9fa;
+  background: ${tokens.colors.orange.muted};
   border-radius: 8px;
+  border: 1px solid ${tokens.colors.orange.light};
 `;
 
 export const CommentInput = styled.input`
   flex: 1;
-  border: 1px solid #ddd;
+  border: 1px solid ${tokens.colors.line.lightGray};
   border-radius: 20px;
   padding: 12px 16px;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
 
   &:focus {
-    border-color: #007bff;
+    border-color: ${tokens.colors.orange.primary};
+    box-shadow: 0 0 0 2px ${tokens.colors.orange.muted};
   }
 
   &::placeholder {
-    color: #999;
+    color: ${tokens.colors.text.lightGray};
   }
 `;
 
 export const CommentSubmitButton = styled.button`
-  background: #007bff;
-  color: white;
+  background: ${tokens.colors.feed.comment};
+  color: ${tokens.colors.text.white};
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -59,10 +62,11 @@ export const CommentSubmitButton = styled.button`
   justify-content: center;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 
   &:hover {
-    background: #0056b3;
+    background: ${tokens.colors.orange.hover};
+    transform: scale(1.05);
   }
 `;
 
@@ -73,7 +77,7 @@ export const CommentList = styled.div`
 `;
 
 export const CommentItem = styled.div`
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid ${tokens.colors.line.lightGray};
   padding-bottom: 16px;
 
   &:last-child {
@@ -93,19 +97,20 @@ export const CommentAuthorImage = styled.img`
   border-radius: 50%;
   margin-right: 8px;
   object-fit: cover;
+  border: 1px solid ${tokens.colors.orange.light};
 `;
 
 export const CommentAuthorName = styled.span`
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: ${tokens.colors.text.black};
   text-align: left;
 `;
 
 export const CommentContent = styled.div`
   font-size: 14px;
   line-height: 1.5;
-  color: #333;
+  color: ${tokens.colors.text.black};
   margin-bottom: 8px;
   white-space: pre-line;
   text-align: left;
@@ -120,7 +125,7 @@ export const CommentMeta = styled.div`
 
 export const CommentDate = styled.span`
   font-size: 12px;
-  color: #999;
+  color: ${tokens.colors.text.lightGray};
   text-align: left;
 `;
 
@@ -135,16 +140,18 @@ export const CommentAction = styled.button`
   border: none;
   cursor: pointer;
   font-size: 14px;
-  transition: opacity 0.2s;
+  color: ${tokens.colors.feed.like};
+  transition: all 0.2s;
 
   &:hover {
-    opacity: 0.7;
+    color: ${tokens.colors.orange.hover};
+    transform: scale(1.1);
   }
 `;
 
 export const CommentLikeCount = styled.span`
   font-size: 12px;
-  color: #666;
+  color: ${tokens.colors.text.gray};
   margin-left: 4px;
 `;
 
@@ -229,26 +236,26 @@ export const ReplyLikeCount = styled.span`
 export const ReplyButton = styled.button`
   background: none;
   border: none;
-  color: #007bff;
+  color: ${tokens.colors.feed.comment};
   font-size: 12px;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: all 0.2s;
 
   &:hover {
-    color: #0056b3;
+    color: ${tokens.colors.orange.hover};
   }
 `;
 
 export const ReportButton = styled.button`
   background: none;
   border: none;
-  color: #999;
+  color: ${tokens.colors.text.lightGray};
   font-size: 12px;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: all 0.2s;
 
   &:hover {
-    color: #666;
+    color: ${tokens.colors.text.gray};
   }
 `;
 
@@ -257,31 +264,33 @@ export const ReplyInputSection = styled.div`
   gap: 8px;
   margin-top: 12px;
   padding: 12px;
-  background: #f8f9fa;
+  background: ${tokens.colors.orange.muted};
   border-radius: 8px;
+  border: 1px solid ${tokens.colors.orange.light};
 `;
 
 export const ReplyInput = styled.input`
   flex: 1;
-  border: 1px solid #ddd;
+  border: 1px solid ${tokens.colors.line.lightGray};
   border-radius: 16px;
   padding: 8px 12px;
   font-size: 13px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
 
   &:focus {
-    border-color: #007bff;
+    border-color: ${tokens.colors.orange.primary};
+    box-shadow: 0 0 0 2px ${tokens.colors.orange.muted};
   }
 
   &::placeholder {
-    color: #999;
+    color: ${tokens.colors.text.lightGray};
   }
 `;
 
 export const ReplySubmitButton = styled.button`
-  background: #007bff;
-  color: white;
+  background: ${tokens.colors.feed.comment};
+  color: ${tokens.colors.text.white};
   border: none;
   border-radius: 50%;
   width: 32px;
@@ -291,24 +300,25 @@ export const ReplySubmitButton = styled.button`
   justify-content: center;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 
   &:hover {
-    background: #0056b3;
+    background: ${tokens.colors.orange.hover};
+    transform: scale(1.05);
   }
 `;
 
 export const ShowRepliesButton = styled.button`
   background: none;
   border: none;
-  color: #007bff;
+  color: ${tokens.colors.feed.comment};
   font-size: 12px;
   cursor: pointer;
   margin-bottom: 8px;
-  transition: color 0.2s;
+  transition: all 0.2s;
   text-align: left;
 
   &:hover {
-    color: #0056b3;
+    color: ${tokens.colors.orange.hover};
   }
 `;
