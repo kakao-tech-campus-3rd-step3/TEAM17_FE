@@ -154,7 +154,7 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
         {post.category.categoryName}
       </CategoryTag>
 
-      <FeedTypeTag feedType={post.feedType}>{post.feedType}</FeedTypeTag>
+      <FeedTypeTag $feedType={post.feedType}>{post.feedType}</FeedTypeTag>
 
       {post.products.length > 0 && (
         <ProductsSection>

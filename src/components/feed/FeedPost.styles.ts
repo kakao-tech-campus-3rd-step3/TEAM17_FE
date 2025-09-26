@@ -145,7 +145,7 @@ export const CategoryTag = styled.div`
   font-weight: 500;
 `;
 
-export const FeedTypeTag = styled.div<{ feedType: string }>`
+export const FeedTypeTag = styled.div<{ $feedType: string }>`
   display: inline-block;
   padding: 0.25rem 0.5rem;
   margin: 0 1rem 0.5rem;
@@ -155,7 +155,7 @@ export const FeedTypeTag = styled.div<{ feedType: string }>`
   text-transform: uppercase;
   letter-spacing: 0.03125rem;
   background-color: ${(props) => {
-    switch (props.feedType) {
+    switch (props.$feedType) {
       case 'INFO':
         return '#e3f2fd';
       case 'REVIEW':

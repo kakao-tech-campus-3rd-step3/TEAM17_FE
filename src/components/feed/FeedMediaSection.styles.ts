@@ -40,7 +40,7 @@ export const ImageNavigation = styled.div`
   pointer-events: none;
 `;
 
-export const ImageNavButton = styled.button<{ position: 'left' | 'right' }>`
+export const ImageNavButton = styled.button<{ $position: 'left' | 'right' }>`
   background: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;
