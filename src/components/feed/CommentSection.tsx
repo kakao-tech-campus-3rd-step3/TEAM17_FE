@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Heart, Send, Reply as ReplyIcon, Flag } from 'lucide-react';
 import type { Comment, Reply, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
+import { formatKoreanDate } from '@/utils/date';
 import {
   CommentContainer,
   CommentHeader,
@@ -89,14 +90,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     }));
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-  };
-
   return (
     <CommentContainer>
       <CommentHeader>
@@ -127,7 +120,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
             <CommentContent>{comment.content}</CommentContent>
 
             <CommentMeta>
-              <CommentDate>{formatDate(comment.createdAt)}</CommentDate>
+              <CommentDate>{formatKoreanDate(comment.createdAt)}</CommentDate>
               <CommentActions>
                 <CommentAction
                   onClick={() =>
@@ -174,7 +167,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                         <ReplyContent>{reply.content}</ReplyContent>
 
                         <ReplyMeta>
-                          <ReplyDate>{formatDate(reply.createdAt)}</ReplyDate>
+                          <ReplyDate>{formatKoreanDate(reply.createdAt)}</ReplyDate>
                           <ReplyActions>
                             <ReplyAction
                               onClick={() =>
