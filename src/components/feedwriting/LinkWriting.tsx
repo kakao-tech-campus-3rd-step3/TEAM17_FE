@@ -4,15 +4,15 @@ import { Desc, TitleStyle } from '@/components/feedwriting/Title.style';
 import { ContentLinkUploadBox } from '@/components/feedwriting/UploadBox.style';
 
 import LinkModal from '@/components/feedwriting/LinkModal';
+import type { ProductForm } from '@/types/LinkWriteForm';
 
 const LinkWriting = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = (data: ProductForm) => {
     console.log('작성된 상품:', data);
     setIsOpen(false);
   };
-
 
   return (
     <ColumnWrapper>
