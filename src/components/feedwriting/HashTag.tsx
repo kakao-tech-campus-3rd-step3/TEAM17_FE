@@ -7,7 +7,11 @@ const HashTag = () => {
     <ColumnWrapper>
       <TitleStyle>관련 해시태그</TitleStyle>
       <HashTagBox>
-        <Desc>해시태그를 작성하고 싶다면<br/>클릭해주세요</Desc>
+        <Desc>
+          해시태그를 작성하고 싶다면
+          <br />
+          클릭해주세요
+        </Desc>
       </HashTagBox>
     </ColumnWrapper>
   );

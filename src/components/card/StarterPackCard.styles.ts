@@ -7,7 +7,9 @@ export const Card = styled.div`
   border-radius: 1rem;
   box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 
   &:hover {
     transform: translateY(-0.375rem);
@@ -38,7 +40,9 @@ export const HeartIcon = styled(Heart)<{ $liked?: boolean }>`
   height: 1.25rem;
   color: ${({ $liked }) => ($liked ? '#ef4444' : '#9ca3af')};
   fill: ${({ $liked }) => ($liked ? '#ef4444' : 'none')};
-  transition: color 0.2s ease, fill 0.2s ease;
+  transition:
+    color 0.2s ease,
+    fill 0.2s ease;
 `;
 
 export const DiscountBadge = styled.div`

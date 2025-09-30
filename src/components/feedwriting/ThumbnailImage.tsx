@@ -19,7 +19,7 @@ const ThumbnailImage = () => {
     const urls = fileArray.map((file) => URL.createObjectURL(file));
     setPreviews(urls);
 
-    e.currentTarget.value='';
+    e.currentTarget.value = '';
   };
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const ThumbnailImage = () => {
                   style={{
                     width: '90%',
                     height: '90%',
-                    objectFit: 'contain',                              
+                    objectFit: 'contain',
                   }}
                 />
               </div>

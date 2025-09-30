@@ -1,0 +1,33 @@
+# 기본적으로 텍스트 파일은 모두 LF로 통일
+* text=auto eol=lf
+
+# OS/환경 관계없이 항상 LF 유지하고 싶은 파일들
+*.js    text eol=lf
+*.jsx   text eol=lf
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.css   text eol=lf
+*.scss  text eol=lf
+*.html  text eol=lf
+*.json  text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.md    text eol=lf
+
+# Windows 전용 실행 파일은 바이너리로 처리 (개행 변환X )
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.exe   binary
+*.dll   binary
+
+# 이미지/폰트/기타 리소스는 개행 변환하지 않음
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.svg   binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary

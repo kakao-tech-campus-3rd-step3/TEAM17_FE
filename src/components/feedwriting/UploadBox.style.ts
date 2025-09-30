@@ -18,13 +18,13 @@ export const ScrollContainer = styled.div`
   gap: 1rem;
   width: 100%;
   height: 100%;
-  overflow-x: auto; 
-  scroll-snap-type: x mandatory; 
-  
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+
   & > div {
     flex: 0 0 80%;
     height: 100%;
-    scroll-snap-align: center; 
+    scroll-snap-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -60,7 +60,7 @@ export const TextArea = styled.textarea`
   outline: none;
   font-size: 1rem;
   font-family: inherit;
-  background: ${({theme})=>theme.colors.background.default}
+  background: ${({ theme }) => theme.colors.background.default};
 `;
 
 export const Counter = styled.div`
