@@ -74,7 +74,9 @@ export const SubmitButton = styled.button`
   font-size: 1.2rem;
   font-weight: 400;
   background: ${({ theme }) => theme.colors.orange.primary};
-  box-shadow: 0 2px 4px 0 #fed7aa, 0 4px 6px 0 #fed7aa;
+  box-shadow:
+    0 2px 4px 0 #fed7aa,
+    0 4px 6px 0 #fed7aa;
 
   &:disabled {
     cursor: not-allowed;

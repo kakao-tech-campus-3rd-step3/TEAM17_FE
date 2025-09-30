@@ -21,7 +21,7 @@ const FeedWriting = () => {
           </ContentLinkWrapper>
           <TagWrapper>
             <HobbyTag />
-            <HashTag/>
+            <HashTag />
           </TagWrapper>
         </LayoutLine>
       </TotalContainer>

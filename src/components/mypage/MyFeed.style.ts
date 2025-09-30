@@ -11,7 +11,6 @@ export const FeedList = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-
 `;
 
 export const FeedContainer = styled.div`
