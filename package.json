@@ -13,6 +13,7 @@
   "dependencies": {
     "@emotion/babel-plugin": "^11.13.5",
     "@hookform/resolvers": "^5.2.1",
+    "@tanstack/react-query": "^5.90.2",
     "axios": "^1.12.0",
     "instagram-feed": "^1.0.4",
     "lucide-react": "^0.540.0",
