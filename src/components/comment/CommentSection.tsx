@@ -28,11 +28,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   onLikeReply,
 }) => {
   const {
-    newComment,
     replyingTo,
     showReplies,
-    setNewComment,
-    handleSubmitComment,
     handleLikeComment,
     handleLikeReply,
     toggleReplies,
@@ -44,6 +41,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     onLikeComment,
     onLikeReply,
   });
+
+  const handleAddComment = (content: string) => {
+    onAddComment({ feedId, content });
+  };
 
   const handleAddReply = (commentId: number, content: string) => {
     onAddReply({ commentId, content });
@@ -57,9 +58,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
       {/* 댓글 작성 */}
       <CommentInput
-        value={newComment}
-        onChange={setNewComment}
-        onSubmit={handleSubmitComment}
+        onSubmit={handleAddComment}
         placeholder="댓글 작성하기"
       />
 
