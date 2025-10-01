@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Send } from 'lucide-react';
+import { COMMENT_CONSTANTS } from '@/constants/feed';
 import {
   ReplyInputSection,
   ReplyInput as StyledReplyInput,
@@ -11,7 +12,7 @@ interface ReplyInputProps {
   placeholder?: string;
 }
 
-const ReplyInput: React.FC<ReplyInputProps> = ({ onSubmit, placeholder = '답글 작성하기' }) => {
+const ReplyInput: React.FC<ReplyInputProps> = ({ onSubmit, placeholder = COMMENT_CONSTANTS.REPLY_PLACEHOLDER }) => {
   const [content, setContent] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Send } from 'lucide-react';
+import { COMMENT_CONSTANTS } from '@/constants/feed';
 import {
   CommentInputSection,
   CommentInput as StyledCommentInput,
@@ -11,7 +12,7 @@ interface CommentInputProps {
   placeholder?: string;
 }
 
-const CommentInput: React.FC<CommentInputProps> = ({ onSubmit, placeholder = '댓글 작성하기' }) => {
+const CommentInput: React.FC<CommentInputProps> = ({ onSubmit, placeholder = COMMENT_CONSTANTS.COMMENT_PLACEHOLDER }) => {
   const [content, setContent] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
