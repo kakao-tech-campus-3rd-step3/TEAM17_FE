@@ -6,7 +6,7 @@ import { login, signup } from '@/api/auth'
 import { QUERY_KEYS } from '@/utils/queryKeys'
 
 import type { LoginValues } from '@/types/LoginZodSchema'
-import type { Step2Values } from '@/types/SignupZodSchema'
+import type { SignupRequest } from '@/types/AuthTypes'
 
 export const useLogin = () => {
   return useMutation({
@@ -23,7 +23,7 @@ export const useLogin = () => {
 export const useSignup = () => {
   return useMutation({
     mutationKey: QUERY_KEYS.signup,
-    mutationFn: (data: Step2Values) => signup(data),
+    mutationFn: (data: SignupRequest) => signup(data),
     onSuccess: () => {
       console.log('✅ 회원가입 성공')
     },

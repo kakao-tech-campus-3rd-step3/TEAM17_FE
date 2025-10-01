@@ -1,8 +1,9 @@
 import axiosInstance from './axiosInstance';
 import type { LoginValues } from '@/types/LoginZodSchema'
-import type { Step2Values } from '@/types/SignupZodSchema'
+import type { SignupRequest } from '@/types/AuthTypes'
 
-export const signup = async (data: Step2Values) => {
+
+export const signup = async (data: SignupRequest) => {
   const res = await axiosInstance.post('/api/auth/signup', data)
   return res.data
 }
