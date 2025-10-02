@@ -7,8 +7,7 @@ import App from './App.tsx';
 import { theme } from '@/styles/theme';
 import { GlobalStyle } from '@/styles/GlobalStyle';
 
-
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -19,4 +18,4 @@ createRoot(document.getElementById('root')!).render(
       </ThemeProvider>
     </QueryClientProvider>
   </StrictMode>
-)
+);
