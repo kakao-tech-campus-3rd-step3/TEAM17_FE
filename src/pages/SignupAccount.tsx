@@ -42,18 +42,7 @@ export default function SignupStep2() {
   const { mutate: signupMutate, isPending, isError } = useSignup();
 
   const onSubmit = (data: Step2Values) => {
-    const step1 = JSON.parse(sessionStorage.getItem('signupStep1') || '{}');
-
-    const finalData = {
-      email: data.email,
-      password: data.password,
-      name: step1.name,
-      birthDate: step1.birthDate,
-      gender: step1.gender?.toUpperCase(),
-      phoneNumber: step1.telephone,
-    };
-
-    signupMutate(finalData, {
+    signupMutate(data, {
       onSuccess: () => {
         alert('회원가입 성공! 로그인 페이지로 이동합니다.');
         navigate('/login');
@@ -121,7 +110,7 @@ export default function SignupStep2() {
               <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>
             )}
           </FormGroup>
-          
+
           {isError && <ErrorMessage>회원가입 요청 중 오류가 발생했습니다.</ErrorMessage>}
 
           <NextButton type="submit" disabled={!isValid || isPending}>
