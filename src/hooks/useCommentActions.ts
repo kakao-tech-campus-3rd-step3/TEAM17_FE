@@ -10,33 +10,16 @@ interface UseCommentActionsProps {
 }
 
 export const useCommentActions = ({
-  feedId,
-  onAddComment,
   onAddReply,
   onLikeComment,
   onLikeReply,
 }: UseCommentActionsProps) => {
-  // 댓글 작성 상태
-  const [newComment, setNewComment] = useState('');
-
   // 답글 작성 상태
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyContent, setReplyContent] = useState('');
 
   // 답글 표시 상태
   const [showReplies, setShowReplies] = useState<{ [key: number]: boolean }>({});
-
-  // 댓글 제출 핸들러
-  const handleSubmitComment = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      if (newComment.trim()) {
-        onAddComment({ feedId, content: newComment.trim() });
-        setNewComment('');
-      }
-    },
-    [feedId, newComment, onAddComment]
-  );
 
   // 답글 제출 핸들러
   const handleSubmitReply = useCallback(
@@ -87,17 +70,14 @@ export const useCommentActions = ({
 
   return {
     // 상태
-    newComment,
     replyingTo,
     replyContent,
     showReplies,
 
     // 상태 변경 함수
-    setNewComment,
     setReplyContent,
 
     // 이벤트 핸들러
-    handleSubmitComment,
     handleSubmitReply,
     handleLikeComment,
     handleLikeReply,
