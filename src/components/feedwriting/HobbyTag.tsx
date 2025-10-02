@@ -24,9 +24,7 @@ const HobbyTag = () => {
       <TitleStyle>취미 태그</TitleStyle>
 
       <DropdownWrapper>
-        <ToggleButton onClick={() => setIsOpen((prev) => !prev)}>
-          {selected} ▼
-        </ToggleButton>
+        <ToggleButton onClick={() => setIsOpen((prev) => !prev)}>{selected} ▼</ToggleButton>
 
         {isOpen && (
           <DropdownMenu>

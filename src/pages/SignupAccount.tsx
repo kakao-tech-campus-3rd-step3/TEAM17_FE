@@ -47,12 +47,16 @@ export default function SignupStep2() {
         email: data.email,
         password: data.password,
         name: step1.name,
+        birthDate: step1.birthDate,
+        gender: step1.gender.toUpperCase(),
+        phoneNumber: step1.telephone,
       };
 
       const res = await signup(finalData);
-      console.log('회원가입 성공:', res);
+      if (res.success) {
+        alert('회원가입 성공! 로그인 페이지로 이동합니다.');
+      }
 
-      alert('회원가입 성공! 로그인 페이지로 이동합니다.');
       navigate('/login');
     } catch (err) {
       console.error('회원가입 실패:', err);

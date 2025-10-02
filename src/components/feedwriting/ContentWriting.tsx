@@ -5,7 +5,7 @@ import { ContentLinkUploadBox, TextArea, Counter } from '@/components/feedwritin
 
 const ContentWriting = () => {
   const [content, setContent] = useState('');
-  const [isActive, setIsActive] = useState(false); 
+  const [isActive, setIsActive] = useState(false);
   const maxLength = 200;
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -13,7 +13,7 @@ const ContentWriting = () => {
   };
 
   const handleBlur = () => {
-    if(content.trim()===''){
+    if (content.trim() === '') {
       setIsActive(false);
     }
   };
@@ -27,8 +27,8 @@ const ContentWriting = () => {
             value={content}
             onChange={handleChange}
             maxLength={maxLength}
-            onBlur = {handleBlur}
-            autoFocus 
+            onBlur={handleBlur}
+            autoFocus
           />
         ) : (
           <Desc>게시물에 대한 이야기를 적어주세요.</Desc>

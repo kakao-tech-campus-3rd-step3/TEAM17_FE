@@ -5,8 +5,6 @@ const Mypage = () => {
     <>
       <Profile></Profile>
       <MyFeed></MyFeed>
-      
-
     </>
   );
 };
