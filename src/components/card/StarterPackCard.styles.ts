@@ -4,28 +4,30 @@ import { Heart, Eye, Star } from 'lucide-react';
 export const Card = styled.div`
   position: relative;
   background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 
   &:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+    transform: translateY(-0.375rem);
+    box-shadow: 0 1rem 2.25rem rgba(0, 0, 0, 0.12);
   }
 `;
 
 export const LikeButton = styled.button`
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 0.75rem;
+  right: 0.75rem;
   z-index: 2;
-  padding: 8px;
-  border-radius: 9999px;
+  padding: 0.5rem;
+  border-radius: 50%;
   border: 1px solid rgba(0, 0, 0, 0.06);
   background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(0.375rem);
+  box-shadow: 0 0.375rem 1rem rgba(0, 0, 0, 0.12);
   cursor: pointer;
 
   &:hover {
@@ -34,31 +36,37 @@ export const LikeButton = styled.button`
 `;
 
 export const HeartIcon = styled(Heart)<{ $liked?: boolean }>`
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   color: ${({ $liked }) => ($liked ? '#ef4444' : '#9ca3af')};
   fill: ${({ $liked }) => ($liked ? '#ef4444' : 'none')};
-  transition: color 0.2s ease, fill 0.2s ease;
+  transition:
+    color 0.2s ease,
+    fill 0.2s ease;
 `;
 
 export const DiscountBadge = styled.div`
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 0.75rem;
+  left: 0.75rem;
   z-index: 2;
   background: #ef4444;
   color: #fff;
-  padding: 6px 10px;
-  border-radius: 9999px;
-  font-size: 12px;
+  padding: 0.375rem 0.625rem;
+  border-radius: 50%;
+  font-size: 0.75rem;
   font-weight: 700;
 `;
 
 export const ImageWrap = styled.div`
   position: relative;
-  height: 256px;
+  height: 16rem;
   overflow: hidden;
   cursor: pointer;
+
+  @media (min-width: 768px) {
+    height: 18rem;
+  }
 `;
 
 export const MainImage = styled.img`
@@ -94,59 +102,67 @@ export const PreviewCenter = styled.div`
 `;
 
 export const EyeIcon = styled(Eye)`
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   display: block;
-  margin: 0 auto 8px;
+  margin: 0 auto 0.5rem;
 `;
 
 export const MoreText = styled.div`
   opacity: 0.8;
-  font-size: 12px;
-  margin-top: 8px;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
 `;
 
 export const Content = styled.div`
-  padding: 24px;
+  padding: 1.5rem;
+
+  @media (min-width: 768px) {
+    padding: 1.75rem;
+  }
 `;
 
 export const HeaderRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 `;
 
 export const CategoryPill = styled.span`
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #2563eb;
   background: #dbeafe;
-  padding: 4px 8px;
-  border-radius: 9999px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 50%;
 `;
 
 export const Rating = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 0.25rem;
   color: #6b7280;
-  font-size: 14px;
+  font-size: 0.875rem;
 `;
 
 export const StarIcon = styled(Star)`
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
   color: #f59e0b;
   fill: #f59e0b;
 `;
 
 export const Title = styled.h3`
-  margin: 8px 0;
-  font-size: 20px;
+  margin: 0.5rem 0;
+  font-size: 1.25rem;
   font-weight: 800;
   color: #111827;
   transition: color 0.2s ease;
+
+  @media (min-width: 768px) {
+    font-size: 1.375rem;
+  }
 
   ${Card}:hover & {
     color: #2563eb;
@@ -158,16 +174,16 @@ export const Muted = styled.span`
 `;
 
 export const Description = styled(Muted)`
-  font-size: 14px;
+  font-size: 0.875rem;
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;
 `;
 
 export const PriceRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
 `;
 
 export const PriceCol = styled.div`
@@ -176,24 +192,28 @@ export const PriceCol = styled.div`
 `;
 
 export const CountText = styled(Muted)`
-  font-size: 14px;
+  font-size: 0.875rem;
 `;
 
 export const PriceCurrent = styled.span`
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   color: #111827;
+
+  @media (min-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
 export const PriceOriginal = styled.span`
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #6b7280;
   text-decoration: line-through;
 `;
 
 export const ButtonsRow = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
 `;
 
 export const PrimaryBtn = styled.button`
@@ -201,15 +221,16 @@ export const PrimaryBtn = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 0.5rem;
   font-weight: 700;
-  padding: 12px 16px;
-  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  border-radius: 0.625rem;
   border: none;
   color: #fff;
   background: #2563eb;
   cursor: pointer;
   transition: background 0.2s ease;
+  font-size: 0.875rem;
 
   &:hover {
     background: #1d4ed8;
@@ -220,8 +241,8 @@ export const GhostBtn = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 16px;
-  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  border-radius: 0.625rem;
   border: 1px solid #e5e7eb;
   background: #f3f4f6;
   color: #374151;
@@ -236,27 +257,27 @@ export const GhostBtn = styled.button`
 export const GridPreview = styled.div`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 12px;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
   max-width: 12rem;
 `;
 
 export const Thumb = styled.div`
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(6px);
-  border-radius: 8px;
-  padding: 8px;
+  backdrop-filter: blur(0.375rem);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
 
   img {
     width: 100%;
-    height: 48px;
+    height: 3rem;
     object-fit: cover;
-    border-radius: 6px;
-    margin-bottom: 4px;
+    border-radius: 0.375rem;
+    margin-bottom: 0.25rem;
   }
 
   p {
-    font-size: 12px;
+    font-size: 0.75rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

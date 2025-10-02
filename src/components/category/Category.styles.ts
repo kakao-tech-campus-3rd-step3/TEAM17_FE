@@ -22,7 +22,10 @@ export const Item = styled(NavLink)`
   text-decoration: none;
   color: inherit;
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
 
   &:hover {
     transform: translateY(-1px);

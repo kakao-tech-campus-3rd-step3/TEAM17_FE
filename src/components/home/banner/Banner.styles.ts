@@ -13,7 +13,7 @@ export const Card = styled.div<{ $variant: 'left' | 'right' }>`
   overflow: hidden;
   background-image: ${({ $variant }) =>
     $variant === 'left'
-      ? 'linear-gradient(135deg, #1e3a8a 0%, #581c87 100%)' 
+      ? 'linear-gradient(135deg, #1e3a8a 0%, #581c87 100%)'
       : 'linear-gradient(135deg, #22d3ee 0%, #2563eb 100%)'};
 `;
 
@@ -32,7 +32,7 @@ export const BottomLeft = styled.div`
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
-  padding-right: 2.25rem; 
+  padding-right: 2.25rem;
   max-width: calc(100% - 3rem);
 `;
 

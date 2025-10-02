@@ -4,9 +4,11 @@ import SignupProfile from '@/pages/SignupProfile';
 import SignupAccount from '@/pages/SignupAccount';
 import StarterListPage from '@/pages/StarterListPage';
 import FeedPage from '@/pages/FeedPage';
+import FeedDetailPage from '@/pages/FeedDetailPage';
 import Layout from '@/components/common/Layout';
 import Login from '@/pages/Login';
 import MyPage from '@/pages/MyPage';
+import FeedWriting from '@/pages/FeedWriting';
 
 export const Router = () => (
   <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
@@ -19,6 +21,8 @@ export const Router = () => (
         <Route path="/starterpack" element={<StarterListPage />} />
         <Route path="/mypage/*" element={<MyPage />} />
         <Route path="/feed" element={<FeedPage />} />
+        <Route path="/feed/:id" element={<FeedDetailPage />} />
+        <Route path="/feedwriting" element={<FeedWriting />} />
       </Route>
     </Routes>
   </BrowserRouter>
