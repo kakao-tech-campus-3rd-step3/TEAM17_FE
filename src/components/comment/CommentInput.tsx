@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Send } from 'lucide-react';
+import { COMMENT_CONSTANTS } from '@/constants/feed';
 import {
   CommentInputSection,
   CommentInput as StyledCommentInput,
@@ -7,23 +8,26 @@ import {
 } from './CommentSection.styles';
 
 interface CommentInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (content: string) => void;
   placeholder?: string;
 }
 
-const CommentInput: React.FC<CommentInputProps> = ({
-  value,
-  onChange,
-  onSubmit,
-  placeholder = '댓글 작성하기',
-}) => {
+const CommentInput: React.FC<CommentInputProps> = ({ onSubmit, placeholder = COMMENT_CONSTANTS.COMMENT_PLACEHOLDER }) => {
+  const [content, setContent] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (content.trim()) {
+      onSubmit(content.trim());
+      setContent('');
+    }
+  };
+
   return (
-    <CommentInputSection onSubmit={onSubmit}>
+    <CommentInputSection onSubmit={handleSubmit}>
       <StyledCommentInput
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
         placeholder={placeholder}
       />
       <CommentSubmitButton type="submit">
