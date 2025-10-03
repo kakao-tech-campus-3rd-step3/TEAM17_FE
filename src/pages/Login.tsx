@@ -58,7 +58,7 @@ export default function LoginForm() {
 
   return (
     <>
-      <LoginContainer>
+      <LoginContainer onSubmit={handleSubmit(onSubmit)}>
         <Title>로그인</Title>
         <Inputfield onSubmit={handleSubmit(onSubmit)}>
           <Label>이메일</Label>
