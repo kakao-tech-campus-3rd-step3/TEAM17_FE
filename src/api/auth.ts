@@ -1,16 +1,14 @@
 import axiosInstance from './axiosInstance';
+import type { LoginValues } from '@/types/LoginZodSchema'
+import type { SignupRequest } from '@/types/AuthTypes'
 
-export const signup = async (data: { email: string; password: string; name: string }) => {
-  const res = await axiosInstance.post('/api/auth/signup', data);
-  return res.data;
-};
 
-export const login = async (data: { email: string; password: string }) => {
-  const res = await axiosInstance.post('/api/auth/login', data);
+export const signup = async (data: SignupRequest) => {
+  const res = await axiosInstance.post('/api/auth/signup', data)
+  return res.data
+}
 
-  if (res.data?.accessToken) {
-    localStorage.setItem('accessToken', res.data.accessToken);
-  }
-
-  return res.data;
-};
+export const login = async (data: LoginValues) => {
+  const res = await axiosInstance.post('/api/auth/login', data)
+  return res.data
+}
