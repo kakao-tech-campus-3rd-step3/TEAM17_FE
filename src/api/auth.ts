@@ -1,29 +1,25 @@
 import axiosInstance from './axiosInstance';
-import type { LoginValues } from '@/types/LoginZodSchema'
-import type { SignupRequest } from '@/types/AuthTypes'
+import type { LoginRequest, SignupRequest, User, RefreshResponse } from '@/types/AuthTypes';
 
+export const signup = async (data: SignupRequest): Promise<User> => {
+  const res = await axiosInstance.post<User>('/api/auth/signup', data);
+  return res.data;
+};
 
-export const signup = async (data: SignupRequest) => {
-  const res = await axiosInstance.post('/api/auth/signup', data)
-  return res.data
-}
+export const login = async (data: LoginRequest): Promise<void> => {
+  await axiosInstance.post('/api/auth/login', data);
+};
 
-export const login = async (data: LoginValues) => {
-  const res = await axiosInstance.post('/api/auth/login', data)
-  return res.data
-}
+export const logout = async (): Promise<void> => {
+  await axiosInstance.post('/api/auth/logout');
+};
 
-export const logout = async()=>{
-  const res = await axiosInstance.post('/api/auth/logout')
-  return res.data
-}
+export const refresh = async (): Promise<RefreshResponse> => {
+  const res = await axiosInstance.post<RefreshResponse>('/api/auth/refresh');
+  return res.data;
+};
 
-export const refresh = async () => {
-  const res = await axiosInstance.post('/api/auth/refresh')
-  return res.data
-}
-
-export const getUser = async () => {
-  const res = await axiosInstance.get('/api/auth/me')
-  return res.data
-}
+export const getUser = async (): Promise<User> => {
+  const res = await axiosInstance.get<User>('/api/auth/me');
+  return res.data;
+};
