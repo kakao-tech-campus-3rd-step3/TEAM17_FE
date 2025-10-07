@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { login as loginApi } from '@/api/auth';
-import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+
 import { loginSchema, type LoginValues } from '@/types/LoginZodSchema';
+import { useLogin } from '@/hooks/useAuth';
 
 import {
   LoginContainer,
@@ -40,28 +40,25 @@ export default function LoginForm() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-
-  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const onSubmit = async (data: LoginValues) => {
-    try {
-      const res = await loginApi(data);
-      console.log('로그인 성공:', res);
+  const { mutate: loginMutate, isPending, isError } = useLogin();
 
-      login(res.accessToken, res.refreshToken);
-
-      alert('로그인 성공!');
-      navigate('/');
-    } catch (err) {
-      console.error('로그인 실패:', err);
-      alert('이메일/비밀번호를 확인해주세요.');
-    }
+  const onSubmit = (data: LoginValues) => {
+    loginMutate(data, {
+      onSuccess: () => {
+        alert('로그인 성공!');
+        navigate('/');
+      },
+      onError: () => {
+        alert('이메일/비밀번호를 확인해주세요.');
+      },
+    });
   };
 
   return (
     <>
-      <LoginContainer>
+      <LoginContainer onSubmit={handleSubmit(onSubmit)}>
         <Title>로그인</Title>
         <Inputfield onSubmit={handleSubmit(onSubmit)}>
           <Label>이메일</Label>
@@ -90,8 +87,10 @@ export default function LoginForm() {
           </InputWrapper>
           {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
 
-          <SubmitButton type="submit" disabled={!isValid}>
-            로그인
+          {isError && <ErrorMessage>로그인 실패! 다시 시도해주세요.</ErrorMessage>}
+
+          <SubmitButton type="submit" disabled={!isValid || isPending}>
+            {isPending ? '로그인 중...' : '로그인'}
           </SubmitButton>
 
           <Line />
