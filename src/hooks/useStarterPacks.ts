@@ -21,6 +21,8 @@ export const useStarterPack = () => {
     queryKey: QUERY_KEYS.starterPacks.list(),
     queryFn: fetchStarterPack,
     throwOnError: false,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 
   const queryClient = useQueryClient();
@@ -49,6 +51,8 @@ export const useStarterPackById = (id: number) => {
     queryFn: () => fetchStarterPackById(id),
     enabled: !!id,
     throwOnError: false,
+    retry: false,
+    refetchOnWindowFocus: false, // 윈도우 포커스 시 재시도 비활성화
   });
 
   const queryClient = useQueryClient();

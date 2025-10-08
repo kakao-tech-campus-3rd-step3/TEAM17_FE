@@ -1,9 +1,8 @@
 import { useState, useMemo } from 'react';
 import StarterPackCard from '@/components/card/StarterPackCard';
 import StarterPackModal from '@/components/home/StarterPackList/StarterPackDetail';
-import { useLikedPacks } from '@/hooks/useLikedPacks';
 import { useStarterPackModal } from '@/hooks/useStarterPackModal';
-import { useStarterPack } from '@/hooks/useStarterPacks';
+import { useStarterPack, useStarterPackLike, useStarterPackById } from '@/hooks/useStarterPacks';
 import type { StarterPack } from '@/types/StarterPack';
 import {
   StarterPackContainer,
@@ -14,6 +13,9 @@ import {
   StarterPackGrid,
   LoadingContainer,
   LoadingSpinner,
+  ErrorContainer,
+  ErrorMessage,
+  EmptyState,
 } from './StarterListPage.styles';
 
 // 카테고리
@@ -26,12 +28,35 @@ const matchCategory = (pack: StarterPack, active: CategoryKey) => {
   return cat === active;
 };
 
+const StarterPackCardWrapper = ({
+  pack,
+  onOpen,
+}: {
+  pack: StarterPack;
+  onOpen: (pack: StarterPack) => void;
+}) => {
+  const { starterPack } = useStarterPackById(pack.id);
+  const { toggleLike } = useStarterPackLike(pack.id);
+
+  // 현재 좋아요 상태와 카운트를 가져옴
+  const packWithLike = starterPack as StarterPack & { isLiked?: boolean };
+  const isLiked = packWithLike?.isLiked ?? false;
+
+  return (
+    <StarterPackCard
+      pack={pack}
+      isLiked={isLiked}
+      onToggleLike={() => toggleLike()}
+      onOpen={onOpen}
+    />
+  );
+};
+
 const StarterListPage = () => {
-  const { isLiked, toggleLike } = useLikedPacks();
   const { selectedPack, open, close } = useStarterPackModal();
   const [active, setActive] = useState<CategoryKey>('전체');
 
-  const { starterPack, loading } = useStarterPack();
+  const { starterPack, loading, error } = useStarterPack();
 
   const allStarterPacks = useMemo(() => {
     if (!starterPack) return [];
@@ -43,6 +68,7 @@ const StarterListPage = () => {
     return allStarterPacks.filter((pack: StarterPack) => matchCategory(pack, active));
   }, [allStarterPacks, active]);
 
+  // 로딩 상태 처리
   if (loading) {
     return (
       <StarterPackContainer>
@@ -52,6 +78,47 @@ const StarterListPage = () => {
         <LoadingContainer>
           <LoadingSpinner />
         </LoadingContainer>
+      </StarterPackContainer>
+    );
+  }
+
+  // 에러 상태 처리
+  if (error) {
+    return (
+      <StarterPackContainer>
+        <StarterPackHeader>
+          <StarterPackTitle>취미팩</StarterPackTitle>
+        </StarterPackHeader>
+        <ErrorContainer>
+          <ErrorMessage>{error}</ErrorMessage>
+        </ErrorContainer>
+      </StarterPackContainer>
+    );
+  }
+
+  // 빈 상태 처리
+  if (filtered.length === 0) {
+    return (
+      <StarterPackContainer>
+        <StarterPackHeader>
+          <StarterPackTitle>취미팩</StarterPackTitle>
+          <CategoryTabs role="tablist" aria-label="스타터팩 카테고리">
+            {CATEGORIES.map((category) => (
+              <CategoryBtn
+                key={category}
+                role="tab"
+                aria-selected={active === category}
+                active={active === category}
+                onClick={() => setActive(category)}
+              >
+                {category}
+              </CategoryBtn>
+            ))}
+          </CategoryTabs>
+        </StarterPackHeader>
+        <EmptyState>
+          <p>아직 {active === '전체' ? '스타터팩' : `${active} 카테고리 스타터팩`}이 없습니다.</p>
+        </EmptyState>
       </StarterPackContainer>
     );
   }
@@ -77,13 +144,7 @@ const StarterListPage = () => {
 
       <StarterPackGrid>
         {filtered.map((pack: StarterPack) => (
-          <StarterPackCard
-            key={pack.id}
-            pack={pack}
-            isLiked={isLiked(pack.id)}
-            onToggleLike={toggleLike}
-            onOpen={open}
-          />
+          <StarterPackCardWrapper key={pack.id} pack={pack} onOpen={open} />
         ))}
       </StarterPackGrid>
 
