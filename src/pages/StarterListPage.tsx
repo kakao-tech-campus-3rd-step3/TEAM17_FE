@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import StarterPackCard from '@/components/card/StarterPackCard';
 import StarterPackModal from '@/components/home/StarterPackList/StarterPackDetail';
 import { useLikedPacks } from '@/hooks/useLikedPacks';
 import { useStarterPackModal } from '@/hooks/useStarterPackModal';
-import { mockStartPacks } from '@/mocks/mock';
+import { useStarterPack } from '@/hooks/useStarterPacks';
 import type { StarterPack } from '@/types/StarterPack';
 import {
   StarterPackContainer,
@@ -12,6 +12,8 @@ import {
   CategoryTabs,
   CategoryBtn,
   StarterPackGrid,
+  LoadingContainer,
+  LoadingSpinner,
 } from './StarterListPage.styles';
 
 // 카테고리
@@ -29,8 +31,30 @@ const StarterListPage = () => {
   const { selectedPack, open, close } = useStarterPackModal();
   const [active, setActive] = useState<CategoryKey>('전체');
 
-  // 임시로 Mock 데이터 사용 (나중에 React Query로 교체)
-  const filtered = mockStartPacks.filter((p) => matchCategory(p, active));
+  const { starterPack, loading } = useStarterPack();
+
+  const allStarterPacks = useMemo(() => {
+    if (!starterPack) return [];
+    return Object.values(starterPack).flat();
+  }, [starterPack]);
+
+  // 카테고리별 필터링
+  const filtered = useMemo(() => {
+    return allStarterPacks.filter((pack: StarterPack) => matchCategory(pack, active));
+  }, [allStarterPacks, active]);
+
+  if (loading) {
+    return (
+      <StarterPackContainer>
+        <StarterPackHeader>
+          <StarterPackTitle>취미팩</StarterPackTitle>
+        </StarterPackHeader>
+        <LoadingContainer>
+          <LoadingSpinner />
+        </LoadingContainer>
+      </StarterPackContainer>
+    );
+  }
 
   return (
     <StarterPackContainer>
@@ -52,7 +76,7 @@ const StarterListPage = () => {
       </StarterPackHeader>
 
       <StarterPackGrid>
-        {filtered.map((pack) => (
+        {filtered.map((pack: StarterPack) => (
           <StarterPackCard
             key={pack.id}
             pack={pack}
