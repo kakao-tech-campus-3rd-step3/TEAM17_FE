@@ -4,6 +4,7 @@ import StarterPackModal from '@/components/home/StarterPackList/StarterPackDetai
 import { useStarterPackModal } from '@/hooks/useStarterPackModal';
 import { useStarterPack, useStarterPackLike, useStarterPackById } from '@/hooks/useStarterPacks';
 import type { StarterPack } from '@/types/StarterPack';
+import { STARTER_PACK_CONSTANTS, type CategoryKey } from '@/constants/starterPack';
 import {
   StarterPackContainer,
   StarterPackHeader,
@@ -17,10 +18,6 @@ import {
   ErrorMessage,
   EmptyState,
 } from './StarterListPage.styles';
-
-// 카테고리
-type CategoryKey = '전체' | '베이킹' | '캠핑' | '독서' | '헬스' | '요리' | '러닝';
-const CATEGORIES: CategoryKey[] = ['전체', '베이킹', '캠핑', '독서', '헬스', '요리', '러닝'];
 
 const matchCategory = (pack: StarterPack, active: CategoryKey) => {
   if (active === '전체') return true;
@@ -54,7 +51,7 @@ const StarterPackCardWrapper = ({
 
 const StarterListPage = () => {
   const { selectedPack, open, close } = useStarterPackModal();
-  const [active, setActive] = useState<CategoryKey>('전체');
+  const [active, setActive] = useState<CategoryKey>(STARTER_PACK_CONSTANTS.DEFAULT_CATEGORY);
 
   const { starterPack, loading, error } = useStarterPack();
 
@@ -63,7 +60,24 @@ const StarterListPage = () => {
     return Object.values(starterPack).flat();
   }, [starterPack]);
 
-  // 카테고리별 필터링
+  const availableCategories = useMemo(() => {
+    const categories = new Set<string>();
+    allStarterPacks.forEach((pack) => {
+      if (pack.category) {
+        categories.add(pack.category);
+      }
+    });
+
+    // '전체'를 맨 앞에, 나머지는 알파벳 순으로 정렬
+    const sortedCategories = Array.from(categories).sort();
+    return ['전체', ...sortedCategories] as CategoryKey[];
+  }, [allStarterPacks]);
+
+  const getCategoryCount = (category: CategoryKey) => {
+    if (category === '전체') return allStarterPacks.length;
+    return allStarterPacks.filter((pack) => pack.category === category).length;
+  };
+
   const filtered = useMemo(() => {
     return allStarterPacks.filter((pack: StarterPack) => matchCategory(pack, active));
   }, [allStarterPacks, active]);
@@ -103,7 +117,7 @@ const StarterListPage = () => {
         <StarterPackHeader>
           <StarterPackTitle>취미팩</StarterPackTitle>
           <CategoryTabs role="tablist" aria-label="스타터팩 카테고리">
-            {CATEGORIES.map((category) => (
+            {availableCategories.map((category) => (
               <CategoryBtn
                 key={category}
                 role="tab"
@@ -111,7 +125,7 @@ const StarterListPage = () => {
                 active={active === category}
                 onClick={() => setActive(category)}
               >
-                {category}
+                {category} ({getCategoryCount(category)})
               </CategoryBtn>
             ))}
           </CategoryTabs>
@@ -128,7 +142,7 @@ const StarterListPage = () => {
       <StarterPackHeader>
         <StarterPackTitle>취미팩</StarterPackTitle>
         <CategoryTabs role="tablist" aria-label="스타터팩 카테고리">
-          {CATEGORIES.map((category) => (
+          {availableCategories.map((category) => (
             <CategoryBtn
               key={category}
               role="tab"
@@ -136,7 +150,7 @@ const StarterListPage = () => {
               active={active === category}
               onClick={() => setActive(category)}
             >
-              {category}
+              {category} ({getCategoryCount(category)})
             </CategoryBtn>
           ))}
         </CategoryTabs>
