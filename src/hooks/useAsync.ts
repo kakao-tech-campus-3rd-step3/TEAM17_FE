@@ -68,7 +68,6 @@ export function useAsync<T, Args extends unknown[] = []>(
       const abortController = new AbortController();
       abortControllerRef.current = abortController;
 
-      // 요청 ID 증가 (race condition 방지)
       const currentRequestId = ++requestIdRef.current;
 
       try {
