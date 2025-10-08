@@ -69,6 +69,7 @@ export const useFeeds = (
 // 특정 피드 상세 조회
 export const useFeedById = (id: number | string | undefined) => {
   const feedId = typeof id === 'string' ? parseInt(id, 10) : id;
+  const isValidId = !!feedId && !isNaN(feedId) && feedId > 0;
 
   const {
     data: feed,
@@ -76,16 +77,16 @@ export const useFeedById = (id: number | string | undefined) => {
     error,
     refetch,
   } = useQuery({
-    queryKey: QUERY_KEYS.feeds.detail(feedId!),
-    queryFn: () => fetchFeedById(feedId!),
-    enabled: !!feedId && !isNaN(feedId),
+    queryKey: isValidId ? QUERY_KEYS.feeds.detail(feedId) : ['feeds', 'detail', 'invalid'],
+    queryFn: isValidId ? () => fetchFeedById(feedId) : undefined,
+    enabled: isValidId,
     throwOnError: false,
   });
 
   const queryClient = useQueryClient();
 
   const reset = () => {
-    if (feedId && !isNaN(feedId)) {
+    if (isValidId) {
       queryClient.removeQueries({ queryKey: QUERY_KEYS.feeds.detail(feedId) });
     }
   };
@@ -108,16 +109,25 @@ export const useFeedActions = () => {
   const createMutation = useMutation({
     mutationFn: createFeed,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.lists() });
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<CreatePostRequest> }) =>
       updateFeed(id, data),
-    onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.all });
+    onSuccess: (updatedFeed, { id }) => {
+      queryClient.setQueryData(QUERY_KEYS.feeds.detail(id), updatedFeed);
+      queryClient.setQueriesData(
+        { queryKey: QUERY_KEYS.feeds.lists() },
+        (old: FeedResponse | undefined) => {
+          if (!old?.feeds) return old;
+          return {
+            ...old,
+            feeds: old.feeds.map((feed) => (feed.feedId === id ? updatedFeed : feed)),
+          };
+        }
+      );
     },
   });
 
@@ -125,7 +135,7 @@ export const useFeedActions = () => {
     mutationFn: deleteFeed,
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: QUERY_KEYS.feeds.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.lists() });
     },
   });
 
@@ -217,11 +227,27 @@ export const useFeedLike = (id: number) => {
           likeCount: result.likeCount,
         };
       });
+
+      queryClient.setQueriesData(
+        { queryKey: QUERY_KEYS.feeds.lists() },
+        (old: FeedResponse | undefined) => {
+          if (!old?.feeds) return old;
+          return {
+            ...old,
+            feeds: old.feeds.map((feed) =>
+              feed.feedId === id
+                ? { ...feed, isLiked: result.isLiked, likeCount: result.likeCount }
+                : feed
+            ),
+          };
+        }
+      );
     },
     onError: (_, __, context) => {
       if (context?.previousFeed) {
         queryClient.setQueryData(QUERY_KEYS.feeds.detail(id), context.previousFeed);
       }
+      // 목록은 무효화하여 서버 데이터로 복구
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.lists() });
     },
   });
@@ -262,6 +288,30 @@ export const useFeedBookmark = (id: number) => {
         };
       });
 
+      queryClient.setQueriesData(
+        { queryKey: QUERY_KEYS.feeds.lists() },
+        (old: FeedResponse | undefined) => {
+          if (!old?.feeds) return old;
+          return {
+            ...old,
+            feeds: old.feeds.map((feed) => {
+              if (feed.feedId !== id) return feed;
+              // FeedDetail 타입인 경우에만 북마크 업데이트
+              const feedWithBookmark = feed as unknown as FeedDetail;
+              if (!('isBookmarked' in feedWithBookmark) || !('bookmarkCount' in feedWithBookmark))
+                return feed;
+              return {
+                ...feedWithBookmark,
+                isBookmarked: !feedWithBookmark.isBookmarked,
+                bookmarkCount: feedWithBookmark.isBookmarked
+                  ? Math.max(0, feedWithBookmark.bookmarkCount - 1)
+                  : feedWithBookmark.bookmarkCount + 1,
+              };
+            }),
+          };
+        }
+      );
+
       return { previousFeed };
     },
     onSuccess: (result) => {
@@ -273,11 +323,36 @@ export const useFeedBookmark = (id: number) => {
           bookmarkCount: result.bookmarkCount,
         };
       });
+
+      queryClient.setQueriesData(
+        { queryKey: QUERY_KEYS.feeds.lists() },
+        (old: FeedResponse | undefined) => {
+          if (!old?.feeds) return old;
+          return {
+            ...old,
+            feeds: old.feeds.map((feed) => {
+              if (feed.feedId !== id) return feed;
+              // FeedDetail 타입인 경우에만 북마크 업데이트
+              const feedWithBookmark = feed as unknown as FeedDetail;
+              if (!('isBookmarked' in feedWithBookmark) || !('bookmarkCount' in feedWithBookmark))
+                return feed;
+              return {
+                ...feedWithBookmark,
+                isBookmarked: result.isBookmarked,
+                bookmarkCount: result.bookmarkCount,
+              };
+            }),
+          };
+        }
+      );
     },
     onError: (_, __, context) => {
+      // 실패 시 상세 캐시 롤백
       if (context?.previousFeed) {
         queryClient.setQueryData(QUERY_KEYS.feeds.detail(id), context.previousFeed);
       }
+      // 목록은 무효화하여 서버 데이터로 복구
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.lists() });
     },
   });
 

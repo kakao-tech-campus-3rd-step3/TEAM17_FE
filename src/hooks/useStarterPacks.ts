@@ -73,16 +73,27 @@ export const useStarterPackActions = () => {
   const createMutation = useMutation({
     mutationFn: createStarterPack,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<StarterPackRequest> }) =>
       updateStarterPack(id, data),
-    onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.all });
+    onSuccess: (updatedPack, { id }) => {
+      queryClient.setQueryData(QUERY_KEYS.starterPacks.detail(id), updatedPack);
+      queryClient.setQueryData(
+        QUERY_KEYS.starterPacks.list(),
+        (old: StarterPackResponse | undefined) => {
+          if (!old) return old;
+
+          const updated: StarterPackResponse = {};
+          for (const key in old) {
+            updated[key] = old[key].map((pack) => (pack.id === id ? updatedPack : pack));
+          }
+          return updated;
+        }
+      );
     },
   });
 
@@ -90,7 +101,7 @@ export const useStarterPackActions = () => {
     mutationFn: deleteStarterPack,
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: QUERY_KEYS.starterPacks.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
     },
   });
 
@@ -98,7 +109,7 @@ export const useStarterPackActions = () => {
     mutationFn: toggleStarterPackLike,
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
     },
   });
 
@@ -209,6 +220,22 @@ export const useStarterPackLike = (id: number) => {
             likes: result.likes,
             isLiked: true,
           };
+        }
+      );
+
+      queryClient.setQueryData(
+        QUERY_KEYS.starterPacks.list(),
+        (old: StarterPackResponse | undefined) => {
+          if (!old) return old;
+
+          const updatePack = (pack: StarterPack) =>
+            pack.id === id ? { ...pack, likes: result.likes, isLiked: true } : pack;
+
+          const updated: StarterPackResponse = {};
+          for (const key in old) {
+            updated[key] = old[key].map(updatePack);
+          }
+          return updated;
         }
       );
     },
