@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import StarterPackCard from '@/components/card/StarterPackCard';
-import StarterPackModal from '@/components/home/StarterPackList/StarterPackDetail';
-import { useStarterPackModal } from '@/hooks/useStarterPackModal';
 import { useStarterPack, useStarterPackLike, useStarterPackById } from '@/hooks/useStarterPacks';
 import type { StarterPack } from '@/types/StarterPack';
 import { STARTER_PACK_CONSTANTS, type CategoryKey } from '@/constants/starterPack';
@@ -25,13 +24,8 @@ const matchCategory = (pack: StarterPack, active: CategoryKey) => {
   return cat === active;
 };
 
-const StarterPackCardWrapper = ({
-  pack,
-  onOpen,
-}: {
-  pack: StarterPack;
-  onOpen: (pack: StarterPack) => void;
-}) => {
+const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
+  const navigate = useNavigate();
   const { starterPack } = useStarterPackById(pack.id);
   const { toggleLike } = useStarterPackLike(pack.id);
 
@@ -39,18 +33,22 @@ const StarterPackCardWrapper = ({
   const packWithLike = starterPack as StarterPack & { isLiked?: boolean };
   const isLiked = packWithLike?.isLiked ?? false;
 
+  // 상세 페이지로 이동
+  const handleOpenDetail = () => {
+    navigate(`/starterpack/${pack.id}`);
+  };
+
   return (
     <StarterPackCard
       pack={pack}
       isLiked={isLiked}
       onToggleLike={() => toggleLike()}
-      onOpen={onOpen}
+      onOpen={handleOpenDetail}
     />
   );
 };
 
 const StarterListPage = () => {
-  const { selectedPack, open, close } = useStarterPackModal();
   const [active, setActive] = useState<CategoryKey>(STARTER_PACK_CONSTANTS.DEFAULT_CATEGORY);
 
   const { starterPack, loading, error } = useStarterPack();
@@ -158,11 +156,9 @@ const StarterListPage = () => {
 
       <StarterPackGrid>
         {filtered.map((pack: StarterPack) => (
-          <StarterPackCardWrapper key={pack.id} pack={pack} onOpen={open} />
+          <StarterPackCardWrapper key={pack.id} pack={pack} />
         ))}
       </StarterPackGrid>
-
-      {selectedPack && <StarterPackModal pack={selectedPack} onClose={close} />}
     </StarterPackContainer>
   );
 };
