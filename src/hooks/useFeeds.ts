@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   fetchFeeds,
@@ -19,6 +18,8 @@ import {
 import { QUERY_KEYS } from '@/utils/queryKeys';
 import { FEED_API_CONSTANTS } from '@/constants/feed';
 import type {
+  FeedDetail,
+  FeedResponse,
   CreatePostRequest,
   CreateCommentRequest,
   CreateReplyRequest,
@@ -166,47 +167,62 @@ export const useFeedActions = () => {
 
 // ==================== Feed 좋아요 관리 ====================
 
-// 피드 좋아요 관리 (낙관적 업데이트 포함)
-export const useFeedLike = (
-  id: number,
-  initialLikeCount: number = 0,
-  initialIsLiked: boolean = false
-) => {
+// 피드 좋아요 관리
+export const useFeedLike = (id: number) => {
   const queryClient = useQueryClient();
-
-  // 로컬 상태로 낙관적 업데이트 관리
-  const [likeCount, setLikeCount] = useState(initialLikeCount);
-  const [isLiked, setIsLiked] = useState(initialIsLiked);
 
   const toggleLikeMutation = useMutation({
     mutationFn: () => toggleFeedLike(id),
     onMutate: async () => {
-      // 낙관적 업데이트
-      const newIsLiked = !isLiked;
-      const newLikeCount = newIsLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.feeds.detail(id) });
 
-      setIsLiked(newIsLiked);
-      setLikeCount(newLikeCount);
+      const previousFeed = queryClient.getQueryData(QUERY_KEYS.feeds.detail(id));
 
-      // 롤백을 위한 이전 상태 반환
-      return { previousIsLiked: isLiked, previousLikeCount: likeCount };
+      queryClient.setQueryData(QUERY_KEYS.feeds.detail(id), (old: FeedDetail | undefined) => {
+        if (!old) return old;
+        return {
+          ...old,
+          isLiked: !old.isLiked,
+          likeCount: old.isLiked ? Math.max(0, old.likeCount - 1) : old.likeCount + 1,
+        };
+      });
+
+      queryClient.setQueriesData(
+        { queryKey: QUERY_KEYS.feeds.lists() },
+        (old: FeedResponse | undefined) => {
+          if (!old?.feeds) return old;
+          return {
+            ...old,
+            feeds: old.feeds.map((feed) =>
+              feed.feedId === id
+                ? {
+                    ...feed,
+                    isLiked: !feed.isLiked,
+                    likeCount: feed.isLiked ? Math.max(0, feed.likeCount - 1) : feed.likeCount + 1,
+                  }
+                : feed
+            ),
+          };
+        }
+      );
+
+      return { previousFeed };
     },
     onSuccess: (result: LikePostResponse) => {
-      // 성공 시 서버 데이터로 업데이트
-      if (result) {
-        setLikeCount(result.likeCount);
-        setIsLiked(result.isLiked);
-      }
-      // 관련 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.all });
+      queryClient.setQueryData(QUERY_KEYS.feeds.detail(id), (old: FeedDetail | undefined) => {
+        if (!old) return old;
+        return {
+          ...old,
+          isLiked: result.isLiked,
+          likeCount: result.likeCount,
+        };
+      });
     },
     onError: (_, __, context) => {
-      // 실패 시 롤백
-      if (context) {
-        setIsLiked(context.previousIsLiked);
-        setLikeCount(context.previousLikeCount);
+      if (context?.previousFeed) {
+        queryClient.setQueryData(QUERY_KEYS.feeds.detail(id), context.previousFeed);
       }
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.lists() });
     },
   });
 
@@ -216,55 +232,51 @@ export const useFeedLike = (
   };
 
   return {
-    likeCount,
-    isLiked,
+    toggleLike: handleToggleLike,
     loading: toggleLikeMutation.isPending,
     error: toggleLikeMutation.error ? '좋아요 처리에 실패했습니다.' : null,
-    toggleLike: handleToggleLike,
   };
 };
 
 // ==================== Feed 북마크 관리 ====================
 
-// 피드 북마크 관리 (낙관적 업데이트 포함)
-export const useFeedBookmark = (
-  id: number,
-  initialBookmarkCount: number = 0,
-  initialIsBookmarked: boolean = false
-) => {
+// 피드 북마크 관리
+export const useFeedBookmark = (id: number) => {
   const queryClient = useQueryClient();
-
-  // 로컬 상태로 낙관적 업데이트 관리
-  const [bookmarkCount, setBookmarkCount] = useState(initialBookmarkCount);
-  const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
 
   const toggleBookmarkMutation = useMutation({
     mutationFn: () => toggleFeedBookmark(id),
     onMutate: async () => {
-      // 낙관적 업데이트
-      const newIsBookmarked = !isBookmarked;
-      const newBookmarkCount = newIsBookmarked ? bookmarkCount + 1 : Math.max(0, bookmarkCount - 1);
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.feeds.detail(id) });
 
-      setIsBookmarked(newIsBookmarked);
-      setBookmarkCount(newBookmarkCount);
+      const previousFeed = queryClient.getQueryData(QUERY_KEYS.feeds.detail(id));
 
-      // 롤백을 위한 이전 상태 반환
-      return { previousIsBookmarked: isBookmarked, previousBookmarkCount: bookmarkCount };
+      queryClient.setQueryData(QUERY_KEYS.feeds.detail(id), (old: FeedDetail | undefined) => {
+        if (!old) return old;
+        return {
+          ...old,
+          isBookmarked: !old.isBookmarked,
+          bookmarkCount: old.isBookmarked
+            ? Math.max(0, old.bookmarkCount - 1)
+            : old.bookmarkCount + 1,
+        };
+      });
+
+      return { previousFeed };
     },
     onSuccess: (result) => {
-      // 성공 시 서버 데이터로 업데이트
-      if (result) {
-        setBookmarkCount(result.bookmarkCount);
-        setIsBookmarked(result.isBookmarked);
-      }
-      // 관련 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.detail(id) });
+      queryClient.setQueryData(QUERY_KEYS.feeds.detail(id), (old: FeedDetail | undefined) => {
+        if (!old) return old;
+        return {
+          ...old,
+          isBookmarked: result.isBookmarked,
+          bookmarkCount: result.bookmarkCount,
+        };
+      });
     },
     onError: (_, __, context) => {
-      // 실패 시 롤백
-      if (context) {
-        setIsBookmarked(context.previousIsBookmarked);
-        setBookmarkCount(context.previousBookmarkCount);
+      if (context?.previousFeed) {
+        queryClient.setQueryData(QUERY_KEYS.feeds.detail(id), context.previousFeed);
       }
     },
   });
@@ -275,11 +287,9 @@ export const useFeedBookmark = (
   };
 
   return {
-    bookmarkCount,
-    isBookmarked,
+    toggleBookmark: handleToggleBookmark,
     loading: toggleBookmarkMutation.isPending,
     error: toggleBookmarkMutation.error ? '북마크 처리에 실패했습니다.' : null,
-    toggleBookmark: handleToggleBookmark,
   };
 };
 
