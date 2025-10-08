@@ -49,6 +49,7 @@ const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
 };
 
 const StarterListPage = () => {
+  const navigate = useNavigate();
   const [active, setActive] = useState<CategoryKey>(STARTER_PACK_CONSTANTS.DEFAULT_CATEGORY);
 
   const { starterPack, loading, error } = useStarterPack();
@@ -103,6 +104,21 @@ const StarterListPage = () => {
         </StarterPackHeader>
         <ErrorContainer>
           <ErrorMessage>{error}</ErrorMessage>
+          <button
+            onClick={() => navigate('/starterpack/1?demo=true')}
+            style={{
+              padding: '0.75rem 1.5rem',
+              backgroundColor: '#ff6b35',
+              color: 'white',
+              border: 'none',
+              borderRadius: '0.5rem',
+              cursor: 'pointer',
+              fontSize: '0.875rem',
+              fontWeight: '600',
+            }}
+          >
+            🎯 데모 페이지 보기
+          </button>
         </ErrorContainer>
       </StarterPackContainer>
     );

@@ -101,6 +101,7 @@ export const LoadingSpinner = styled.div`
 
 export const ErrorContainer = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 3.75rem 1.25rem;
@@ -110,7 +111,7 @@ export const ErrorContainer = styled.div`
 export const ErrorMessage = styled.p`
   color: #8e8e8e;
   font-size: 1rem;
-  margin: 0;
+  margin: 0 0 1.5rem 0;
 `;
 
 export const EmptyState = styled.div`
