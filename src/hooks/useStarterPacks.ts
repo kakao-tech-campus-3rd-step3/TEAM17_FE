@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   fetchStarterPack,
@@ -9,7 +8,7 @@ import {
   toggleStarterPackLike,
 } from '@/api/starterPackApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
-import type { StarterPackRequest } from '@/types/StarterPack';
+import type { StarterPack, StarterPackResponse, StarterPackRequest } from '@/types/StarterPack';
 
 // 모든 스타터팩 목록 관리하는 훅
 export const useStarterPack = () => {
@@ -74,16 +73,27 @@ export const useStarterPackActions = () => {
   const createMutation = useMutation({
     mutationFn: createStarterPack,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<StarterPackRequest> }) =>
       updateStarterPack(id, data),
-    onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.all });
+    onSuccess: (updatedPack, { id }) => {
+      queryClient.setQueryData(QUERY_KEYS.starterPacks.detail(id), updatedPack);
+      queryClient.setQueryData(
+        QUERY_KEYS.starterPacks.list(),
+        (old: StarterPackResponse | undefined) => {
+          if (!old) return old;
+
+          const updated: StarterPackResponse = {};
+          for (const key in old) {
+            updated[key] = old[key].map((pack) => (pack.id === id ? updatedPack : pack));
+          }
+          return updated;
+        }
+      );
     },
   });
 
@@ -91,7 +101,7 @@ export const useStarterPackActions = () => {
     mutationFn: deleteStarterPack,
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: QUERY_KEYS.starterPacks.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
     },
   });
 
@@ -99,7 +109,7 @@ export const useStarterPackActions = () => {
     mutationFn: toggleStarterPackLike,
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
     },
   });
 
@@ -150,43 +160,90 @@ export const useStarterPackActions = () => {
   };
 };
 
-// 스타터팩 좋아요 관리 훅 (낙관적 업데이트 포함)
-export const useStarterPackLike = (id: number, initialLike: number = 0) => {
+// 스타터팩 좋아요 관리 훅
+export const useStarterPackLike = (id: number) => {
   const queryClient = useQueryClient();
-
-  // 로컬 상태로 낙관적 업데이트 관리
-  const [likesCount, setLikesCount] = useState(initialLike);
-  const [isLiked, setIsLiked] = useState(false);
 
   const toggleLikeMutation = useMutation({
     mutationFn: () => toggleStarterPackLike(id),
     onMutate: async () => {
-      // 낙관적 업데이트
-      const newIsLiked = !isLiked;
-      const newLikesCount = newIsLiked ? likesCount + 1 : Math.max(0, likesCount - 1);
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.starterPacks.detail(id) });
 
-      setIsLiked(newIsLiked);
-      setLikesCount(newLikesCount);
+      const previousPack = queryClient.getQueryData(QUERY_KEYS.starterPacks.detail(id));
 
-      // 롤백을 위한 이전 상태 반환
-      return { previousIsLiked: isLiked, previousLikesCount: likesCount };
+      queryClient.setQueryData(
+        QUERY_KEYS.starterPacks.detail(id),
+        (old: StarterPack | undefined) => {
+          if (!old) return old;
+          const currentIsLiked = (old as StarterPack & { isLiked?: boolean }).isLiked ?? false;
+          return {
+            ...old,
+            isLiked: !currentIsLiked,
+            likes: currentIsLiked ? Math.max(0, old.likes - 1) : old.likes + 1,
+          };
+        }
+      );
+
+      queryClient.setQueryData(
+        QUERY_KEYS.starterPacks.list(),
+        (old: StarterPackResponse | undefined) => {
+          if (!old) return old;
+
+          const updatePack = (pack: StarterPack) => {
+            const currentIsLiked = (pack as StarterPack & { isLiked?: boolean }).isLiked ?? false;
+            return pack.id === id
+              ? {
+                  ...pack,
+                  isLiked: !currentIsLiked,
+                  likes: currentIsLiked ? Math.max(0, pack.likes - 1) : pack.likes + 1,
+                }
+              : pack;
+          };
+
+          const updated: StarterPackResponse = {};
+          for (const key in old) {
+            updated[key] = old[key].map(updatePack);
+          }
+          return updated;
+        }
+      );
+
+      return { previousPack };
     },
     onSuccess: (result) => {
-      // 성공 시 서버 데이터로 업데이트
-      if (result) {
-        setLikesCount(result.likes);
-        setIsLiked(result.likes > likesCount);
-      }
-      // 관련 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.all });
+      queryClient.setQueryData(
+        QUERY_KEYS.starterPacks.detail(id),
+        (old: StarterPack | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            likes: result.likes,
+            isLiked: true,
+          };
+        }
+      );
+
+      queryClient.setQueryData(
+        QUERY_KEYS.starterPacks.list(),
+        (old: StarterPackResponse | undefined) => {
+          if (!old) return old;
+
+          const updatePack = (pack: StarterPack) =>
+            pack.id === id ? { ...pack, likes: result.likes, isLiked: true } : pack;
+
+          const updated: StarterPackResponse = {};
+          for (const key in old) {
+            updated[key] = old[key].map(updatePack);
+          }
+          return updated;
+        }
+      );
     },
     onError: (_, __, context) => {
-      // 실패 시 롤백
-      if (context) {
-        setIsLiked(context.previousIsLiked);
-        setLikesCount(context.previousLikesCount);
+      if (context?.previousPack) {
+        queryClient.setQueryData(QUERY_KEYS.starterPacks.detail(id), context.previousPack);
       }
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
     },
   });
 
@@ -196,10 +253,8 @@ export const useStarterPackLike = (id: number, initialLike: number = 0) => {
   };
 
   return {
-    likesCount,
-    isLiked,
+    toggleLike: handleToggleLike,
     loading: toggleLikeMutation.isPending,
     error: toggleLikeMutation.error ? '좋아요 처리에 실패했습니다.' : null,
-    toggleLike: handleToggleLike,
   };
 };
