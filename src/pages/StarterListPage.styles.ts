@@ -1,141 +1,128 @@
 import styled from 'styled-components';
-import { Package } from 'lucide-react';
 
-export const PageWrap = styled.div`
-  min-height: 100vh;
-  background: linear-gradient(135deg, #fafafa, #f3f4f6);
-`;
-
-export const Header = styled.header`
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-`;
-
-export const HeaderInner = styled.div`
-  max-width: 70rem;
+export const StarterPackContainer = styled.div`
+  max-width: 75rem;
   margin: 0 auto;
-  padding: 1.5rem 1rem;
-
-  @media (min-width: 768px) {
-    padding: 2rem 1.5rem;
-  }
+  padding: 1.25rem;
+  background-color: #fafafa;
+  min-height: 100vh;
 `;
 
-export const HeaderRow = styled.div`
+export const StarterPackHeader = styled.div`
+  background-color: #ffffff;
+  border-bottom: 1px solid #dbdbdb;
+  padding: 1rem 1.25rem;
+  margin: -1.25rem -1.25rem 1.25rem -1.25rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+`;
+
+export const StarterPackTitle = styled.h1`
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #262626;
+  margin: 0 0 1rem 0;
+  text-align: center;
+`;
+
+export const CategoryTabs = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-
-  @media (min-width: 768px) {
-    gap: 1rem;
-  }
-`;
-
-export const HeaderTitle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-width: 0;
-
-  @media (min-width: 768px) {
-    gap: 1rem;
-  }
-`;
-
-export const TitleIcon = styled(Package)`
-  width: 2rem;
-  height: 2rem;
-  color: #2563eb;
-
-  @media (min-width: 768px) {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-`;
-
-export const CategoryTabs = styled.nav`
-  display: flex;
-  align-items: center;
   gap: 0.5rem;
+  justify-content: center;
   flex-wrap: wrap;
-  min-width: 0;
+`;
 
-  @media (min-width: 768px) {
-    gap: 0.75rem;
+export const CategoryBtn = styled.button<{ active: boolean }>`
+  padding: 0.5rem 1rem;
+  border: 1px solid ${(props) => (props.active ? '#ff6b35' : '#dbdbdb')};
+  background-color: ${(props) => (props.active ? '#ff6b35' : '#ffffff')};
+  color: ${(props) => (props.active ? '#ffffff' : '#262626')};
+  border-radius: 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: #ff6b35;
+    background-color: ${(props) => (props.active ? '#ff6b35' : '#fff5f0')};
+    color: ${(props) => (props.active ? '#ffffff' : '#ff6b35')};
   }
 
-  /* 모바일에서 가로 스크롤 */
-  @media (max-width: 47.9375rem) {
-    overflow-x: auto;
-    white-space: nowrap;
-    padding-bottom: 0.25rem;
-    /* 스크롤바 감추기(웹킷) */
-    &::-webkit-scrollbar {
-      display: none;
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
+export const StarterPackGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  max-width: 75rem;
+  margin: 0 auto;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.125rem;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+`;
+
+export const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3.75rem 1.25rem;
+`;
+
+export const LoadingSpinner = styled.div`
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0.1875rem solid #f3f3f3;
+  border-top: 0.1875rem solid #ff6b35;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
     }
   }
 `;
 
-export const CategoryBtn = styled.button<{ active?: boolean }>`
-  padding: 0.5rem 0.875rem;
-  border-radius: 50%;
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: -0.0125rem;
-  border: 1.5px solid ${({ active }) => (active ? '#f97316' : '#e5e7eb')};
-  background: ${({ active }) => (active ? '#fff7ed' : '#ffffff')};
-  color: ${({ active }) => (active ? '#f97316' : '#374151')};
-  transition: all 0.15s ease;
-  white-space: nowrap;
-
-  @media (min-width: 768px) {
-    padding: 0.625rem 1rem;
-    font-size: 0.9375rem;
-  }
-
-  &:hover {
-    border-color: #f97316;
-    color: #f97316;
-    background: #fffaf6;
-  }
-  &:focus-visible {
-    outline: 2px solid #f97316;
-    outline-offset: 2px;
-  }
+export const ErrorContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3.75rem 1.25rem;
+  text-align: center;
 `;
 
-export const Meta = styled.div`
-  color: #6b7280;
-  font-size: 0.875rem;
-  white-space: nowrap;
-
-  @media (min-width: 768px) {
-    font-size: 0.9375rem;
-  }
+export const ErrorMessage = styled.p`
+  color: #8e8e8e;
+  font-size: 1rem;
+  margin: 0;
 `;
 
-export const Main = styled.main`
-  max-width: 70rem;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+export const EmptyState = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3.75rem 1.25rem;
+  text-align: center;
 
-  @media (min-width: 768px) {
-    padding: 2.5rem 1.5rem;
-  }
-`;
-
-export const Grid = styled.div`
-  display: grid;
-  gap: 1.25rem;
-  grid-template-columns: 1fr;
-
-  @media (min-width: 48rem) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-  }
-  @media (min-width: 64rem) {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.75rem;
+  p {
+    color: #8e8e8e;
+    font-size: 1rem;
+    margin: 0;
   }
 `;
