@@ -1,48 +1,48 @@
 import { useContext } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { login, signup, logout, getUser } from '@/api/auth';
 import { QUERY_KEYS } from '@/utils/queryKeys';
 
-import type { LoginRequest, SignupRequest, User } from '@/types/AuthTypes'
+import type { LoginRequest, SignupRequest, User } from '@/types/AuthTypes';
 
 export const useSignup = () => {
   return useMutation({
-    mutationKey: QUERY_KEYS.signup,
+    mutationKey: QUERY_KEYS.auth.signup,
     mutationFn: (data: SignupRequest) => signup(data),
-  })
-}
+  });
+};
 
 export const useLogin = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: QUERY_KEYS.login,
+    mutationKey: QUERY_KEYS.auth.login,
     mutationFn: (data: LoginRequest) => login(data),
-     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user })
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth.user });
     },
   });
 };
 
 export const useUser = () => {
   return useQuery<User>({
-    queryKey: QUERY_KEYS.user,
+    queryKey: QUERY_KEYS.auth.user,
     queryFn: getUser,
-    retry: false, 
-  })
-}
+    retry: false,
+  });
+};
 
 export const useLogout = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: QUERY_KEYS.logout,
+    mutationKey: QUERY_KEYS.auth.logout,
     mutationFn: () => logout(),
     onSuccess: () => {
-      queryClient.removeQueries({ queryKey: QUERY_KEYS.user })
+      queryClient.removeQueries({ queryKey: QUERY_KEYS.auth.user });
     },
-  })
-}
+  });
+};
 
 export function useAuth() {
   const context = useContext(AuthContext);
