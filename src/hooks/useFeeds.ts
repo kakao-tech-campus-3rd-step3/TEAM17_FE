@@ -26,6 +26,10 @@ import type {
   LikePostResponse,
 } from '@/types/Feed';
 
+// 상수 관리
+const DECIMAL_RADIX = 10;
+const MIN_VALID_ID = 1;
+
 // ==================== Feed 목록 조회 ====================
 
 // 피드 목록 조회 (페이지네이션)
@@ -68,8 +72,8 @@ export const useFeeds = (
 
 // 특정 피드 상세 조회
 export const useFeedById = (id: number | string | undefined) => {
-  const feedId = typeof id === 'string' ? parseInt(id, 10) : id;
-  const isValidId = !!feedId && !isNaN(feedId) && feedId > 0;
+  const feedId = typeof id === 'string' ? parseInt(id, DECIMAL_RADIX) : id;
+  const isValidId = !!feedId && !isNaN(feedId) && feedId >= MIN_VALID_ID;
 
   const {
     data: feed,
