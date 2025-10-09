@@ -113,7 +113,7 @@ export const useFeedActions = () => {
   const createMutation = useMutation({
     mutationFn: createFeed,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.lists() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.lists });
     },
   });
 
@@ -123,7 +123,7 @@ export const useFeedActions = () => {
     onSuccess: (updatedFeed, { id }) => {
       queryClient.setQueryData(QUERY_KEYS.feeds.detail(id), updatedFeed);
       queryClient.setQueriesData(
-        { queryKey: QUERY_KEYS.feeds.lists() },
+        { queryKey: QUERY_KEYS.feeds.lists },
         (old: FeedResponse | undefined) => {
           if (!old?.feeds) return old;
           return {
@@ -139,7 +139,7 @@ export const useFeedActions = () => {
     mutationFn: deleteFeed,
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: QUERY_KEYS.feeds.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.lists() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.lists });
     },
   });
 
@@ -202,7 +202,7 @@ export const useFeedLike = (id: number) => {
       });
 
       queryClient.setQueriesData(
-        { queryKey: QUERY_KEYS.feeds.lists() },
+        { queryKey: QUERY_KEYS.feeds.lists },
         (old: FeedResponse | undefined) => {
           if (!old?.feeds) return old;
           return {
@@ -233,7 +233,7 @@ export const useFeedLike = (id: number) => {
       });
 
       queryClient.setQueriesData(
-        { queryKey: QUERY_KEYS.feeds.lists() },
+        { queryKey: QUERY_KEYS.feeds.lists },
         (old: FeedResponse | undefined) => {
           if (!old?.feeds) return old;
           return {
@@ -252,7 +252,7 @@ export const useFeedLike = (id: number) => {
         queryClient.setQueryData(QUERY_KEYS.feeds.detail(id), context.previousFeed);
       }
       // 목록은 무효화하여 서버 데이터로 복구
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.lists() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.lists });
     },
   });
 
@@ -293,7 +293,7 @@ export const useFeedBookmark = (id: number) => {
       });
 
       queryClient.setQueriesData(
-        { queryKey: QUERY_KEYS.feeds.lists() },
+        { queryKey: QUERY_KEYS.feeds.lists },
         (old: FeedResponse | undefined) => {
           if (!old?.feeds) return old;
           return {
@@ -329,7 +329,7 @@ export const useFeedBookmark = (id: number) => {
       });
 
       queryClient.setQueriesData(
-        { queryKey: QUERY_KEYS.feeds.lists() },
+        { queryKey: QUERY_KEYS.feeds.lists },
         (old: FeedResponse | undefined) => {
           if (!old?.feeds) return old;
           return {
@@ -356,7 +356,7 @@ export const useFeedBookmark = (id: number) => {
         queryClient.setQueryData(QUERY_KEYS.feeds.detail(id), context.previousFeed);
       }
       // 목록은 무효화하여 서버 데이터로 복구
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.lists() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.lists });
     },
   });
 

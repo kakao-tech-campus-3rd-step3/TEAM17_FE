@@ -18,7 +18,7 @@ export const useStarterPack = () => {
     error,
     refetch,
   } = useQuery({
-    queryKey: QUERY_KEYS.starterPacks.list(),
+    queryKey: QUERY_KEYS.starterPacks.list,
     queryFn: fetchStarterPack,
     throwOnError: false,
     retry: false,
@@ -77,7 +77,7 @@ export const useStarterPackActions = () => {
   const createMutation = useMutation({
     mutationFn: createStarterPack,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list });
     },
   });
 
@@ -87,7 +87,7 @@ export const useStarterPackActions = () => {
     onSuccess: (updatedPack, { id }) => {
       queryClient.setQueryData(QUERY_KEYS.starterPacks.detail(id), updatedPack);
       queryClient.setQueryData(
-        QUERY_KEYS.starterPacks.list(),
+        QUERY_KEYS.starterPacks.list,
         (old: StarterPackResponse | undefined) => {
           if (!old) return old;
 
@@ -105,7 +105,7 @@ export const useStarterPackActions = () => {
     mutationFn: deleteStarterPack,
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: QUERY_KEYS.starterPacks.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list });
     },
   });
 
@@ -113,7 +113,7 @@ export const useStarterPackActions = () => {
     mutationFn: toggleStarterPackLike,
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list });
     },
   });
 
@@ -189,7 +189,7 @@ export const useStarterPackLike = (id: number) => {
       );
 
       queryClient.setQueryData(
-        QUERY_KEYS.starterPacks.list(),
+        QUERY_KEYS.starterPacks.list,
         (old: StarterPackResponse | undefined) => {
           if (!old) return old;
 
@@ -228,7 +228,7 @@ export const useStarterPackLike = (id: number) => {
       );
 
       queryClient.setQueryData(
-        QUERY_KEYS.starterPacks.list(),
+        QUERY_KEYS.starterPacks.list,
         (old: StarterPackResponse | undefined) => {
           if (!old) return old;
 
@@ -247,7 +247,7 @@ export const useStarterPackLike = (id: number) => {
       if (context?.previousPack) {
         queryClient.setQueryData(QUERY_KEYS.starterPacks.detail(id), context.previousPack);
       }
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list });
     },
   });
 

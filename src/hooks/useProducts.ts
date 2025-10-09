@@ -23,7 +23,7 @@ export const useProducts = () => {
     error,
     refetch,
   } = useQuery({
-    queryKey: QUERY_KEYS.products.list(),
+    queryKey: QUERY_KEYS.products.list,
     queryFn: fetchProducts,
     throwOnError: false,
   });
@@ -87,7 +87,7 @@ export const useProductActions = () => {
   const createMutation = useMutation({
     mutationFn: createProduct,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products.list });
     },
   });
 
@@ -97,7 +97,7 @@ export const useProductActions = () => {
     onSuccess: (updatedProduct, { id }) => {
       queryClient.setQueryData(QUERY_KEYS.products.detail(id), updatedProduct);
 
-      queryClient.setQueryData(QUERY_KEYS.products.list(), (old: ProductResponse | undefined) => {
+      queryClient.setQueryData(QUERY_KEYS.products.list, (old: ProductResponse | undefined) => {
         if (!old) return old;
 
         const updated: ProductResponse = {};
@@ -113,7 +113,7 @@ export const useProductActions = () => {
     mutationFn: deleteProduct,
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: QUERY_KEYS.products.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products.list });
     },
   });
 
@@ -176,7 +176,7 @@ export const useProductLike = (id: number) => {
         };
       });
 
-      queryClient.setQueryData(QUERY_KEYS.products.list(), (old: ProductResponse | undefined) => {
+      queryClient.setQueryData(QUERY_KEYS.products.list, (old: ProductResponse | undefined) => {
         if (!old) return old;
 
         const updateProduct = (product: Product) => {
@@ -211,7 +211,7 @@ export const useProductLike = (id: number) => {
         };
       });
 
-      queryClient.setQueryData(QUERY_KEYS.products.list(), (old: ProductResponse | undefined) => {
+      queryClient.setQueryData(QUERY_KEYS.products.list, (old: ProductResponse | undefined) => {
         if (!old) return old;
 
         const updateProduct = (product: Product) =>
@@ -228,7 +228,7 @@ export const useProductLike = (id: number) => {
       if (context?.previousProduct) {
         queryClient.setQueryData(QUERY_KEYS.products.detail(id), context.previousProduct);
       }
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products.list });
     },
   });
 
