@@ -16,7 +16,8 @@ import {
   ErrorContainer,
   ErrorMessage,
   EmptyState,
-} from './StarterListPage.styles';
+  DemoButton,
+} from '@/pages/StarterListPage.styles';
 
 const matchCategory = (pack: StarterPack, active: CategoryKey) => {
   if (active === '전체') return true;
@@ -104,21 +105,9 @@ const StarterListPage = () => {
         </StarterPackHeader>
         <ErrorContainer>
           <ErrorMessage>{error}</ErrorMessage>
-          <button
-            onClick={() => navigate('/starterpack/1?demo=true')}
-            style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#ff6b35',
-              color: 'white',
-              border: 'none',
-              borderRadius: '0.5rem',
-              cursor: 'pointer',
-              fontSize: '0.875rem',
-              fontWeight: '600',
-            }}
-          >
+          <DemoButton onClick={() => navigate('/starterpack/1?demo=true')}>
             🎯 데모 페이지 보기
-          </button>
+          </DemoButton>
         </ErrorContainer>
       </StarterPackContainer>
     );

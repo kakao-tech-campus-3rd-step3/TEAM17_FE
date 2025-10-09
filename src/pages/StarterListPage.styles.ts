@@ -127,3 +127,23 @@ export const EmptyState = styled.div`
     margin: 0;
   }
 `;
+
+export const DemoButton = styled.button`
+  padding: 0.75rem 1.5rem;
+  background-color: #ff6b35;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #ff5722;
+  }
+
+  &:active {
+    background-color: #e64a19;
+  }
+`;

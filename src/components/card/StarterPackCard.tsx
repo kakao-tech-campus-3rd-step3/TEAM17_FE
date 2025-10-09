@@ -19,7 +19,7 @@ import {
   ProductItem,
   ProductImage,
   ProductName,
-} from './StarterPackCard.styles';
+} from '@/components/card/StarterPackCard.styles';
 
 type Props = {
   pack: StarterPack;
