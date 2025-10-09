@@ -16,6 +16,7 @@ import {
   Footer,
   CancelButton,
   SubmitButton,
+  ErrorText,
 } from '@/components/feedwriting/LinkModal.style';
 import type { ProductForm } from '@/types/LinkWriteForm';
 
@@ -27,7 +28,13 @@ interface ProductModalProps {
 }
 
 const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, defaultValues }) => {
-  const { register, control, handleSubmit, reset } = useForm<ProductForm>({
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ProductForm>({
     defaultValues,
   });
 
@@ -71,18 +78,27 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
 
                 <FormGroup>
                   <label>상품명</label>
-                  <input
-                    placeholder="상품명을 입력하세요 (필수)"
-                    {...register(`products.${idx}.name`, { required: true })}
-                  />
+                  <div className="input-wrapper">
+                    <input
+                      placeholder="상품명을 입력하세요 (필수)"
+                      {...register(`products.${idx}.name`, { required: '상품명을 입력해주세요.' })}
+                    />
+                    {errors.products?.[idx]?.name && (
+                      <ErrorText>{errors.products[idx].name?.message}</ErrorText>
+                    )}
+                  </div>
                 </FormGroup>
-
                 <FormGroup>
                   <label>상품링크</label>
-                  <input
-                    placeholder="상품링크를 입력하세요 (필수)"
-                    {...register(`products.${idx}.url`, { required: true })}
-                  />
+                  <div className="input-wrapper">
+                    <input
+                      placeholder="상품링크를 입력하세요 (필수)"
+                      {...register(`products.${idx}.url`, { required: '상품링크를 입력해주세요.' })}
+                    />
+                    {errors.products?.[idx]?.url && (
+                      <ErrorText>{errors.products[idx].url?.message}</ErrorText>
+                    )}
+                  </div>
                 </FormGroup>
 
                 <FormGroup>
@@ -94,12 +110,21 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
                 </FormGroup>
 
                 <FormGroup>
-                  <label>상품 이미지 <br/> (필수) </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    {...register(`products.${idx}.imageFile`, { required: true })}
-                  />
+                  <label>
+                    상품 이미지 <br /> (필수)
+                  </label>
+                  <div className="input-wrapper">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      {...register(`products.${idx}.imageFile`, {
+                        required: '이미지를 업로드해주세요.',
+                      })}
+                    />
+                    {errors.products?.[idx]?.imageFile && (
+                      <ErrorText>{errors.products[idx].imageFile?.message}</ErrorText>
+                    )}
+                  </div>
                 </FormGroup>
               </FieldSet>
             ))}
