@@ -49,7 +49,7 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
       <Modal>
         <Header>상품 링크 작성하기</Header>
         <RowWrapper>
-          <Desc>- 상품명과 상품 링크는 "필수", 설명은 "선택"입니다.</Desc>
+          <Desc>- 상품명과 상품 링크, 상품 이미지는 "필수", 설명은 "선택"입니다.</Desc>
           <AddButton
             type="button"
             onClick={() => append({ name: '', url: '', description: '', image: null })}
@@ -94,8 +94,12 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
                 </FormGroup>
 
                 <FormGroup>
-                  <label>상품 이미지</label>
-                  <input type="file" accept="image/*" {...register(`products.${idx}.image`)} />
+                  <label>상품 이미지 <br/> (필수) </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    {...register(`products.${idx}.image`, { required: true })}
+                  />
                 </FormGroup>
               </FieldSet>
             ))}
