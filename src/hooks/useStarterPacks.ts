@@ -8,7 +8,13 @@ import {
   toggleStarterPackLike,
 } from '@/api/starterPackApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
-import type { StarterPack, StarterPackResponse, StarterPackRequest } from '@/types/StarterPack';
+import { ERROR_MESSAGES } from '@/utils/errorMessages';
+import type {
+  StarterPack,
+  StarterPackResponse,
+  StarterPackRequest,
+  LikeStarterPackResponse,
+} from '@/types/StarterPack';
 
 // 모든 스타터팩 목록 관리하는 훅
 export const useStarterPack = () => {
@@ -18,9 +24,11 @@ export const useStarterPack = () => {
     error,
     refetch,
   } = useQuery({
-    queryKey: QUERY_KEYS.starterPacks.list(),
+    queryKey: QUERY_KEYS.starterPacks.list,
     queryFn: fetchStarterPack,
     throwOnError: false,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 
   const queryClient = useQueryClient();
@@ -32,7 +40,7 @@ export const useStarterPack = () => {
   return {
     starterPack,
     loading,
-    error: error ? '스타터팩을 불러오는데 실패했습니다.' : null,
+    error: error ? ERROR_MESSAGES.FETCH.STARTER_PACK : null,
     refresh: refetch,
     reset,
   };
@@ -49,6 +57,8 @@ export const useStarterPackById = (id: number) => {
     queryFn: () => fetchStarterPackById(id),
     enabled: !!id,
     throwOnError: false,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 
   const queryClient = useQueryClient();
@@ -60,7 +70,7 @@ export const useStarterPackById = (id: number) => {
   return {
     starterPack,
     loading,
-    error: error ? '스타터팩을 불러오는데 실패했습니다.' : null,
+    error: error ? ERROR_MESSAGES.FETCH.STARTER_PACK : null,
     refresh: refetch,
     reset,
   };
@@ -73,7 +83,7 @@ export const useStarterPackActions = () => {
   const createMutation = useMutation({
     mutationFn: createStarterPack,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list });
     },
   });
 
@@ -83,7 +93,7 @@ export const useStarterPackActions = () => {
     onSuccess: (updatedPack, { id }) => {
       queryClient.setQueryData(QUERY_KEYS.starterPacks.detail(id), updatedPack);
       queryClient.setQueryData(
-        QUERY_KEYS.starterPacks.list(),
+        QUERY_KEYS.starterPacks.list,
         (old: StarterPackResponse | undefined) => {
           if (!old) return old;
 
@@ -101,7 +111,7 @@ export const useStarterPackActions = () => {
     mutationFn: deleteStarterPack,
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: QUERY_KEYS.starterPacks.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list });
     },
   });
 
@@ -109,7 +119,7 @@ export const useStarterPackActions = () => {
     mutationFn: toggleStarterPackLike,
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.detail(id) });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list });
     },
   });
 
@@ -185,7 +195,7 @@ export const useStarterPackLike = (id: number) => {
       );
 
       queryClient.setQueryData(
-        QUERY_KEYS.starterPacks.list(),
+        QUERY_KEYS.starterPacks.list,
         (old: StarterPackResponse | undefined) => {
           if (!old) return old;
 
@@ -210,7 +220,7 @@ export const useStarterPackLike = (id: number) => {
 
       return { previousPack };
     },
-    onSuccess: (result) => {
+    onSuccess: (result: LikeStarterPackResponse) => {
       queryClient.setQueryData(
         QUERY_KEYS.starterPacks.detail(id),
         (old: StarterPack | undefined) => {
@@ -218,18 +228,18 @@ export const useStarterPackLike = (id: number) => {
           return {
             ...old,
             likes: result.likes,
-            isLiked: true,
+            isLiked: result.isLiked,
           };
         }
       );
 
       queryClient.setQueryData(
-        QUERY_KEYS.starterPacks.list(),
+        QUERY_KEYS.starterPacks.list,
         (old: StarterPackResponse | undefined) => {
           if (!old) return old;
 
           const updatePack = (pack: StarterPack) =>
-            pack.id === id ? { ...pack, likes: result.likes, isLiked: true } : pack;
+            pack.id === id ? { ...pack, likes: result.likes, isLiked: result.isLiked } : pack;
 
           const updated: StarterPackResponse = {};
           for (const key in old) {
@@ -243,7 +253,7 @@ export const useStarterPackLike = (id: number) => {
       if (context?.previousPack) {
         queryClient.setQueryData(QUERY_KEYS.starterPacks.detail(id), context.previousPack);
       }
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list });
     },
   });
 
@@ -255,6 +265,6 @@ export const useStarterPackLike = (id: number) => {
   return {
     toggleLike: handleToggleLike,
     loading: toggleLikeMutation.isPending,
-    error: toggleLikeMutation.error ? '좋아요 처리에 실패했습니다.' : null,
+    error: toggleLikeMutation.error ? ERROR_MESSAGES.ACTION.LIKE : null,
   };
 };
