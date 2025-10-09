@@ -15,27 +15,30 @@ const LinkWriting = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [formData, setFormData] = useState<ProductForm>({
-    products: [{ name: '', url: '', description: '', image: null }],
+    products: [{ name: '', url: '', description: '', imageFile: undefined, imageUrl: undefined }],
   });
-
+  
   const [submittedProducts, setSubmittedProducts] = useState<{ name: string; imageUrl?: string }[]>(
     []
   );
 
   const handleSubmit = (data: ProductForm) => {
-    setFormData(data);
-
     const productsWithPreview = data.products.map((p) => {
-      const file = p.image?.[0];
+      const file = (p.imageFile as unknown as FileList)?.[0] ?? p.imageFile;
       return {
         name: p.name,
-        imageUrl: file ? URL.createObjectURL(file) : undefined,
+        url: p.url,
+        description: p.description,
+        imageFile: file,
+        imageUrl: file ? URL.createObjectURL(file) : p.imageUrl,
       };
     });
 
+    setFormData({ products: productsWithPreview });
     setSubmittedProducts(productsWithPreview);
     setIsOpen(false);
   };
+
   useEffect(() => {
     return () => {
       submittedProducts.forEach((p) => {
