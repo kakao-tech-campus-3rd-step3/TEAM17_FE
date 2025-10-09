@@ -39,7 +39,7 @@ export const ScrollContainer = styled.div`
   }
 `;
 
-export const ContentLinkUploadBox = styled.div`
+export const ContentBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
