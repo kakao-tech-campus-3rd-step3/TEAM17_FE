@@ -58,7 +58,7 @@ export const useStarterPackById = (id: number) => {
     enabled: !!id,
     throwOnError: false,
     retry: false,
-    refetchOnWindowFocus: false, // 윈도우 포커스 시 재시도 비활성화
+    refetchOnWindowFocus: false,
   });
 
   const queryClient = useQueryClient();
