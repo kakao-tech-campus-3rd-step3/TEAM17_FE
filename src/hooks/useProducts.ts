@@ -9,7 +9,12 @@ import {
 } from '@/api/productApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
 import { ERROR_MESSAGES } from '@/utils/errorMessages';
-import type { Product, ProductResponse, ProductRequest } from '@/types/Product';
+import type {
+  Product,
+  ProductResponse,
+  ProductRequest,
+  LikeProductResponse,
+} from '@/types/Product';
 
 // 상수 관리
 const MIN_VALID_ID = 1;
@@ -202,13 +207,13 @@ export const useProductLike = (id: number) => {
 
       return { previousProduct };
     },
-    onSuccess: (result) => {
+    onSuccess: (result: LikeProductResponse) => {
       queryClient.setQueryData(QUERY_KEYS.products.detail(id), (old: Product | undefined) => {
         if (!old) return old;
         return {
           ...old,
           likeCount: result.likeCount,
-          isLiked: true,
+          isLiked: result.isLiked,
         };
       });
 
@@ -216,7 +221,9 @@ export const useProductLike = (id: number) => {
         if (!old) return old;
 
         const updateProduct = (product: Product) =>
-          product.id === id ? { ...product, likeCount: result.likeCount, isLiked: true } : product;
+          product.id === id
+            ? { ...product, likeCount: result.likeCount, isLiked: result.isLiked }
+            : product;
 
         const updated: ProductResponse = {};
         for (const key in old) {

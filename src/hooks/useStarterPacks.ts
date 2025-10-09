@@ -9,7 +9,12 @@ import {
 } from '@/api/starterPackApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
 import { ERROR_MESSAGES } from '@/utils/errorMessages';
-import type { StarterPack, StarterPackResponse, StarterPackRequest } from '@/types/StarterPack';
+import type {
+  StarterPack,
+  StarterPackResponse,
+  StarterPackRequest,
+  LikeStarterPackResponse,
+} from '@/types/StarterPack';
 
 // 모든 스타터팩 목록 관리하는 훅
 export const useStarterPack = () => {
@@ -215,7 +220,7 @@ export const useStarterPackLike = (id: number) => {
 
       return { previousPack };
     },
-    onSuccess: (result) => {
+    onSuccess: (result: LikeStarterPackResponse) => {
       queryClient.setQueryData(
         QUERY_KEYS.starterPacks.detail(id),
         (old: StarterPack | undefined) => {
@@ -223,7 +228,7 @@ export const useStarterPackLike = (id: number) => {
           return {
             ...old,
             likes: result.likes,
-            isLiked: true,
+            isLiked: result.isLiked,
           };
         }
       );
@@ -234,7 +239,7 @@ export const useStarterPackLike = (id: number) => {
           if (!old) return old;
 
           const updatePack = (pack: StarterPack) =>
-            pack.id === id ? { ...pack, likes: result.likes, isLiked: true } : pack;
+            pack.id === id ? { ...pack, likes: result.likes, isLiked: result.isLiked } : pack;
 
           const updated: StarterPackResponse = {};
           for (const key in old) {

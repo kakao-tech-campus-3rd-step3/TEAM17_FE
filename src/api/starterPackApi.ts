@@ -1,5 +1,10 @@
 import axiosInstance from './axiosInstance';
-import type { StarterPack, StarterPackResponse, StarterPackRequest } from '@/types/StarterPack';
+import type {
+  StarterPack,
+  StarterPackResponse,
+  StarterPackRequest,
+  LikeStarterPackResponse,
+} from '@/types/StarterPack';
 
 // 모든 스타터팩 목록 조회
 export const fetchStarterPack = async (): Promise<StarterPackResponse> => {
@@ -59,9 +64,9 @@ export const deleteStarterPack = async (id: number): Promise<void> => {
 };
 
 // 스타터팩 좋아요 토글
-export const toggleStarterPackLike = async (id: number): Promise<{ likes: number }> => {
+export const toggleStarterPackLike = async (id: number): Promise<LikeStarterPackResponse> => {
   try {
-    const response = await axiosInstance.post<{ likes: number }>(`/api/packs/${id}/like`);
+    const response = await axiosInstance.post<LikeStarterPackResponse>(`/api/packs/${id}/like`);
     return response.data;
   } catch (error) {
     console.error(`Failed to toggle like for starter pack ${id}:`, error);
