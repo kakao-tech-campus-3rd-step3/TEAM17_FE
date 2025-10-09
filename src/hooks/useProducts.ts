@@ -8,6 +8,7 @@ import {
   toggleProductLike,
 } from '@/api/productApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
+import { ERROR_MESSAGES } from '@/utils/errorMessages';
 import type { Product, ProductResponse, ProductRequest } from '@/types/Product';
 
 // 상수 관리
@@ -37,7 +38,7 @@ export const useProducts = () => {
   return {
     products,
     loading,
-    error: error ? '제품을 불러오는 데 실패했습니다.' : null,
+    error: error ? ERROR_MESSAGES.FETCH.PRODUCT : null,
     refresh: refetch,
     reset,
   };
@@ -72,7 +73,7 @@ export const useProduct = (id: number | undefined) => {
   return {
     product,
     loading,
-    error: error ? '제품을 불러오는 데 실패했습니다.' : null,
+    error: error ? ERROR_MESSAGES.FETCH.PRODUCT : null,
     refresh: refetch,
     reset,
   };
@@ -240,6 +241,6 @@ export const useProductLike = (id: number) => {
   return {
     toggleLike: handleToggleLike,
     loading: toggleLikeMutation.isPending,
-    error: toggleLikeMutation.error ? '좋아요 처리에 실패했습니다.' : null,
+    error: toggleLikeMutation.error ? ERROR_MESSAGES.ACTION.LIKE : null,
   };
 };

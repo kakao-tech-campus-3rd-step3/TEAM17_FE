@@ -16,6 +16,7 @@ import {
   toggleReplyLike,
 } from '@/api/feedApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
+import { ERROR_MESSAGES } from '@/utils/errorMessages';
 import { FEED_API_CONSTANTS } from '@/constants/feed';
 import type {
   FeedDetail,
@@ -62,7 +63,7 @@ export const useFeeds = (
     hasNext: feedResponse?.hasNext || false,
     hasPrevious: feedResponse?.hasPrevious || false,
     loading,
-    error: error ? '피드 목록을 불러오는데 실패했습니다.' : null,
+    error: error ? ERROR_MESSAGES.FETCH.FEED : null,
     refresh: refetch,
     reset,
   };
@@ -98,7 +99,7 @@ export const useFeedById = (id: number | string | undefined) => {
   return {
     feed,
     loading,
-    error: error ? '피드 정보를 불러오는데 실패했습니다.' : null,
+    error: error ? ERROR_MESSAGES.FETCH.FEED : null,
     refresh: refetch,
     reset,
   };
@@ -264,7 +265,7 @@ export const useFeedLike = (id: number) => {
   return {
     toggleLike: handleToggleLike,
     loading: toggleLikeMutation.isPending,
-    error: toggleLikeMutation.error ? '좋아요 처리에 실패했습니다.' : null,
+    error: toggleLikeMutation.error ? ERROR_MESSAGES.ACTION.LIKE : null,
   };
 };
 
@@ -368,7 +369,7 @@ export const useFeedBookmark = (id: number) => {
   return {
     toggleBookmark: handleToggleBookmark,
     loading: toggleBookmarkMutation.isPending,
-    error: toggleBookmarkMutation.error ? '북마크 처리에 실패했습니다.' : null,
+    error: toggleBookmarkMutation.error ? ERROR_MESSAGES.ACTION.BOOKMARK : null,
   };
 };
 
@@ -398,7 +399,7 @@ export const useComments = (feedId: number) => {
     comments: commentResponse?.comments || [],
     totalCount: commentResponse?.totalCount || 0,
     loading,
-    error: error ? '댓글을 불러오는데 실패했습니다.' : null,
+    error: error ? ERROR_MESSAGES.FETCH.COMMENTS : null,
     refresh: refetch,
     reset,
   };

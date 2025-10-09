@@ -8,6 +8,7 @@ import {
   toggleStarterPackLike,
 } from '@/api/starterPackApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
+import { ERROR_MESSAGES } from '@/utils/errorMessages';
 import type { StarterPack, StarterPackResponse, StarterPackRequest } from '@/types/StarterPack';
 
 // 모든 스타터팩 목록 관리하는 훅
@@ -34,7 +35,7 @@ export const useStarterPack = () => {
   return {
     starterPack,
     loading,
-    error: error ? '스타터팩을 불러오는데 실패했습니다.' : null,
+    error: error ? ERROR_MESSAGES.FETCH.STARTER_PACK : null,
     refresh: refetch,
     reset,
   };
@@ -64,7 +65,7 @@ export const useStarterPackById = (id: number) => {
   return {
     starterPack,
     loading,
-    error: error ? '스타터팩을 불러오는데 실패했습니다.' : null,
+    error: error ? ERROR_MESSAGES.FETCH.STARTER_PACK : null,
     refresh: refetch,
     reset,
   };
@@ -259,6 +260,6 @@ export const useStarterPackLike = (id: number) => {
   return {
     toggleLike: handleToggleLike,
     loading: toggleLikeMutation.isPending,
-    error: toggleLikeMutation.error ? '좋아요 처리에 실패했습니다.' : null,
+    error: toggleLikeMutation.error ? ERROR_MESSAGES.ACTION.LIKE : null,
   };
 };
