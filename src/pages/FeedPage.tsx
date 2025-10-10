@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import FeedPost from '@/components/feed/FeedPost';
+import WriteButton from '@/components/common/WriteButton';
 import type { FeedPost as FeedPostType, FeedResponse } from '@/types/Feed';
 import { fetchFeedPosts } from '@/mocks/feedData';
 import {
@@ -83,40 +84,49 @@ const FeedPage = () => {
 
   if (loading) {
     return (
-      <FeedContainer>
-        <FeedHeader>
-          <FeedTitle>피드</FeedTitle>
-        </FeedHeader>
-        <LoadingContainer>
-          <LoadingSpinner />
-        </LoadingContainer>
-      </FeedContainer>
+      <>
+        <FeedContainer>
+          <FeedHeader>
+            <FeedTitle>피드</FeedTitle>
+          </FeedHeader>
+          <LoadingContainer>
+            <LoadingSpinner />
+          </LoadingContainer>
+        </FeedContainer>
+        <WriteButton />
+      </>
     );
   }
 
   if (error) {
     return (
-      <FeedContainer>
-        <FeedHeader>
-          <FeedTitle>피드</FeedTitle>
-        </FeedHeader>
-        <ErrorContainer>
-          <ErrorMessage>{error}</ErrorMessage>
-        </ErrorContainer>
-      </FeedContainer>
+      <>
+        <FeedContainer>
+          <FeedHeader>
+            <FeedTitle>피드</FeedTitle>
+          </FeedHeader>
+          <ErrorContainer>
+            <ErrorMessage>{error}</ErrorMessage>
+          </ErrorContainer>
+        </FeedContainer>
+        <WriteButton />
+      </>
     );
   }
 
   if (posts.length === 0) {
     return (
-      <FeedContainer>
-        <FeedHeader>
-          <FeedTitle>피드</FeedTitle>
-        </FeedHeader>
-        <EmptyState>
-          <p>아직 게시물이 없습니다.</p>
-        </EmptyState>
-      </FeedContainer>
+      <>
+        <FeedContainer>
+          <FeedHeader>
+            <FeedTitle>피드</FeedTitle>
+          </FeedHeader>
+          <EmptyState>
+            <p>아직 게시물이 없습니다.</p>
+          </EmptyState>
+        </FeedContainer>
+        <WriteButton />
+      </>
     );
   }
 
@@ -139,6 +149,7 @@ const FeedPage = () => {
           </LoadMoreButton>
         )}
       </FeedContainer>
+      <WriteButton />
     </>
   );
 };
