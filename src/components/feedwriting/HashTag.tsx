@@ -37,8 +37,8 @@ const HashTag = () => {
         ) : (
           <>
             {tags.map((tag) => (
-              <TagContainer>
-                <Tag key={tag}>
+              <TagContainer key={tag}>
+                <Tag>
                   #{tag}
                   <RemoveBtn onClick={() => handleRemoveTag(tag)}>×</RemoveBtn>
                 </Tag>
