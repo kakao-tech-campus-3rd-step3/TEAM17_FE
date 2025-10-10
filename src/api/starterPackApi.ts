@@ -4,6 +4,7 @@ import type {
   StarterPackResponse,
   StarterPackRequest,
   LikeStarterPackResponse,
+  BookmarkStarterPackResponse,
 } from '@/types/StarterPack';
 
 // 모든 스타터팩 목록 조회
@@ -81,5 +82,20 @@ export const toggleStarterPackLike = async (id: number): Promise<LikeStarterPack
   } catch (error) {
     console.error(`Failed to toggle like for starter pack ${id}:`, error);
     throw new Error('좋아요 처리에 실패했습니다.');
+  }
+};
+
+// 스타터팩 북마크 토글
+export const toggleStarterPackBookmark = async (
+  id: number
+): Promise<BookmarkStarterPackResponse> => {
+  try {
+    const response = await axiosInstance.post<BookmarkStarterPackResponse>(
+      `/api/starterPack/packs/${id}/bookmark`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to toggle bookmark for starter pack ${id}:`, error);
+    throw new Error('북마크 처리에 실패했습니다.');
   }
 };
