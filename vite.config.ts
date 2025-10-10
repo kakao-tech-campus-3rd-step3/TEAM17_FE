@@ -4,18 +4,24 @@ import path from 'path';
 import fs from 'fs';
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
+export default defineConfig(({ command }) => {
+  const isDev = command === 'serve';
+
+  return {
+    plugins: [react()],
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      },
     },
-  },
-  server: {
-    https: {
-      key: fs.readFileSync('./cert/localhost-key.pem'),
-      cert: fs.readFileSync('./cert/localhost-cert.pem'),
-    },
-    port: 5173,
-  },
-})
+    server: isDev
+      ? {
+          https: {
+            key: fs.readFileSync('./cert/localhost-key.pem'),
+            cert: fs.readFileSync('./cert/localhost-cert.pem'),
+          },
+          port: 5173,
+        }
+      : undefined,
+  };
+});
