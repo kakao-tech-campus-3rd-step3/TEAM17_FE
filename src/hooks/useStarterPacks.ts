@@ -99,7 +99,7 @@ export const useStarterPackActions = () => {
 
           const updated: StarterPackResponse = {};
           for (const key in old) {
-            updated[key] = old[key].map((pack) => (pack.id === id ? updatedPack : pack));
+            updated[key] = old[key].map((pack) => (pack.packId === id ? updatedPack : pack));
           }
           return updated;
         }
@@ -189,7 +189,7 @@ export const useStarterPackLike = (id: number) => {
           return {
             ...old,
             isLiked: !currentIsLiked,
-            likes: currentIsLiked ? Math.max(0, old.likes - 1) : old.likes + 1,
+            likeCount: currentIsLiked ? Math.max(0, old.likeCount - 1) : old.likeCount + 1,
           };
         }
       );
@@ -201,11 +201,11 @@ export const useStarterPackLike = (id: number) => {
 
           const updatePack = (pack: StarterPack) => {
             const currentIsLiked = (pack as StarterPack & { isLiked?: boolean }).isLiked ?? false;
-            return pack.id === id
+            return pack.packId === id
               ? {
                   ...pack,
                   isLiked: !currentIsLiked,
-                  likes: currentIsLiked ? Math.max(0, pack.likes - 1) : pack.likes + 1,
+                  likeCount: currentIsLiked ? Math.max(0, pack.likeCount - 1) : pack.likeCount + 1,
                 }
               : pack;
           };
@@ -227,7 +227,7 @@ export const useStarterPackLike = (id: number) => {
           if (!old) return old;
           return {
             ...old,
-            likes: result.likes,
+            likeCount: result.likeCount,
             isLiked: result.isLiked,
           };
         }
@@ -239,7 +239,9 @@ export const useStarterPackLike = (id: number) => {
           if (!old) return old;
 
           const updatePack = (pack: StarterPack) =>
-            pack.id === id ? { ...pack, likes: result.likes, isLiked: result.isLiked } : pack;
+            pack.packId === id
+              ? { ...pack, likeCount: result.likeCount, isLiked: result.isLiked }
+              : pack;
 
           const updated: StarterPackResponse = {};
           for (const key in old) {
