@@ -18,11 +18,11 @@ import type {
 // 피드 목록 조회 (페이지네이션)
 export const fetchFeeds = async (
   page: number = FEED_API_CONSTANTS.DEFAULT_PAGE,
-  limit: number = FEED_API_CONSTANTS.DEFAULT_PAGE_SIZE
+  size: number = FEED_API_CONSTANTS.DEFAULT_PAGE_SIZE
 ): Promise<FeedResponse> => {
   try {
     const response = await axiosInstance.get<FeedResponse>('/api/feeds', {
-      params: { page, limit },
+      params: { page, size },
     });
     return response.data;
   } catch (error) {
@@ -45,7 +45,11 @@ export const fetchFeedById = async (id: number): Promise<FeedDetail> => {
 // 피드 생성
 export const createFeed = async (data: CreatePostRequest): Promise<FeedPost> => {
   try {
-    const response = await axiosInstance.post<FeedPost>('/api/feeds', data);
+    const response = await axiosInstance.post<FeedPost>('/api/feeds', data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Failed to create feed:', error);
@@ -105,10 +109,16 @@ export const toggleFeedBookmark = async (
 
 // ==================== 댓글 관련 API ====================
 
-// 피드의 댓글 목록 조회
-export const fetchComments = async (feedId: number): Promise<CommentResponse> => {
+// 피드의 댓글 목록 조회 (페이지네이션)
+export const fetchComments = async (
+  feedId: number,
+  page: number = 0,
+  size: number = 20
+): Promise<CommentResponse> => {
   try {
-    const response = await axiosInstance.get<CommentResponse>(`/api/feeds/${feedId}/comments`);
+    const response = await axiosInstance.get<CommentResponse>(`/api/feeds/${feedId}/comments`, {
+      params: { page, size },
+    });
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch comments for feed ${feedId}:`, error);
@@ -116,12 +126,26 @@ export const fetchComments = async (feedId: number): Promise<CommentResponse> =>
   }
 };
 
-// 댓글 생성
+// 댓글/대댓글 생성 (parentId로 구분)
 export const createComment = async (data: CreateCommentRequest): Promise<Comment> => {
   try {
-    const response = await axiosInstance.post<Comment>(`/api/feeds/${data.feedId}/comments`, {
+    const requestBody: { content: string; parentId?: number | null } = {
       content: data.content,
-    });
+    };
+
+    if (data.parentId) {
+      requestBody.parentId = data.parentId;
+    }
+
+    const response = await axiosInstance.post<Comment>(
+      `/api/feeds/${data.feedId}/comments`,
+      requestBody,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error('Failed to create comment:', error);
@@ -129,29 +153,32 @@ export const createComment = async (data: CreateCommentRequest): Promise<Comment
   }
 };
 
-// 댓글 삭제
-export const deleteComment = async (feedId: number, commentId: number): Promise<void> => {
+// 댓글 수정
+export const updateComment = async (commentId: number, content: string): Promise<Comment> => {
   try {
-    await axiosInstance.delete(`/api/feeds/${feedId}/comments/${commentId}`);
-  } catch (error) {
-    console.error(`Failed to delete comment ${commentId}:`, error);
-    throw new Error('댓글 삭제에 실패했습니다.');
-  }
-};
-
-// 댓글 좋아요 토글
-export const toggleCommentLike = async (
-  feedId: number,
-  commentId: number
-): Promise<{ likeCount: number; isLiked: boolean }> => {
-  try {
-    const response = await axiosInstance.post<{ likeCount: number; isLiked: boolean }>(
-      `/api/feeds/${feedId}/comments/${commentId}/like`
+    const response = await axiosInstance.put<Comment>(
+      `/api/feeds/comments/${commentId}`,
+      { content },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     );
     return response.data;
   } catch (error) {
-    console.error(`Failed to toggle like for comment ${commentId}:`, error);
-    throw new Error('댓글 좋아요 처리에 실패했습니다.');
+    console.error(`Failed to update comment ${commentId}:`, error);
+    throw new Error('댓글 수정에 실패했습니다.');
+  }
+};
+
+// 댓글 삭제
+export const deleteComment = async (commentId: number): Promise<void> => {
+  try {
+    await axiosInstance.delete(`/api/feeds/comments/${commentId}`);
+  } catch (error) {
+    console.error(`Failed to delete comment ${commentId}:`, error);
+    throw new Error('댓글 삭제에 실패했습니다.');
   }
 };
 
@@ -160,10 +187,16 @@ export const toggleCommentLike = async (
 // 답글 생성
 export const createReply = async (data: CreateReplyRequest): Promise<Reply> => {
   try {
-    const response = await axiosInstance.post<Reply>(`/api/comments/${data.commentId}/replies`, {
+    const comment = await createComment({
+      feedId: data.feedId,
       content: data.content,
+      parentId: data.commentId,
     });
-    return response.data;
+
+    return {
+      ...comment,
+      replyId: comment.commentId,
+    };
   } catch (error) {
     console.error('Failed to create reply:', error);
     throw new Error('답글 작성에 실패했습니다.');
@@ -171,9 +204,9 @@ export const createReply = async (data: CreateReplyRequest): Promise<Reply> => {
 };
 
 // 답글 삭제
-export const deleteReply = async (commentId: number, replyId: number): Promise<void> => {
+export const deleteReply = async (_commentId: number, replyId: number): Promise<void> => {
   try {
-    await axiosInstance.delete(`/api/comments/${commentId}/replies/${replyId}`);
+    await deleteComment(replyId);
   } catch (error) {
     console.error(`Failed to delete reply ${replyId}:`, error);
     throw new Error('답글 삭제에 실패했습니다.');
@@ -182,16 +215,11 @@ export const deleteReply = async (commentId: number, replyId: number): Promise<v
 
 // 답글 좋아요 토글
 export const toggleReplyLike = async (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   commentId: number,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   replyId: number
 ): Promise<{ likeCount: number; isLiked: boolean }> => {
-  try {
-    const response = await axiosInstance.post<{ likeCount: number; isLiked: boolean }>(
-      `/api/comments/${commentId}/replies/${replyId}/like`
-    );
-    return response.data;
-  } catch (error) {
-    console.error(`Failed to toggle like for reply ${replyId}:`, error);
-    throw new Error('답글 좋아요 처리에 실패했습니다.');
-  }
+  console.warn('toggleReplyLike: 백엔드 API 스펙 확인 필요');
+  throw new Error('답글 좋아요 API 미구현');
 };
