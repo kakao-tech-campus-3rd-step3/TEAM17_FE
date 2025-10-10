@@ -1,12 +1,14 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FeedPost from '@/components/feed/FeedPost';
-import WriteButton from '@/components/common/WriteButton';
+import { useAuth } from '@/hooks/useAuth';
 import type { FeedPost as FeedPostType, FeedResponse } from '@/types/Feed';
 import { fetchFeedPosts } from '@/mocks/feedData';
 import {
   FeedContainer,
   FeedHeader,
   FeedTitle,
+  HeaderWriteButton,
   FeedGrid,
   LoadingContainer,
   LoadingSpinner,
@@ -23,12 +25,23 @@ const FEED_CONSTANTS = {
 } as const;
 
 const FeedPage = () => {
+  const navigate = useNavigate();
+  const { isLogin } = useAuth();
   const [posts, setPosts] = useState<FeedPostType[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(FEED_CONSTANTS.INITIAL_PAGE);
   const [hasNext, setHasNext] = useState(false);
+
+  const handleWriteClick = () => {
+    if (!isLogin) {
+      alert('로그인이 필요한 서비스입니다.\n로그인 페이지로 이동합니다.');
+      navigate('/login');
+      return;
+    }
+    navigate('/feedwriting');
+  };
 
   useEffect(() => {
     const loadInitialPosts = async () => {
@@ -84,73 +97,65 @@ const FeedPage = () => {
 
   if (loading) {
     return (
-      <>
-        <FeedContainer>
-          <FeedHeader>
-            <FeedTitle>피드</FeedTitle>
-          </FeedHeader>
-          <LoadingContainer>
-            <LoadingSpinner />
-          </LoadingContainer>
-        </FeedContainer>
-        <WriteButton />
-      </>
+      <FeedContainer>
+        <FeedHeader>
+          <FeedTitle>피드</FeedTitle>
+          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+        </FeedHeader>
+        <LoadingContainer>
+          <LoadingSpinner />
+        </LoadingContainer>
+      </FeedContainer>
     );
   }
 
   if (error) {
     return (
-      <>
-        <FeedContainer>
-          <FeedHeader>
-            <FeedTitle>피드</FeedTitle>
-          </FeedHeader>
-          <ErrorContainer>
-            <ErrorMessage>{error}</ErrorMessage>
-          </ErrorContainer>
-        </FeedContainer>
-        <WriteButton />
-      </>
+      <FeedContainer>
+        <FeedHeader>
+          <FeedTitle>피드</FeedTitle>
+          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+        </FeedHeader>
+        <ErrorContainer>
+          <ErrorMessage>{error}</ErrorMessage>
+        </ErrorContainer>
+      </FeedContainer>
     );
   }
 
   if (posts.length === 0) {
     return (
-      <>
-        <FeedContainer>
-          <FeedHeader>
-            <FeedTitle>피드</FeedTitle>
-          </FeedHeader>
-          <EmptyState>
-            <p>아직 게시물이 없습니다.</p>
-          </EmptyState>
-        </FeedContainer>
-        <WriteButton />
-      </>
+      <FeedContainer>
+        <FeedHeader>
+          <FeedTitle>피드</FeedTitle>
+          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+        </FeedHeader>
+        <EmptyState>
+          <p>아직 게시물이 없습니다.</p>
+        </EmptyState>
+      </FeedContainer>
     );
   }
 
   return (
-    <>
-      <FeedContainer>
-        <FeedHeader>
-          <FeedTitle>피드</FeedTitle>
-        </FeedHeader>
+    <FeedContainer>
+      <FeedHeader>
+        <FeedTitle>피드</FeedTitle>
+        <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+      </FeedHeader>
 
-        <FeedGrid>
-          {posts.map((post) => (
-            <FeedPost key={post.feedId} post={post} onLike={handleLike} />
-          ))}
-        </FeedGrid>
+      <FeedGrid>
+        {posts.map((post) => (
+          <FeedPost key={post.feedId} post={post} onLike={handleLike} />
+        ))}
+      </FeedGrid>
 
-        {hasNext && (
-          <LoadMoreButton onClick={handleLoadMore} disabled={loadingMore}>
-            {loadingMore ? '로딩 중...' : '더 보기'}
-          </LoadMoreButton>
-        )}
-      </FeedContainer>
-      <WriteButton />
-    </>
+      {hasNext && (
+        <LoadMoreButton onClick={handleLoadMore} disabled={loadingMore}>
+          {loadingMore ? '로딩 중...' : '더 보기'}
+        </LoadMoreButton>
+      )}
+    </FeedContainer>
   );
 };
 
