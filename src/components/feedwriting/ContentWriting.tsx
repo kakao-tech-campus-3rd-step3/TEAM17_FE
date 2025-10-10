@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ColumnWrapper } from '@/components/feedwriting/Layout.style';
 import { Desc, TitleStyle } from '@/components/feedwriting/Title.style';
-import { ContentLinkUploadBox, TextArea, Counter } from '@/components/feedwriting/UploadBox.style';
+import { ContentBox, TextArea, Counter } from '@/components/feedwriting/UploadBox.style';
 
 const ContentWriting = () => {
   const [content, setContent] = useState('');
@@ -21,7 +21,7 @@ const ContentWriting = () => {
   return (
     <ColumnWrapper>
       <TitleStyle>설명 글 작성하기(본문내용)</TitleStyle>
-      <ContentLinkUploadBox onClick={() => setIsActive(true)}>
+      <ContentBox onClick={() => setIsActive(true)}>
         {isActive ? (
           <TextArea
             value={content}
@@ -33,7 +33,7 @@ const ContentWriting = () => {
         ) : (
           <Desc>게시물에 대한 이야기를 적어주세요.</Desc>
         )}
-      </ContentLinkUploadBox>
+      </ContentBox>
       {isActive && (
         <Counter>
           {content.length} / {maxLength} 글자

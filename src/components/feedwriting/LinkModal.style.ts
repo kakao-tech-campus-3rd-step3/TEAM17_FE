@@ -11,6 +11,7 @@ export const Overlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 999;
 `;
 
 export const Modal = styled.div`
@@ -113,6 +114,13 @@ export const FormGroup = styled.div`
     color: ${tokens.colors.text.blue.default};
   }
 
+  .input-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
   input,
   textarea {
     width: 100%;
@@ -158,4 +166,18 @@ export const SubmitButton = styled.button`
   border-radius: 5px;
   background-color: ${tokens.colors.background.blue};
   color: ${tokens.colors.text.white};
+`;
+
+export const ErrorText = styled.span`
+  display: block;
+  margin-top: 0.3rem;
+  color: ${tokens.colors.text.warning};
+  font-size: 0.875rem;
+`;
+
+export const ExistingImage = styled.img`
+  width: 20%;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
 `;
