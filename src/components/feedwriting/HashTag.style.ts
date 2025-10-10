@@ -5,6 +5,7 @@ export const HashTagBox = styled.div`
   display: flex;
   flex-wrap: wrap; 
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   border: 1px solid ${tokens.colors.line.blue};
   width: 60%;

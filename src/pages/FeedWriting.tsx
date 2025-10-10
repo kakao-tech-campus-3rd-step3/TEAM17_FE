@@ -9,6 +9,7 @@ import ContentWriting from '@/components/feedwriting/ContentWriting';
 import LinkWriting from '@/components/feedwriting/LinkWriting';
 import HobbyTag from '@/components/feedwriting/HobbyTag';
 import HashTag from '@/components/feedwriting/HashTag';
+import Price from '@/components/feedwriting/Price';
 const FeedWriting = () => {
   return (
     <>
@@ -22,6 +23,7 @@ const FeedWriting = () => {
           <TagWrapper>
             <HobbyTag />
             <HashTag />
+            <Price />
           </TagWrapper>
         </LayoutLine>
       </TotalContainer>
