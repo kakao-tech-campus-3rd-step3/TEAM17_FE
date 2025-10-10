@@ -1,33 +1,40 @@
-import { useState } from 'react';
-import type { ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 import { AuthContext } from './AuthContext';
+import type { ReactNode } from 'react';
+import { getUser, logout } from '@/api/auth';
+import { useNavigate } from 'react-router-dom';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [accessToken, setAccessToken] = useState<string | null>(
-    localStorage.getItem('accessToken')
-  );
-  const [refreshToken, setRefreshToken] = useState<string | null>(
-    localStorage.getItem('refreshToken')
-  );
+  const [isLogin, setIsLogin] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  const login = (access: string, refresh: string) => {
-    setAccessToken(access);
-    setRefreshToken(refresh);
-    localStorage.setItem('accessToken', access);
-    localStorage.setItem('refreshToken', refresh);
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        await getUser(); 
+        setIsLogin(true);
+      } catch {
+        setIsLogin(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkSession();
+  }, []);
+
+  const handleLogin = () => {
+    setIsLogin(true);
   };
 
-  const logout = () => {
-    setAccessToken(null);
-    setRefreshToken(null);
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+  const handleLogout = async () => {
+    await logout();
+    setIsLogin(false);
+    navigate('/login');
   };
 
   return (
-    <AuthContext.Provider
-      value={{ isLogin: !!accessToken, accessToken, refreshToken, login, logout }}
-    >
+    <AuthContext.Provider value={{ isLogin, login: handleLogin, logout: handleLogout, loading }}>
       {children}
     </AuthContext.Provider>
   );
