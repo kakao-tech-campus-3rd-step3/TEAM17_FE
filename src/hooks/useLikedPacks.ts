@@ -31,7 +31,7 @@ export function useStarterPackLikeStatus(id: number) {
   const packWithLike = starterPack as StarterPack & { isLiked?: boolean };
 
   return {
-    likesCount: starterPack?.likes ?? 0,
+    likesCount: starterPack?.likeCount ?? 0,
     isLiked: packWithLike?.isLiked ?? false,
     loading,
     toggleLike,
