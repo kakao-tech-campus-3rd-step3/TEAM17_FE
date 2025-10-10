@@ -17,6 +17,7 @@ import {
   CancelButton,
   SubmitButton,
   ErrorText,
+  ExistingImage,
 } from '@/components/feedwriting/LinkModal.style';
 import type { ProductForm } from '@/types/LinkWriteForm';
 
@@ -33,7 +34,9 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
+    watch,
   } = useForm<ProductForm>({
     defaultValues,
   });
@@ -51,6 +54,8 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
 
   if (!isOpen) return null;
 
+  const watchedProducts = watch('products');
+
   return (
     <Overlay>
       <Modal>
@@ -67,67 +72,79 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
 
         <FormWrapper>
           <form onSubmit={handleSubmit(onSubmit)}>
-            {fields.map((field, idx) => (
-              <FieldSet key={field.id}>
-                <Legend>
-                  상품 {idx + 1}
-                  <RemoveButton type="button" onClick={() => remove(idx)}>
-                    X
-                  </RemoveButton>
-                </Legend>
+            {fields.map((field, idx) => {
+              const existingImageUrl = watchedProducts[idx]?.imageUrl;
 
-                <FormGroup>
-                  <label>상품명</label>
-                  <div className="input-wrapper">
-                    <input
-                      placeholder="상품명을 입력하세요 (필수)"
-                      {...register(`products.${idx}.name`, { required: '상품명을 입력해주세요.' })}
-                    />
-                    {errors.products?.[idx]?.name && (
-                      <ErrorText>{errors.products[idx].name?.message}</ErrorText>
-                    )}
-                  </div>
-                </FormGroup>
-                <FormGroup>
-                  <label>상품링크</label>
-                  <div className="input-wrapper">
-                    <input
-                      placeholder="상품링크를 입력하세요 (필수)"
-                      {...register(`products.${idx}.url`, { required: '상품링크를 입력해주세요.' })}
-                    />
-                    {errors.products?.[idx]?.url && (
-                      <ErrorText>{errors.products[idx].url?.message}</ErrorText>
-                    )}
-                  </div>
-                </FormGroup>
+              const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+                const file = e.target.files?.[0];
+                if (file) setValue(`products.${idx}.imageFile`, file, { shouldValidate: true });
+              };
 
-                <FormGroup>
-                  <label>상품설명</label>
-                  <textarea
-                    placeholder="상품설명을 입력하세요 (선택)"
-                    {...register(`products.${idx}.description`)}
-                  />
-                </FormGroup>
+              return (
+                <FieldSet key={field.id}>
+                  <Legend>
+                    상품 {idx + 1}
+                    <RemoveButton type="button" onClick={() => remove(idx)}>
+                      X
+                    </RemoveButton>
+                  </Legend>
 
-                <FormGroup>
-                  <label>
-                    상품 이미지 <br /> (필수)
-                  </label>
-                  <div className="input-wrapper">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      {...register(`products.${idx}.imageFile`, {
-                        required: '이미지를 업로드해주세요.',
-                      })}
+                  <FormGroup>
+                    <label>상품명</label>
+                    <div className="input-wrapper">
+                      <input
+                        placeholder="상품명을 입력하세요 (필수)"
+                        {...register(`products.${idx}.name`, {
+                          required: '상품명을 입력해주세요.',
+                        })}
+                      />
+                      {errors.products?.[idx]?.name && (
+                        <ErrorText>{errors.products[idx].name?.message}</ErrorText>
+                      )}
+                    </div>
+                  </FormGroup>
+                  <FormGroup>
+                    <label>상품링크</label>
+                    <div className="input-wrapper">
+                      <input
+                        placeholder="상품링크를 입력하세요 (필수)"
+                        {...register(`products.${idx}.url`, {
+                          required: '상품링크를 입력해주세요.',
+                        })}
+                      />
+                      {errors.products?.[idx]?.url && (
+                        <ErrorText>{errors.products[idx].url?.message}</ErrorText>
+                      )}
+                    </div>
+                  </FormGroup>
+
+                  <FormGroup>
+                    <label>상품설명</label>
+                    <textarea
+                      placeholder="상품설명을 입력하세요 (선택)"
+                      {...register(`products.${idx}.description`)}
                     />
-                    {errors.products?.[idx]?.imageFile && (
-                      <ErrorText>{errors.products[idx].imageFile?.message}</ErrorText>
-                    )}
-                  </div>
-                </FormGroup>
-              </FieldSet>
-            ))}
+                  </FormGroup>
+
+                  <FormGroup>
+                    <label>
+                      상품 이미지 <br /> (필수)
+                    </label>
+                    <div className="input-wrapper">
+                      {existingImageUrl && (
+                        <ExistingImage src={existingImageUrl} alt="상품 이미지 미리보기" />
+                      )}
+
+                      <input type="file" accept="image/*" onChange={handleFileChange} />
+                      {errors.products?.[idx]?.imageFile && (
+                        <ErrorText>{errors.products[idx].imageFile?.message}</ErrorText>
+                      )}
+                    </div>
+                  </FormGroup>
+                </FieldSet>
+              );
+            })}
+
             <Footer>
               <CancelButton type="button" onClick={onClose}>
                 취소

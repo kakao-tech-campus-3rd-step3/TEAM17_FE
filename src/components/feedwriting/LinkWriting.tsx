@@ -17,20 +17,17 @@ const LinkWriting = () => {
   const [formData, setFormData] = useState<ProductForm>({
     products: [{ name: '', url: '', description: '', imageFile: undefined, imageUrl: undefined }],
   });
-  
+
   const [submittedProducts, setSubmittedProducts] = useState<{ name: string; imageUrl?: string }[]>(
     []
   );
 
   const handleSubmit = (data: ProductForm) => {
     const productsWithPreview = data.products.map((p) => {
-      const file = (p.imageFile as unknown as FileList)?.[0] ?? p.imageFile;
+      const newImageUrl = p.imageFile ? URL.createObjectURL(p.imageFile) : p.imageUrl;
       return {
-        name: p.name,
-        url: p.url,
-        description: p.description,
-        imageFile: file,
-        imageUrl: file ? URL.createObjectURL(file) : p.imageUrl,
+        ...p,
+        imageUrl: newImageUrl,
       };
     });
 

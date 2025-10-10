@@ -120,7 +120,7 @@ export const FormGroup = styled.div`
     align-items: flex-start;
     width: 100%;
   }
-  
+
   input,
   textarea {
     width: 100%;
@@ -173,4 +173,11 @@ export const ErrorText = styled.span`
   margin-top: 0.3rem;
   color: ${tokens.colors.text.warning};
   font-size: 0.875rem;
+`;
+
+export const ExistingImage = styled.img`
+  width: 20%;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
 `;
