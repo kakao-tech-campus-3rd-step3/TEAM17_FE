@@ -6,24 +6,32 @@ import {
   TagContainer,
   Tag,
   RemoveBtn,
-  InputTag,
+  InputTag,WarningText
 } from '@/components/feedwriting/HashTag.style';
+
+import { validateTag } from '@/utils/validateHashTag';
 
 const HashTag = () => {
   const [inputValue, setInputValue] = useState('');
   const [tags, setTags] = useState<string[]>([]);
+  const [error, setError] = useState('');
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && inputValue.trim() !== '') {
       e.preventDefault();
-      const newTag = inputValue.trim();
-      if (!tags.includes(newTag)) {
-        setTags([...tags, newTag]);
+
+      const errorMsg = validateTag(inputValue, tags);
+
+      if (errorMsg) {
+        setError(errorMsg);
+        return;
       }
+
+      setTags([...tags, inputValue.trim()]);
       setInputValue('');
+      setError('');
     }
   };
-
   const handleRemoveTag = (tagToRemove: string) => {
     setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
   };
@@ -54,6 +62,7 @@ const HashTag = () => {
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
         />
+        {error && <WarningText>{error}</WarningText>}
       </HashTagBox>
     </ColumnWrapper>
   );

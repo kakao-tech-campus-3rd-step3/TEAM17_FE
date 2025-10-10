@@ -46,3 +46,9 @@ export const InputTag = styled.input`
   flex-grow: 1;
   margin-left: 0.2rem; 
 `;
+
+export const WarningText = styled.p`
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: ${tokens.colors.text.warning};
+`;
