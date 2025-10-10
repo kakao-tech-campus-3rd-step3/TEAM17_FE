@@ -472,7 +472,7 @@ export const useCommentActions = (feedId: number) => {
     return deleteCommentMutation.mutateAsync({ commentId });
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // @ts-ignore - 미구현 API
   const likeComment = async (commentId: number) => {
     return toggleCommentLikeMutation.mutateAsync();
   };

@@ -58,9 +58,12 @@ const FeedDetailPage: React.FC = () => {
       const updatedComments = feed.comments.map((comment) => ({
         ...comment,
         replies:
-          comment.replies?.map((reply) =>
-            reply.replyId === replyId ? { ...reply, isLiked, likeCount } : reply
-          ) || [],
+          comment.replies?.map((reply) => {
+            const replyWithId = reply as typeof reply & { replyId?: number };
+            return (replyWithId.replyId || reply.commentId) === replyId
+              ? { ...reply, isLiked, likeCount }
+              : reply;
+          }) || [],
       }));
       updateFeed({ comments: updatedComments });
     }

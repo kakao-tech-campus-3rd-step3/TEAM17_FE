@@ -55,7 +55,7 @@ const StarterPackDetailPage: React.FC = () => {
   const { toggleLike } = useStarterPackLike(packId);
 
   // 데모 모드일 때만 Mock 데이터 사용
-  const mockPack = isDemoMode ? mockStartPacks.find((pack) => pack.id === packId) : null;
+  const mockPack = isDemoMode ? mockStartPacks.find((pack) => pack.packId === packId) : null;
   const displayPack = starterPack || mockPack;
 
   const handleBack = () => {
@@ -148,7 +148,7 @@ const StarterPackDetailPage: React.FC = () => {
             borderBottom: '1px solid #f3e8ff',
           }}
         >
-          📝 데모 모드 - Mock 데이터로 표시 중
+          📝 데모 모드
         </div>
       )}
 
@@ -165,7 +165,7 @@ const StarterPackDetailPage: React.FC = () => {
               <StarterPackHeader>
                 <UserInfo>
                   <Avatar src="/default-avatar.png" alt="스타터팩" />
-                  <Username>@{displayPack?.category}_master</Username>
+                  <Username>@{displayPack?.categoryName}_master</Username>
                 </UserInfo>
                 <MoreButton>
                   <MoreHorizontal size={20} />
@@ -178,13 +178,13 @@ const StarterPackDetailPage: React.FC = () => {
 
               <CategoryTag>
                 <Tag size={14} />
-                {displayPack?.category}
+                {displayPack?.categoryName}
               </CategoryTag>
 
               <StatsSection>
                 <StatItem>
                   <Heart size={16} />
-                  {displayPack?.likes.toLocaleString()}개 좋아요
+                  {displayPack?.likeCount.toLocaleString()}개 좋아요
                 </StatItem>
               </StatsSection>
 

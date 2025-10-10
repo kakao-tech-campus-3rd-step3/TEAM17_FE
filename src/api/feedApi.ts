@@ -215,9 +215,9 @@ export const deleteReply = async (_commentId: number, replyId: number): Promise<
 
 // 답글 좋아요 토글
 export const toggleReplyLike = async (
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // @ts-ignore - 미구현 API
   commentId: number,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // @ts-ignore - 미구현 API
   replyId: number
 ): Promise<{ likeCount: number; isLiked: boolean }> => {
   console.warn('toggleReplyLike: 백엔드 API 스펙 확인 필요');
