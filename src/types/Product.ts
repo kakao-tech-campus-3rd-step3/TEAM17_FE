@@ -40,3 +40,9 @@ export interface ApiError {
   status?: number;
   code?: string;
 }
+
+export interface LikeProductResponse {
+  success: boolean;
+  likeCount: number;
+  isLiked: boolean;
+}

@@ -42,3 +42,9 @@ export interface ApiError {
   status?: number;
   code?: string;
 }
+
+export interface LikeStarterPackResponse {
+  success: boolean;
+  likes: number;
+  isLiked: boolean;
+}

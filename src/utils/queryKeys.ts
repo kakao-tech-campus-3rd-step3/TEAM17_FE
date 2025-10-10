@@ -9,26 +9,21 @@ export const QUERY_KEYS = {
 
   starterPacks: {
     all: ['starterPacks'] as const,
-    lists: () => [...QUERY_KEYS.starterPacks.all, 'list'] as const,
-    list: () => [...QUERY_KEYS.starterPacks.all] as const,
-    details: () => [...QUERY_KEYS.starterPacks.all, 'detail'] as const,
-    detail: (id: number) => [...QUERY_KEYS.starterPacks.details(), id] as const,
+    list: ['starterPacks', 'list'] as const,
+    detail: (id: number) => ['starterPacks', 'detail', id] as const,
   },
 
   products: {
     all: ['products'] as const,
-    lists: () => [...QUERY_KEYS.products.all, 'list'] as const,
-    list: () => [...QUERY_KEYS.products.all] as const,
-    details: () => [...QUERY_KEYS.products.all, 'detail'] as const,
-    detail: (id: number) => [...QUERY_KEYS.products.details(), id] as const,
+    list: ['products', 'list'] as const,
+    detail: (id: number) => ['products', 'detail', id] as const,
   },
 
   feeds: {
     all: ['feeds'] as const,
-    lists: () => [...QUERY_KEYS.feeds.all, 'list'] as const,
-    list: (page: number, limit: number) => [...QUERY_KEYS.feeds.lists(), { page, limit }] as const,
-    details: () => [...QUERY_KEYS.feeds.all, 'detail'] as const,
-    detail: (id: number) => [...QUERY_KEYS.feeds.details(), id] as const,
-    comments: (feedId: number) => [...QUERY_KEYS.feeds.detail(feedId), 'comments'] as const,
+    lists: ['feeds', 'list'] as const,
+    list: (page: number, limit: number) => ['feeds', 'list', { page, limit }] as const,
+    detail: (id: number) => ['feeds', 'detail', id] as const,
+    comments: (feedId: number) => ['feeds', 'detail', feedId, 'comments'] as const,
   },
 } as const;
