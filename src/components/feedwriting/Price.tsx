@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Desc, TitleStyle } from '@/components/feedwriting/Title.style';
-import { PriceContainer, PriceBox } from '@/components/feedwriting/UploadBox.style';
+import { PriceContainer, PriceBox, Priceinput } from '@/components/feedwriting/Price.style';
 import { formatNumberInput, parseNumberInput } from '@/utils/price';
 
 const Price = () => {
@@ -23,13 +23,12 @@ const Price = () => {
       <TitleStyle>가격대 (전체적)</TitleStyle>
       <PriceBox onClick={() => setIsActive(true)}>
         {isActive ? (
-          <input
+          <Priceinput
             type="text"
             inputMode="numeric"
             value={displayValue}
             onChange={handleChange}
             required
-            style={{ border: 'none', outline: 'none' }}
           />
         ) : (
           <Desc>대략적인 가격을 작성해주세요</Desc>
