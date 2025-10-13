@@ -5,6 +5,7 @@ import { formatNumberInput, parseNumberInput } from '@/utils/price';
 
 const Price = () => {
   const [price, setPrice] = useState<number>(0);
+  console.log(price); // api 연동 시 주석 지우기 (eslint 무시용)
   const [displayValue, setDisplayValue] = useState<string>('0');
   const [isActive, setIsActive] = useState(false);
 
