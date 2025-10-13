@@ -47,7 +47,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   };
 
   const handleAddReply = (commentId: number, content: string) => {
-    onAddReply({ commentId, content });
+    onAddReply({ feedId, commentId, content });
   };
 
   return (
@@ -57,10 +57,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       </CommentHeader>
 
       {/* 댓글 작성 */}
-      <CommentInput
-        onSubmit={handleAddComment}
-        placeholder="댓글 작성하기"
-      />
+      <CommentInput onSubmit={handleAddComment} placeholder="댓글 작성하기" />
 
       {/* 댓글 목록 */}
       <CommentList>

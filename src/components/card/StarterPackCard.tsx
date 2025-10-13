@@ -34,7 +34,7 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
       <PostHeader>
         <UserInfo>
           <Avatar src="/default-avatar.png" alt="스타터팩" />
-          <Username>@{pack.category}_master</Username>
+          <Username>@{pack.categoryName}_master</Username>
         </UserInfo>
         <MoreButton>
           <MoreHorizontal size={20} />
@@ -52,7 +52,7 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
         <ActionButton
           onClick={(e) => {
             e.stopPropagation();
-            onToggleLike(pack.id);
+            onToggleLike(pack.packId);
           }}
           type="button"
           aria-label={isLiked ? '좋아요 취소' : '좋아요'}
@@ -75,25 +75,25 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
         </ActionButton>
       </PostActions>
 
-      <LikesCount>{pack.likes.toLocaleString()}개 좋아요</LikesCount>
+      <LikesCount>{pack.likeCount.toLocaleString()}개 좋아요</LikesCount>
 
       <Caption>
-        <Username>@{pack.category}_master</Username> {pack.description}
+        <Username>@{pack.categoryName}_master</Username> {pack.description}
       </Caption>
 
       <CategoryTag>
         <Tag size={14} />
-        {pack.category}
+        {pack.categoryName}
       </CategoryTag>
 
-      {pack.products.length > 0 && (
+      {pack.products && pack.products.length > 0 && (
         <ProductsSection>
           <h4>관련 제품</h4>
           <ul role="list" aria-label="관련 제품 목록">
             {pack.products.slice(0, 2).map((product) => (
-              <li key={product.id}>
+              <li key={product.productId}>
                 <ProductItem>
-                  <ProductImage src={product.src} alt={product.name} />
+                  <ProductImage src={product.imageUrl} alt={product.name} />
                   <ProductName>{product.name}</ProductName>
                 </ProductItem>
               </li>

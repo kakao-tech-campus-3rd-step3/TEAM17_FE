@@ -26,7 +26,7 @@ interface ReplyItemProps {
 
 const ReplyItem: React.FC<ReplyItemProps> = ({ reply, commentId, onLike, onStartReply }) => {
   const handleLike = () => {
-    onLike(reply.replyId, reply.isLiked, reply.likeCount);
+    onLike(reply.replyId || reply.commentId, reply.isLiked, reply.likeCount);
   };
 
   const handleStartReply = () => {

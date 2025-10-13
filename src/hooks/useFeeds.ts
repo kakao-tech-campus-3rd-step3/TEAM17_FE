@@ -10,7 +10,6 @@ import {
   fetchComments,
   createComment,
   deleteComment,
-  toggleCommentLike,
   createReply,
   deleteReply,
   toggleReplyLike,
@@ -36,7 +35,7 @@ const MIN_VALID_ID = 1;
 // 피드 목록 조회 (페이지네이션)
 export const useFeeds = (
   page: number = FEED_API_CONSTANTS.DEFAULT_PAGE,
-  limit: number = FEED_API_CONSTANTS.DEFAULT_PAGE_SIZE
+  size: number = FEED_API_CONSTANTS.DEFAULT_PAGE_SIZE
 ) => {
   const {
     data: feedResponse,
@@ -44,8 +43,8 @@ export const useFeeds = (
     error,
     refetch,
   } = useQuery({
-    queryKey: QUERY_KEYS.feeds.list(page, limit),
-    queryFn: () => fetchFeeds(page, limit),
+    queryKey: QUERY_KEYS.feeds.list(page, size),
+    queryFn: () => fetchFeeds(page, size),
     throwOnError: false,
   });
 
@@ -56,12 +55,12 @@ export const useFeeds = (
   };
 
   return {
-    feeds: feedResponse?.feeds || [],
-    totalCount: feedResponse?.totalCount || 0,
-    currentPage: feedResponse?.currentPage || page,
+    feeds: feedResponse?.content || [],
+    totalCount: feedResponse?.totalElements || 0,
+    currentPage: feedResponse?.number || page,
     totalPages: feedResponse?.totalPages || 0,
-    hasNext: feedResponse?.hasNext || false,
-    hasPrevious: feedResponse?.hasPrevious || false,
+    hasNext: !feedResponse?.last,
+    hasPrevious: !feedResponse?.first,
     loading,
     error: error ? ERROR_MESSAGES.FETCH.FEED : null,
     refresh: refetch,
@@ -126,10 +125,10 @@ export const useFeedActions = () => {
       queryClient.setQueriesData(
         { queryKey: QUERY_KEYS.feeds.lists },
         (old: FeedResponse | undefined) => {
-          if (!old?.feeds) return old;
+          if (!old?.content) return old;
           return {
             ...old,
-            feeds: old.feeds.map((feed) => (feed.feedId === id ? updatedFeed : feed)),
+            content: old.content.map((feed) => (feed.feedId === id ? updatedFeed : feed)),
           };
         }
       );
@@ -205,10 +204,10 @@ export const useFeedLike = (id: number) => {
       queryClient.setQueriesData(
         { queryKey: QUERY_KEYS.feeds.lists },
         (old: FeedResponse | undefined) => {
-          if (!old?.feeds) return old;
+          if (!old?.content) return old;
           return {
             ...old,
-            feeds: old.feeds.map((feed) =>
+            content: old.content.map((feed) =>
               feed.feedId === id
                 ? {
                     ...feed,
@@ -236,10 +235,10 @@ export const useFeedLike = (id: number) => {
       queryClient.setQueriesData(
         { queryKey: QUERY_KEYS.feeds.lists },
         (old: FeedResponse | undefined) => {
-          if (!old?.feeds) return old;
+          if (!old?.content) return old;
           return {
             ...old,
-            feeds: old.feeds.map((feed) =>
+            content: old.content.map((feed) =>
               feed.feedId === id
                 ? { ...feed, isLiked: result.isLiked, likeCount: result.likeCount }
                 : feed
@@ -296,10 +295,10 @@ export const useFeedBookmark = (id: number) => {
       queryClient.setQueriesData(
         { queryKey: QUERY_KEYS.feeds.lists },
         (old: FeedResponse | undefined) => {
-          if (!old?.feeds) return old;
+          if (!old?.content) return old;
           return {
             ...old,
-            feeds: old.feeds.map((feed) => {
+            content: old.content.map((feed) => {
               if (feed.feedId !== id) return feed;
               // FeedDetail 타입인 경우에만 북마크 업데이트
               const feedWithBookmark = feed as unknown as FeedDetail;
@@ -332,10 +331,10 @@ export const useFeedBookmark = (id: number) => {
       queryClient.setQueriesData(
         { queryKey: QUERY_KEYS.feeds.lists },
         (old: FeedResponse | undefined) => {
-          if (!old?.feeds) return old;
+          if (!old?.content) return old;
           return {
             ...old,
-            feeds: old.feeds.map((feed) => {
+            content: old.content.map((feed) => {
               if (feed.feedId !== id) return feed;
               // FeedDetail 타입인 경우에만 북마크 업데이트
               const feedWithBookmark = feed as unknown as FeedDetail;
@@ -396,8 +395,8 @@ export const useComments = (feedId: number) => {
   };
 
   return {
-    comments: commentResponse?.comments || [],
-    totalCount: commentResponse?.totalCount || 0,
+    comments: commentResponse?.content || [],
+    totalCount: commentResponse?.totalElements || 0,
     loading,
     error: error ? ERROR_MESSAGES.FETCH.COMMENTS : null,
     refresh: refetch,
@@ -420,16 +419,18 @@ export const useCommentActions = (feedId: number) => {
 
   // 댓글 삭제
   const deleteCommentMutation = useMutation({
-    mutationFn: ({ commentId }: { commentId: number }) => deleteComment(feedId, commentId),
+    mutationFn: ({ commentId }: { commentId: number }) => deleteComment(commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.comments(feedId) });
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.detail(feedId) });
     },
   });
 
-  // 댓글 좋아요 토글
   const toggleCommentLikeMutation = useMutation({
-    mutationFn: ({ commentId }: { commentId: number }) => toggleCommentLike(feedId, commentId),
+    mutationFn: () => {
+      console.warn('toggleCommentLike: 백엔드 API 스펙 확인 필요');
+      throw new Error('댓글 좋아요 API 미구현');
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.comments(feedId) });
     },
@@ -471,8 +472,9 @@ export const useCommentActions = (feedId: number) => {
     return deleteCommentMutation.mutateAsync({ commentId });
   };
 
+  // @ts-ignore - 미구현 API
   const likeComment = async (commentId: number) => {
-    return toggleCommentLikeMutation.mutateAsync({ commentId });
+    return toggleCommentLikeMutation.mutateAsync();
   };
 
   const addReply = async (data: CreateReplyRequest) => {
