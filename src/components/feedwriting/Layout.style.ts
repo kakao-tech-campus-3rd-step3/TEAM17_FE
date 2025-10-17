@@ -35,5 +35,6 @@ export const ContentLinkWrapper = styled.div`
 export const TagWrapper = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: center;
   width: 100%;
 `;

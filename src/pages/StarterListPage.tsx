@@ -21,22 +21,20 @@ import {
 
 const matchCategory = (pack: StarterPack, active: CategoryKey) => {
   if (active === '전체') return true;
-  const cat: string = pack.category ?? '';
+  const cat: string = pack.categoryName ?? '';
   return cat === active;
 };
 
 const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
   const navigate = useNavigate();
-  const { starterPack } = useStarterPackById(pack.id);
-  const { toggleLike } = useStarterPackLike(pack.id);
+  const { starterPack } = useStarterPackById(pack.packId);
+  const { toggleLike } = useStarterPackLike(pack.packId);
 
-  // 현재 좋아요 상태와 카운트를 가져옴
   const packWithLike = starterPack as StarterPack & { isLiked?: boolean };
   const isLiked = packWithLike?.isLiked ?? false;
 
-  // 상세 페이지로 이동
   const handleOpenDetail = () => {
-    navigate(`/starterpack/${pack.id}`);
+    navigate(`/starterpack/${pack.packId}`);
   };
 
   return (
@@ -63,19 +61,18 @@ const StarterListPage = () => {
   const availableCategories = useMemo(() => {
     const categories = new Set<string>();
     allStarterPacks.forEach((pack) => {
-      if (pack.category) {
-        categories.add(pack.category);
+      if (pack.categoryName) {
+        categories.add(pack.categoryName);
       }
     });
 
-    // '전체'를 맨 앞에, 나머지는 알파벳 순으로 정렬
     const sortedCategories = Array.from(categories).sort();
     return ['전체', ...sortedCategories] as CategoryKey[];
   }, [allStarterPacks]);
 
   const getCategoryCount = (category: CategoryKey) => {
     if (category === '전체') return allStarterPacks.length;
-    return allStarterPacks.filter((pack) => pack.category === category).length;
+    return allStarterPacks.filter((pack) => pack.categoryName === category).length;
   };
 
   const filtered = useMemo(() => {
@@ -161,7 +158,7 @@ const StarterListPage = () => {
 
       <StarterPackGrid>
         {filtered.map((pack: StarterPack) => (
-          <StarterPackCardWrapper key={pack.id} pack={pack} />
+          <StarterPackCardWrapper key={pack.packId} pack={pack} />
         ))}
       </StarterPackGrid>
     </StarterPackContainer>

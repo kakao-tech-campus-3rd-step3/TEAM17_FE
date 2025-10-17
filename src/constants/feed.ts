@@ -1,5 +1,5 @@
 export const FEED_API_CONSTANTS = {
-  DEFAULT_PAGE: 1,
+  DEFAULT_PAGE: 0, // Spring Pageable은 0부터 시작
   DEFAULT_PAGE_SIZE: 10,
 } as const;
 

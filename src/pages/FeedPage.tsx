@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import FeedPost from '@/components/feed/FeedPost';
 import { useAuth } from '@/hooks/useAuth';
 import type { FeedPost as FeedPostType, FeedResponse } from '@/types/Feed';
-import { fetchFeedPosts } from '@/mocks/feedData';
+import { fetchFeeds } from '@/api/feedApi';
 import {
   FeedContainer,
   FeedHeader,
@@ -19,7 +19,7 @@ import {
 } from './FeedPage.styles';
 
 const FEED_CONSTANTS = {
-  INITIAL_PAGE: 1,
+  INITIAL_PAGE: 0,
   INITIAL_PAGE_SIZE: 12,
   LOAD_MORE_PAGE_SIZE: 12,
 } as const;
@@ -32,7 +32,7 @@ const FeedPage = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(FEED_CONSTANTS.INITIAL_PAGE);
-  const [hasNext, setHasNext] = useState(false);
+  const [isLastPage, setIsLastPage] = useState(false);
 
   const handleWriteClick = () => {
     if (!isLogin) {
@@ -49,14 +49,14 @@ const FeedPage = () => {
         setLoading(true);
         setError(null);
 
-        const response: FeedResponse = await fetchFeedPosts(
+        const response: FeedResponse = await fetchFeeds(
           FEED_CONSTANTS.INITIAL_PAGE,
           FEED_CONSTANTS.INITIAL_PAGE_SIZE
         );
 
-        setPosts(response.feeds);
-        setCurrentPage(response.currentPage);
-        setHasNext(response.hasNext);
+        setPosts(response.content);
+        setCurrentPage(response.number);
+        setIsLastPage(response.last);
       } catch (err) {
         setError('피드를 불러오는데 실패했습니다.');
         console.error('Failed to load posts:', err);
@@ -69,17 +69,17 @@ const FeedPage = () => {
   }, []);
 
   const handleLoadMore = useCallback(async () => {
-    if (hasNext && !loadingMore) {
+    if (!isLastPage && !loadingMore) {
       try {
         setLoadingMore(true);
-        const response: FeedResponse = await fetchFeedPosts(
+        const response: FeedResponse = await fetchFeeds(
           currentPage + 1,
           FEED_CONSTANTS.LOAD_MORE_PAGE_SIZE
         );
 
-        setPosts((prev) => [...prev, ...response.feeds]);
-        setCurrentPage(response.currentPage);
-        setHasNext(response.hasNext);
+        setPosts((prev) => [...prev, ...response.content]);
+        setCurrentPage(response.number);
+        setIsLastPage(response.last);
       } catch (err) {
         setError('피드를 불러오는데 실패했습니다.');
         console.error('Failed to load more posts:', err);
@@ -87,7 +87,7 @@ const FeedPage = () => {
         setLoadingMore(false);
       }
     }
-  }, [hasNext, loadingMore, currentPage]);
+  }, [isLastPage, loadingMore, currentPage]);
 
   const handleLike = useCallback((feedId: number, isLiked: boolean, likeCount: number) => {
     setPosts((prev) =>
@@ -150,7 +150,7 @@ const FeedPage = () => {
         ))}
       </FeedGrid>
 
-      {hasNext && (
+      {!isLastPage && (
         <LoadMoreButton onClick={handleLoadMore} disabled={loadingMore}>
           {loadingMore ? '로딩 중...' : '더 보기'}
         </LoadMoreButton>

@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
-
-import { loginSchema, type LoginValues } from '@/types/LoginZodSchema';
 import { useLogin } from '@/hooks/useAuth';
+
+import { useAuth } from '@/hooks/useAuth';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema, type LoginValues } from '@/types/LoginZodSchema';
 
 import {
   LoginContainer,
@@ -41,12 +41,13 @@ export default function LoginForm() {
 
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
+  const { login } = useAuth();
   const { mutate: loginMutate, isPending, isError } = useLogin();
 
   const onSubmit = (data: LoginValues) => {
     loginMutate(data, {
       onSuccess: () => {
+        login();
         alert('로그인 성공!');
         navigate('/');
       },
