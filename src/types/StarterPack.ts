@@ -1,21 +1,22 @@
 import type { Product } from './Product';
 
 export interface StarterPack {
-  id: number;
+  packId: number;
   name: string;
-  cost: number;
   description: string;
-  parts: string[][];
-  likes: number;
+  categoryId: number;
+  categoryName: string;
+  productIds: number[];
+  likeCount: number;
+  isLiked: boolean;
+  createdAt: string;
 
-  // 현재 UI에서 사용하는 추가 필드들 (백엔드랑 논의해서 수정)
-  mainImage: string;
-  originalPrice: number;
-  salePrice: number;
-  discountRate: number;
-  products: Product[];
-  reviewCount: number;
-  category: string;
+  products?: Product[];
+  mainImage?: string;
+  originalPrice?: number;
+  salePrice?: number;
+  discountRate?: number;
+  reviewCount?: number;
 }
 
 export interface StarterPackResponse {
@@ -23,10 +24,10 @@ export interface StarterPackResponse {
 }
 
 export interface StarterPackRequest {
-  name?: string;
-  cost?: number;
+  name: string;
   description?: string;
-  parts?: string[][];
+  categoryId: number;
+  productIds: number[];
 }
 
 // API 응답 타입
@@ -41,4 +42,15 @@ export interface ApiError {
   message: string;
   status?: number;
   code?: string;
+}
+
+export interface LikeStarterPackResponse {
+  success: boolean;
+  likeCount: number;
+  isLiked: boolean;
+}
+
+export interface BookmarkStarterPackResponse {
+  isBookmarked: boolean;
+  bookmarkCount: number;
 }

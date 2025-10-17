@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react';
 import { ColumnWrapper } from '@/components/feedwriting/Layout.style';
 import { Desc, TitleStyle } from '@/components/feedwriting/Title.style';
-import { ContentLinkUploadBox } from '@/components/feedwriting/UploadBox.style';
+import {
+  LinkUploadBox,
+  ProductWrapper,
+  Product,
+  ProductImage,
+} from '@/components/feedwriting/LinkWriting.style';
 
 import LinkModal from '@/components/feedwriting/LinkModal';
 import type { ProductForm } from '@/types/LinkWriteForm';
@@ -10,7 +15,7 @@ const LinkWriting = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [formData, setFormData] = useState<ProductForm>({
-    products: [{ name: '', url: '', description: '', image: null }],
+    products: [{ name: '', url: '', description: '', imageFile: undefined, imageUrl: undefined }],
   });
 
   const [submittedProducts, setSubmittedProducts] = useState<{ name: string; imageUrl?: string }[]>(
@@ -18,19 +23,19 @@ const LinkWriting = () => {
   );
 
   const handleSubmit = (data: ProductForm) => {
-    setFormData(data);
-
     const productsWithPreview = data.products.map((p) => {
-      const file = p.image?.[0];
+      const newImageUrl = p.imageFile ? URL.createObjectURL(p.imageFile) : p.imageUrl;
       return {
-        name: p.name,
-        imageUrl: file ? URL.createObjectURL(file) : undefined,
+        ...p,
+        imageUrl: newImageUrl,
       };
     });
 
+    setFormData({ products: productsWithPreview });
     setSubmittedProducts(productsWithPreview);
     setIsOpen(false);
   };
+
   useEffect(() => {
     return () => {
       submittedProducts.forEach((p) => {
@@ -42,34 +47,22 @@ const LinkWriting = () => {
   return (
     <ColumnWrapper>
       <TitleStyle>상품 링크 작성하기</TitleStyle>
-      <ContentLinkUploadBox onClick={() => setIsOpen(true)}>
+      <LinkUploadBox $hasProducts={submittedProducts.length > 0} onClick={() => setIsOpen(true)}>
         {submittedProducts.length === 0 ? (
           <Desc>
             정보 공유 목적시 링크를 꼭 작성해 주세요. <br /> 작성을 원하실 경우 클릭해 주세요.
           </Desc>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <ProductWrapper>
             {submittedProducts.map((p, idx) => (
-              <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                {p.imageUrl && (
-                  <img
-                    src={p.imageUrl}
-                    alt={p.name}
-                    style={{
-                      width: '30%',
-                      height: '30%',
-                      objectFit: 'cover',
-                      borderRadius: '8px',
-                      marginLeft: '0.4rem',
-                    }}
-                  />
-                )}
+              <Product key={idx}>
+                {p.imageUrl && <ProductImage src={p.imageUrl} alt={p.name} />}
                 <span>{p.name}</span>
-              </div>
+              </Product>
             ))}
-          </div>
+          </ProductWrapper>
         )}
-      </ContentLinkUploadBox>
+      </LinkUploadBox>
 
       <LinkModal
         isOpen={isOpen}

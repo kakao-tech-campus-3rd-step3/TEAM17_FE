@@ -39,7 +39,7 @@ export const ScrollContainer = styled.div`
   }
 `;
 
-export const ContentLinkUploadBox = styled.div`
+export const ContentBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -69,3 +69,5 @@ export const Counter = styled.div`
   font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.text.black};
 `;
+
+

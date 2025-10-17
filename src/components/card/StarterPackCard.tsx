@@ -1,36 +1,25 @@
 import React from 'react';
-import { Eye, ShoppingCart } from 'lucide-react';
-import { formatCurrency } from '@/utils/currency';
+import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
 import type { StarterPack } from '@/types/StarterPack';
 import {
-  Card,
-  LikeButton,
-  HeartIcon,
-  DiscountBadge,
-  ImageWrap,
-  MainImage,
-  HoverOverlay,
-  Content,
-  CategoryPill,
-  Title,
-  PriceCurrent,
-  PriceOriginal,
-  ButtonsRow,
-  PrimaryBtn,
-  GhostBtn,
-  GridPreview,
-  Thumb,
-  PreviewCenter,
-  EyeIcon,
-  MoreText,
-  HeaderRow,
-  Rating,
-  StarIcon,
-  Description,
-  PriceRow,
-  PriceCol,
-  CountText,
-} from './StarterPackCard.styles';
+  PostContainer,
+  PostHeader,
+  UserInfo,
+  Avatar,
+  Username,
+  MoreButton,
+  PostImage,
+  PostActions,
+  ActionButton,
+  LikesCount,
+  Caption,
+  TimeStamp,
+  CategoryTag,
+  ProductsSection,
+  ProductItem,
+  ProductImage,
+  ProductName,
+} from '@/components/card/StarterPackCard.styles';
 
 type Props = {
   pack: StarterPack;
@@ -41,72 +30,80 @@ type Props = {
 
 const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen }) => {
   return (
-    <Card>
-      <LikeButton
-        onClick={(e) => {
-          e.stopPropagation();
-          onToggleLike(pack.id);
-        }}
-        aria-label={isLiked ? '찜 취소' : '찜하기'}
-      >
-        <HeartIcon $liked />
-      </LikeButton>
+    <PostContainer>
+      <PostHeader>
+        <UserInfo>
+          <Avatar src="/default-avatar.png" alt="스타터팩" />
+          <Username>@{pack.categoryName}_master</Username>
+        </UserInfo>
+        <MoreButton>
+          <MoreHorizontal size={20} />
+        </MoreButton>
+      </PostHeader>
 
-      {pack.discountRate > 0 && <DiscountBadge>{pack.discountRate}% 할인</DiscountBadge>}
+      <PostImage
+        src={pack.mainImage}
+        alt={pack.name}
+        onClick={() => onOpen(pack)}
+        style={{ cursor: 'pointer' }}
+      />
 
-      <ImageWrap onClick={() => onOpen(pack)}>
-        <MainImage src={pack.mainImage} alt={pack.name} />
-        <HoverOverlay>
-          <PreviewCenter>
-            <EyeIcon />
-            <div>구성품 미리보기</div>
-            <GridPreview>
-              {pack.products.slice(0, 4).map((p) => (
-                <Thumb key={p.id}>
-                  <img src={p.src} alt={p.name} />
-                  <p>{p.name}</p>
-                </Thumb>
-              ))}
-            </GridPreview>
-            {pack.products.length > 4 && <MoreText>+{pack.products.length - 4}개 더</MoreText>}
-          </PreviewCenter>
-        </HoverOverlay>
-      </ImageWrap>
+      <PostActions>
+        <ActionButton
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleLike(pack.packId);
+          }}
+          type="button"
+          aria-label={isLiked ? '좋아요 취소' : '좋아요'}
+          aria-pressed={isLiked}
+        >
+          <Heart
+            size={24}
+            fill={isLiked ? '#ef4444' : 'none'}
+            color={isLiked ? '#ef4444' : '#000'}
+          />
+        </ActionButton>
+        <ActionButton type="button" aria-label="댓글 달기">
+          <MessageSquare size={24} />
+        </ActionButton>
+        <ActionButton type="button" aria-label="공유하기">
+          <Share size={24} />
+        </ActionButton>
+        <ActionButton type="button" aria-label="저장" style={{ marginLeft: 'auto' }}>
+          <Bookmark size={24} />
+        </ActionButton>
+      </PostActions>
 
-      <Content>
-        <HeaderRow>
-          <CategoryPill>{pack.category}</CategoryPill>
-          <Rating>
-            <StarIcon />
-            <span style={{ fontWeight: 600 }}>{pack.likes}</span>
-            <span>({pack.reviewCount})</span>
-          </Rating>
-        </HeaderRow>
+      <LikesCount>{pack.likeCount.toLocaleString()}개 좋아요</LikesCount>
 
-        <Title>{pack.name}</Title>
-        <Description>{pack.description}</Description>
+      <Caption>
+        <Username>@{pack.categoryName}_master</Username> {pack.description}
+      </Caption>
 
-        <PriceRow>
-          <PriceCol>
-            {pack.originalPrice !== pack.salePrice && (
-              <PriceOriginal>{formatCurrency(pack.originalPrice)}</PriceOriginal>
-            )}
-            <PriceCurrent>{formatCurrency(pack.salePrice)}</PriceCurrent>
-          </PriceCol>
-          <CountText>{pack.products.length}개 구성</CountText>
-        </PriceRow>
+      <CategoryTag>
+        <Tag size={14} />
+        {pack.categoryName}
+      </CategoryTag>
 
-        <ButtonsRow>
-          <PrimaryBtn onClick={() => onOpen(pack)}>
-            <Eye width={16} height={16} />
-            <span>상세보기</span>
-          </PrimaryBtn>
-          <GhostBtn>
-            <ShoppingCart width={16} height={16} />
-          </GhostBtn>
-        </ButtonsRow>
-      </Content>
-    </Card>
+      {pack.products && pack.products.length > 0 && (
+        <ProductsSection>
+          <h4>관련 제품</h4>
+          <ul role="list" aria-label="관련 제품 목록">
+            {pack.products.slice(0, 2).map((product) => (
+              <li key={product.productId}>
+                <ProductItem>
+                  <ProductImage src={product.imageUrl} alt={product.name} />
+                  <ProductName>{product.name}</ProductName>
+                </ProductItem>
+              </li>
+            ))}
+          </ul>
+        </ProductsSection>
+      )}
+
+      <TimeStamp>어제</TimeStamp>
+    </PostContainer>
   );
 };
 

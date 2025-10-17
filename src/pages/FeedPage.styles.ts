@@ -16,6 +16,9 @@ export const FeedHeader = styled.div`
   position: sticky;
   top: 0;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export const FeedTitle = styled.h1`
@@ -23,7 +26,34 @@ export const FeedTitle = styled.h1`
   font-weight: 600;
   color: #262626;
   margin: 0;
+  flex: 1;
   text-align: center;
+`;
+
+export const HeaderWriteButton = styled.button`
+  background-color: ${({ theme }) => theme.colors.orange.primary};
+  color: ${({ theme }) => theme.colors.text.white};
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.orange.hover};
+  }
+
+  &:active {
+    background-color: ${({ theme }) => theme.colors.orange.active};
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+  }
 `;
 
 export const FeedGrid = styled.div`

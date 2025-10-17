@@ -1,7 +1,7 @@
 import type { FeedPost, FeedResponse, LikePostResponse, FeedDetail } from '@/types/Feed';
 
 const FEED_API_DEFAULTS = {
-  DEFAULT_PAGE: 1,
+  DEFAULT_PAGE: 0,
   DEFAULT_PAGE_SIZE: 10,
 } as const;
 
@@ -117,28 +117,49 @@ export const generateMockFeedPosts = (count: number = 20): FeedPost[] => {
   return posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 };
 
-export const generateMockFeedResponse = (page: number = 1, limit: number = 10): FeedResponse => {
+export const generateMockFeedResponse = (page: number = 0, size: number = 10): FeedResponse => {
   const allFeeds = generateMockFeedPosts(50);
-  const startIndex = (page - 1) * limit;
-  const endIndex = startIndex + limit;
-  const feeds = allFeeds.slice(startIndex, endIndex);
+  const startIndex = page * size;
+  const endIndex = startIndex + size;
+  const content = allFeeds.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(allFeeds.length / size);
 
   return {
-    feeds,
-    totalCount: allFeeds.length,
-    currentPage: page,
-    totalPages: Math.ceil(allFeeds.length / limit),
-    hasNext: endIndex < allFeeds.length,
-    hasPrevious: page > 1,
+    content,
+    pageable: {
+      pageNumber: page,
+      pageSize: size,
+      sort: {
+        empty: true,
+        sorted: false,
+        unsorted: true,
+      },
+      offset: startIndex,
+      paged: true,
+      unpaged: false,
+    },
+    totalPages,
+    totalElements: allFeeds.length,
+    last: page >= totalPages - 1,
+    size,
+    number: page,
+    sort: {
+      empty: true,
+      sorted: false,
+      unsorted: true,
+    },
+    numberOfElements: content.length,
+    first: page === 0,
+    empty: content.length === 0,
   };
 };
 
 export const fetchFeedPosts = async (
   page: number = FEED_API_DEFAULTS.DEFAULT_PAGE,
-  limit: number = FEED_API_DEFAULTS.DEFAULT_PAGE_SIZE
+  size: number = FEED_API_DEFAULTS.DEFAULT_PAGE_SIZE
 ): Promise<FeedResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 800));
-  return generateMockFeedResponse(page, limit);
+  return generateMockFeedResponse(page, size);
 };
 
 export const likePost = async (feedId: number, isLiked: boolean): Promise<LikePostResponse> => {
@@ -215,7 +236,8 @@ export const MOCK_FEED_DETAIL: FeedDetail = {
       isLiked: false,
       replies: [
         {
-          replyId: 1,
+          commentId: 101,
+          parentId: 1,
           author: {
             userId: 1,
             name: '빵수니',

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-
-import { signup } from '@/api/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
+
 import { step2Schema, type Step2Values } from '@/types/SignupZodSchema';
+import { useSignup } from '@/hooks/useAuth';
 
 import {
   SignupContainer,
@@ -39,29 +39,29 @@ export default function SignupStep2() {
 
   const navigate = useNavigate();
 
-  const onSubmit = async (data: Step2Values) => {
-    try {
-      const step1 = JSON.parse(sessionStorage.getItem('signupStep1') || '{}');
+  const { mutate: signupMutate, isPending, isError } = useSignup();
 
-      const finalData = {
-        email: data.email,
-        password: data.password,
-        name: step1.name,
-        birthDate: step1.birthDate,
-        gender: step1.gender.toUpperCase(),
-        phoneNumber: step1.telephone,
-      };
+  const onSubmit = (data: Step2Values) => {
+    const step1 = JSON.parse(sessionStorage.getItem('signupStep1') || '{}');
 
-      const res = await signup(finalData);
-      if (res.success) {
+    const finalData = {
+      email: data.email,
+      password: data.password,
+      name: step1.name,
+      birthDate: step1.birthDate,
+      gender: step1.gender?.toUpperCase(),
+      phoneNumber: step1.telephone,
+    };
+
+    signupMutate(finalData, {
+      onSuccess: () => {
         alert('회원가입 성공! 로그인 페이지로 이동합니다.');
-      }
-
-      navigate('/login');
-    } catch (err) {
-      console.error('회원가입 실패:', err);
-      alert('회원가입에 실패했습니다.');
-    }
+        navigate('/login');
+      },
+      onError: () => {
+        alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+      },
+    });
   };
 
   return (
@@ -122,8 +122,10 @@ export default function SignupStep2() {
             )}
           </FormGroup>
 
-          <NextButton type="submit" disabled={!isValid}>
-            회원가입
+          {isError && <ErrorMessage>회원가입 요청 중 오류가 발생했습니다.</ErrorMessage>}
+
+          <NextButton type="submit" disabled={!isValid || isPending}>
+            {isPending ? '회원가입 중...' : '회원가입'}
           </NextButton>
         </FormWrapper>
       </Container>

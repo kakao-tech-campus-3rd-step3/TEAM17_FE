@@ -4,16 +4,20 @@ export interface Pack {
 }
 
 export interface Product {
-  id: number;
+  productId: number;
   name: string;
-  link: string;
-  productType: string;
-  src: string;
+  description?: string;
+  imageUrl: string;
   cost: number;
   likeCount: number;
   categoryId: number;
   categoryName: string;
-  packs: Pack[];
+
+  id?: number;
+  link?: string;
+  productType?: string;
+  src?: string;
+  packs?: Pack[];
 }
 
 export interface ProductResponse {
@@ -39,4 +43,10 @@ export interface ApiError {
   message: string;
   status?: number;
   code?: string;
+}
+
+export interface LikeProductResponse {
+  success: boolean;
+  likeCount: number;
+  isLiked: boolean;
 }

@@ -10,6 +10,7 @@ interface UseCommentActionsProps {
 }
 
 export const useCommentActions = ({
+  feedId,
   onAddReply,
   onLikeComment,
   onLikeReply,
@@ -25,12 +26,12 @@ export const useCommentActions = ({
   const handleSubmitReply = useCallback(
     (commentId: number) => {
       if (replyContent.trim()) {
-        onAddReply({ commentId, content: replyContent.trim() });
+        onAddReply({ feedId, commentId, content: replyContent.trim() });
         setReplyContent('');
         setReplyingTo(null);
       }
     },
-    [replyContent, onAddReply]
+    [feedId, replyContent, onAddReply]
   );
 
   // 댓글 좋아요 핸들러
