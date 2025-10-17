@@ -18,10 +18,23 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('API Error:', error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const url = error.config?.url;
+
+      if (status === 401 && url?.includes('/auth/me')) {
+        return Promise.reject(null);
+      }
+    }
+
+    if (import.meta.env.MODE === 'development') {
+      console.error('API Error:', error);
+    }
+
     return Promise.reject(error);
   }
 );
