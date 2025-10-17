@@ -15,7 +15,7 @@ import {
   toggleReplyLike,
 } from '@/api/feedApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
-import { ERROR_MESSAGES } from '@/utils/errorMessages';
+import { parseAxiosError, createUserFriendlyMessage } from '@/utils/errorHandling';
 import { FEED_API_CONSTANTS } from '@/constants/feed';
 import type {
   FeedDetail,
@@ -62,7 +62,9 @@ export const useFeeds = (
     hasNext: !feedResponse?.last,
     hasPrevious: !feedResponse?.first,
     loading,
-    error: error ? ERROR_MESSAGES.FETCH.FEED : null,
+    error: error
+      ? createUserFriendlyMessage(parseAxiosError(error), '피드 목록을 불러오는데 실패했습니다.')
+      : null,
     refresh: refetch,
     reset,
   };
@@ -98,7 +100,9 @@ export const useFeedById = (id: number | string | undefined) => {
   return {
     feed,
     loading,
-    error: error ? ERROR_MESSAGES.FETCH.FEED : null,
+    error: error
+      ? createUserFriendlyMessage(parseAxiosError(error), '피드 정보를 불러오는데 실패했습니다.')
+      : null,
     refresh: refetch,
     reset,
   };
@@ -157,11 +161,22 @@ export const useFeedActions = () => {
 
   const loading = createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
-  const error =
-    createMutation.error?.message ||
-    updateMutation.error?.message ||
-    deleteMutation.error?.message ||
-    null;
+  const error = createMutation.error
+    ? createUserFriendlyMessage(
+        parseAxiosError(createMutation.error),
+        '피드 작업 중 오류가 발생했습니다.'
+      )
+    : updateMutation.error
+      ? createUserFriendlyMessage(
+          parseAxiosError(updateMutation.error),
+          '피드 수정 중 오류가 발생했습니다.'
+        )
+      : deleteMutation.error
+        ? createUserFriendlyMessage(
+            parseAxiosError(deleteMutation.error),
+            '피드 삭제 중 오류가 발생했습니다.'
+          )
+        : null;
 
   const clearError = () => {
     createMutation.reset();
@@ -264,7 +279,12 @@ export const useFeedLike = (id: number) => {
   return {
     toggleLike: handleToggleLike,
     loading: toggleLikeMutation.isPending,
-    error: toggleLikeMutation.error ? ERROR_MESSAGES.ACTION.LIKE : null,
+    error: toggleLikeMutation.error
+      ? createUserFriendlyMessage(
+          parseAxiosError(toggleLikeMutation.error),
+          '좋아요 처리에 실패했습니다.'
+        )
+      : null,
   };
 };
 
@@ -368,7 +388,12 @@ export const useFeedBookmark = (id: number) => {
   return {
     toggleBookmark: handleToggleBookmark,
     loading: toggleBookmarkMutation.isPending,
-    error: toggleBookmarkMutation.error ? ERROR_MESSAGES.ACTION.BOOKMARK : null,
+    error: toggleBookmarkMutation.error
+      ? createUserFriendlyMessage(
+          parseAxiosError(toggleBookmarkMutation.error),
+          '북마크 처리에 실패했습니다.'
+        )
+      : null,
   };
 };
 
@@ -398,7 +423,9 @@ export const useComments = (feedId: number) => {
     comments: commentResponse?.content || [],
     totalCount: commentResponse?.totalElements || 0,
     loading,
-    error: error ? ERROR_MESSAGES.FETCH.COMMENTS : null,
+    error: error
+      ? createUserFriendlyMessage(parseAxiosError(error), '댓글을 불러오는데 실패했습니다.')
+      : null,
     refresh: refetch,
     reset,
   };
@@ -419,7 +446,7 @@ export const useCommentActions = (feedId: number) => {
 
   // 댓글 삭제
   const deleteCommentMutation = useMutation({
-    mutationFn: ({ commentId }: { commentId: number }) => deleteComment(commentId),
+    mutationFn: ({ commentId }: { commentId: number }) => deleteComment(feedId, commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.comments(feedId) });
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.detail(feedId) });
@@ -497,14 +524,37 @@ export const useCommentActions = (feedId: number) => {
     deleteReplyMutation.isPending ||
     toggleReplyLikeMutation.isPending;
 
-  const error =
-    createCommentMutation.error?.message ||
-    deleteCommentMutation.error?.message ||
-    toggleCommentLikeMutation.error?.message ||
-    createReplyMutation.error?.message ||
-    deleteReplyMutation.error?.message ||
-    toggleReplyLikeMutation.error?.message ||
-    null;
+  const error = createCommentMutation.error
+    ? createUserFriendlyMessage(
+        parseAxiosError(createCommentMutation.error),
+        '댓글 작성에 실패했습니다.'
+      )
+    : deleteCommentMutation.error
+      ? createUserFriendlyMessage(
+          parseAxiosError(deleteCommentMutation.error),
+          '댓글 삭제에 실패했습니다.'
+        )
+      : toggleCommentLikeMutation.error
+        ? createUserFriendlyMessage(
+            parseAxiosError(toggleCommentLikeMutation.error),
+            '댓글 좋아요 처리에 실패했습니다.'
+          )
+        : createReplyMutation.error
+          ? createUserFriendlyMessage(
+              parseAxiosError(createReplyMutation.error),
+              '답글 작성에 실패했습니다.'
+            )
+          : deleteReplyMutation.error
+            ? createUserFriendlyMessage(
+                parseAxiosError(deleteReplyMutation.error),
+                '답글 삭제에 실패했습니다.'
+              )
+            : toggleReplyLikeMutation.error
+              ? createUserFriendlyMessage(
+                  parseAxiosError(toggleReplyLikeMutation.error),
+                  '답글 좋아요 처리에 실패했습니다.'
+                )
+              : null;
 
   const clearError = () => {
     createCommentMutation.reset();

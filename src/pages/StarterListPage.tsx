@@ -122,7 +122,7 @@ const StarterListPage = () => {
                 key={category}
                 role="tab"
                 aria-selected={active === category}
-                active={active === category}
+                $active={active === category}
                 onClick={() => setActive(category)}
               >
                 {category} ({getCategoryCount(category)})
@@ -147,7 +147,7 @@ const StarterListPage = () => {
               key={category}
               role="tab"
               aria-selected={active === category}
-              active={active === category}
+              $active={active === category}
               onClick={() => setActive(category)}
             >
               {category} ({getCategoryCount(category)})

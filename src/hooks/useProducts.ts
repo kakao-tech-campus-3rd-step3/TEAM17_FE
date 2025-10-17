@@ -8,7 +8,7 @@ import {
   toggleProductLike,
 } from '@/api/productApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
-import { ERROR_MESSAGES } from '@/utils/errorMessages';
+import { parseAxiosError, createUserFriendlyMessage } from '@/utils/errorHandling';
 import type {
   Product,
   ProductResponse,
@@ -43,7 +43,9 @@ export const useProducts = () => {
   return {
     products,
     loading,
-    error: error ? ERROR_MESSAGES.FETCH.PRODUCT : null,
+    error: error
+      ? createUserFriendlyMessage(parseAxiosError(error), '제품 목록을 불러오는데 실패했습니다.')
+      : null,
     refresh: refetch,
     reset,
   };
@@ -78,7 +80,9 @@ export const useProduct = (id: number | undefined) => {
   return {
     product,
     loading,
-    error: error ? ERROR_MESSAGES.FETCH.PRODUCT : null,
+    error: error
+      ? createUserFriendlyMessage(parseAxiosError(error), '제품 정보를 불러오는데 실패했습니다.')
+      : null,
     refresh: refetch,
     reset,
   };
@@ -137,11 +141,22 @@ export const useProductActions = () => {
 
   const loading = createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
-  const error =
-    createMutation.error?.message ||
-    updateMutation.error?.message ||
-    deleteMutation.error?.message ||
-    null;
+  const error = createMutation.error
+    ? createUserFriendlyMessage(
+        parseAxiosError(createMutation.error),
+        '제품 작업 중 오류가 발생했습니다.'
+      )
+    : updateMutation.error
+      ? createUserFriendlyMessage(
+          parseAxiosError(updateMutation.error),
+          '제품 수정 중 오류가 발생했습니다.'
+        )
+      : deleteMutation.error
+        ? createUserFriendlyMessage(
+            parseAxiosError(deleteMutation.error),
+            '제품 삭제 중 오류가 발생했습니다.'
+          )
+        : null;
 
   const clearError = () => {
     createMutation.reset();
@@ -248,6 +263,11 @@ export const useProductLike = (id: number) => {
   return {
     toggleLike: handleToggleLike,
     loading: toggleLikeMutation.isPending,
-    error: toggleLikeMutation.error ? ERROR_MESSAGES.ACTION.LIKE : null,
+    error: toggleLikeMutation.error
+      ? createUserFriendlyMessage(
+          parseAxiosError(toggleLikeMutation.error),
+          '좋아요 처리에 실패했습니다.'
+        )
+      : null,
   };
 };

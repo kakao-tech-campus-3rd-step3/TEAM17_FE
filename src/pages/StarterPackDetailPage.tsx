@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag, Clock } from 'lucide-react';
+import defaultAvatar from '@/assets/icon-smile.svg';
 import { useStarterPackById, useStarterPackLike } from '@/hooks/useStarterPacks';
 import { mockStartPacks } from '@/mocks/mock';
 import type { StarterPack } from '@/types/StarterPack';
@@ -96,6 +97,20 @@ const StarterPackDetailPage: React.FC = () => {
     );
   }
 
+  if (!displayPack) {
+    return (
+      <StarterPackDetailPageContainer>
+        <PageHeader>
+          <BackButton onClick={handleBack}>←</BackButton>
+          <PageTitle>스타터팩 상세보기</PageTitle>
+        </PageHeader>
+        <ErrorContainer>
+          <ErrorMessage>스타터팩을 찾을 수 없습니다.</ErrorMessage>
+        </ErrorContainer>
+      </StarterPackDetailPageContainer>
+    );
+  }
+
   // 데모 모드가 아니고 데이터가 없는 경우
   if (!isDemoMode && !starterPack) {
     return (
@@ -164,7 +179,7 @@ const StarterPackDetailPage: React.FC = () => {
             <InfoSection>
               <StarterPackHeader>
                 <UserInfo>
-                  <Avatar src="/default-avatar.png" alt="스타터팩" />
+                  <Avatar src={defaultAvatar} alt="스타터팩" />
                   <Username>@{displayPack?.categoryName}_master</Username>
                 </UserInfo>
                 <MoreButton>
