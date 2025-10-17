@@ -8,7 +8,7 @@ import {
   toggleStarterPackLike,
 } from '@/api/starterPackApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
-import { ERROR_MESSAGES } from '@/utils/errorMessages';
+import { parseAxiosError, createUserFriendlyMessage } from '@/utils/errorHandling';
 import type {
   StarterPack,
   StarterPackResponse,
@@ -40,7 +40,12 @@ export const useStarterPack = () => {
   return {
     starterPack,
     loading,
-    error: error ? ERROR_MESSAGES.FETCH.STARTER_PACK : null,
+    error: error
+      ? createUserFriendlyMessage(
+          parseAxiosError(error),
+          '스타터팩 목록을 불러오는데 실패했습니다.'
+        )
+      : null,
     refresh: refetch,
     reset,
   };
@@ -70,7 +75,12 @@ export const useStarterPackById = (id: number) => {
   return {
     starterPack,
     loading,
-    error: error ? ERROR_MESSAGES.FETCH.STARTER_PACK : null,
+    error: error
+      ? createUserFriendlyMessage(
+          parseAxiosError(error),
+          '스타터팩 정보를 불러오는데 실패했습니다.'
+        )
+      : null,
     refresh: refetch,
     reset,
   };
@@ -145,12 +155,27 @@ export const useStarterPackActions = () => {
     deleteMutation.isPending ||
     toggleLikeMutation.isPending;
 
-  const error =
-    createMutation.error?.message ||
-    updateMutation.error?.message ||
-    deleteMutation.error?.message ||
-    toggleLikeMutation.error?.message ||
-    null;
+  const error = createMutation.error
+    ? createUserFriendlyMessage(
+        parseAxiosError(createMutation.error),
+        '스타터팩 작업 중 오류가 발생했습니다.'
+      )
+    : updateMutation.error
+      ? createUserFriendlyMessage(
+          parseAxiosError(updateMutation.error),
+          '스타터팩 수정 중 오류가 발생했습니다.'
+        )
+      : deleteMutation.error
+        ? createUserFriendlyMessage(
+            parseAxiosError(deleteMutation.error),
+            '스타터팩 삭제 중 오류가 발생했습니다.'
+          )
+        : toggleLikeMutation.error
+          ? createUserFriendlyMessage(
+              parseAxiosError(toggleLikeMutation.error),
+              '좋아요 처리에 실패했습니다.'
+            )
+          : null;
 
   const clearError = () => {
     createMutation.reset();
@@ -265,6 +290,11 @@ export const useStarterPackLike = (id: number) => {
   return {
     toggleLike: handleToggleLike,
     loading: toggleLikeMutation.isPending,
-    error: toggleLikeMutation.error ? ERROR_MESSAGES.ACTION.LIKE : null,
+    error: toggleLikeMutation.error
+      ? createUserFriendlyMessage(
+          parseAxiosError(toggleLikeMutation.error),
+          '좋아요 처리에 실패했습니다.'
+        )
+      : null,
   };
 };
