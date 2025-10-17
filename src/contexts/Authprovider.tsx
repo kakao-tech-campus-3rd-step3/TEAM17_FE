@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { useState, useEffect } from 'react';
 import { AuthContext } from './AuthContext';
 import type { ReactNode } from 'react';
@@ -14,12 +16,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         await getUser(); 
         setIsLogin(true);
-      } catch {
-        setIsLogin(false);
-      } finally {
-        setLoading(false);
+      } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          setIsLogin(false);
+          return;
+        }
       }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
+
     checkSession();
   }, []);
 
