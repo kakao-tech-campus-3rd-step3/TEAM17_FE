@@ -69,3 +69,5 @@ export const Counter = styled.div`
   font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.text.black};
 `;
+
+

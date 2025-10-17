@@ -23,13 +23,35 @@ export interface FeedPost {
   }[];
 }
 
+export interface PageableResponse {
+  pageNumber: number;
+  pageSize: number;
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  offset: number;
+  paged: boolean;
+  unpaged: boolean;
+}
+
 export interface FeedResponse {
-  feeds: FeedPost[];
-  totalCount: number;
-  currentPage: number;
+  content: FeedPost[];
+  pageable: PageableResponse;
   totalPages: number;
-  hasNext: boolean;
-  hasPrevious: boolean;
+  totalElements: number;
+  last: boolean;
+  size: number;
+  number: number; // 현재 페이지 번호 (0부터 시작)
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  numberOfElements: number;
+  first: boolean;
+  empty: boolean;
 }
 
 export interface CreatePostRequest {
@@ -51,7 +73,6 @@ export interface LikePostResponse {
   isLiked: boolean;
 }
 
-// 댓글 타입 정의
 export interface Comment {
   commentId: number;
   author: {
@@ -63,40 +84,47 @@ export interface Comment {
   createdAt: string;
   likeCount: number;
   isLiked: boolean;
-  replies?: Reply[];
+  parentId?: number | null;
+  replies?: Comment[];
 }
 
-export interface Reply {
-  replyId: number;
-  author: {
-    userId: number;
-    name: string;
-    profileImageUrl: string;
-  };
-  content: string;
-  createdAt: string;
-  likeCount: number;
-  isLiked: boolean;
+export interface Reply extends Comment {
+  replyId?: number;
 }
 
 export interface CreateCommentRequest {
   feedId: number;
   content: string;
+  parentId?: number | null;
 }
 
 export interface CreateReplyRequest {
+  feedId: number;
   commentId: number;
   content: string;
 }
 
 export interface CommentResponse {
-  comments: Comment[];
-  totalCount: number;
+  content: Comment[];
+  pageable: PageableResponse;
+  totalPages: number;
+  totalElements: number;
+  last: boolean;
+  size: number;
+  number: number;
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  numberOfElements: number;
+  first: boolean;
+  empty: boolean;
 }
 
 // 피드 상세보기용 확장 타입
 export interface FeedDetail extends Omit<FeedPost, 'imageUrl'> {
-  imageUrl: string[]; // 캐러셀을 위해 배열로 오버라이드
+  imageUrl: string[];
   comments: Comment[];
   commentCount: number;
   bookmarkCount: number;
