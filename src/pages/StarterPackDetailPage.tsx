@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag, Clock } from 'lucide-react';
+import defaultAvatar from '@/assets/icon-smile.svg';
 import { useStarterPackById, useStarterPackLike } from '@/hooks/useStarterPacks';
 import { mockStartPacks } from '@/mocks/mock';
 import type { StarterPack } from '@/types/StarterPack';
@@ -164,7 +165,7 @@ const StarterPackDetailPage: React.FC = () => {
             <InfoSection>
               <StarterPackHeader>
                 <UserInfo>
-                  <Avatar src="/default-avatar.png" alt="스타터팩" />
+                  <Avatar src={defaultAvatar} alt="스타터팩" />
                   <Username>@{displayPack?.category}_master</Username>
                 </UserInfo>
                 <MoreButton>
