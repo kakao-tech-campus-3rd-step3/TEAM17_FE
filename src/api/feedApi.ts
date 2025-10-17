@@ -27,7 +27,7 @@ export const fetchFeeds = async (
     return response.data;
   } catch (error) {
     console.error('Failed to fetch feeds:', error);
-    throw new Error('피드 목록을 불러오는데 실패했습니다.');
+    throw error;
   }
 };
 
@@ -38,7 +38,7 @@ export const fetchFeedById = async (id: number): Promise<FeedDetail> => {
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch feed ${id}:`, error);
-    throw new Error('피드 정보를 불러오는데 실패했습니다.');
+    throw error;
   }
 };
 
@@ -49,7 +49,7 @@ export const createFeed = async (data: CreatePostRequest): Promise<FeedPost> => 
     return response.data;
   } catch (error) {
     console.error('Failed to create feed:', error);
-    throw new Error('피드 생성에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -63,7 +63,7 @@ export const updateFeed = async (
     return response.data;
   } catch (error) {
     console.error(`Failed to update feed ${id}:`, error);
-    throw new Error('피드 수정에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -73,7 +73,7 @@ export const deleteFeed = async (id: number): Promise<void> => {
     await axiosInstance.delete(`/api/feeds/${id}`);
   } catch (error) {
     console.error(`Failed to delete feed ${id}:`, error);
-    throw new Error('피드 삭제에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -84,7 +84,7 @@ export const toggleFeedLike = async (id: number): Promise<LikePostResponse> => {
     return response.data;
   } catch (error) {
     console.error(`Failed to toggle like for feed ${id}:`, error);
-    throw new Error('좋아요 처리에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -99,7 +99,7 @@ export const toggleFeedBookmark = async (
     return response.data;
   } catch (error) {
     console.error(`Failed to toggle bookmark for feed ${id}:`, error);
-    throw new Error('북마크 처리에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -112,7 +112,7 @@ export const fetchComments = async (feedId: number): Promise<CommentResponse> =>
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch comments for feed ${feedId}:`, error);
-    throw new Error('댓글을 불러오는데 실패했습니다.');
+    throw error;
   }
 };
 
@@ -125,7 +125,7 @@ export const createComment = async (data: CreateCommentRequest): Promise<Comment
     return response.data;
   } catch (error) {
     console.error('Failed to create comment:', error);
-    throw new Error('댓글 작성에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -135,7 +135,7 @@ export const deleteComment = async (feedId: number, commentId: number): Promise<
     await axiosInstance.delete(`/api/feeds/${feedId}/comments/${commentId}`);
   } catch (error) {
     console.error(`Failed to delete comment ${commentId}:`, error);
-    throw new Error('댓글 삭제에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -151,7 +151,7 @@ export const toggleCommentLike = async (
     return response.data;
   } catch (error) {
     console.error(`Failed to toggle like for comment ${commentId}:`, error);
-    throw new Error('댓글 좋아요 처리에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -166,7 +166,7 @@ export const createReply = async (data: CreateReplyRequest): Promise<Reply> => {
     return response.data;
   } catch (error) {
     console.error('Failed to create reply:', error);
-    throw new Error('답글 작성에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -176,7 +176,7 @@ export const deleteReply = async (commentId: number, replyId: number): Promise<v
     await axiosInstance.delete(`/api/comments/${commentId}/replies/${replyId}`);
   } catch (error) {
     console.error(`Failed to delete reply ${replyId}:`, error);
-    throw new Error('답글 삭제에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -192,6 +192,6 @@ export const toggleReplyLike = async (
     return response.data;
   } catch (error) {
     console.error(`Failed to toggle like for reply ${replyId}:`, error);
-    throw new Error('답글 좋아요 처리에 실패했습니다.');
+    throw error;
   }
 };

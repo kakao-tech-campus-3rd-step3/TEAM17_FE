@@ -13,7 +13,7 @@ export const fetchProducts = async (): Promise<ProductResponse> => {
     return response.data;
   } catch (error) {
     console.error('Failed to fetch products:', error);
-    throw new Error('제품 목록을 불러오는데 실패했습니다.');
+    throw error;
   }
 };
 
@@ -24,7 +24,7 @@ export const fetchProductById = async (id: number): Promise<Product> => {
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch product ${id}:`, error);
-    throw new Error('제품 정보를 불러오는데 실패했습니다.');
+    throw error;
   }
 };
 
@@ -35,7 +35,7 @@ export const createProduct = async (data: ProductRequest): Promise<Product> => {
     return response.data;
   } catch (error) {
     console.error('Failed to create product:', error);
-    throw new Error('제품 생성에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -49,7 +49,7 @@ export const updateProduct = async (
     return response.data;
   } catch (error) {
     console.error(`Failed to update product ${id}:`, error);
-    throw new Error('제품 수정에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -59,7 +59,7 @@ export const deleteProduct = async (id: number): Promise<void> => {
     await axiosInstance.delete(`/api/products/${id}`);
   } catch (error) {
     console.error(`Failed to delete product ${id}:`, error);
-    throw new Error('제품 삭제에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -70,6 +70,6 @@ export const toggleProductLike = async (id: number): Promise<LikeProductResponse
     return response.data;
   } catch (error) {
     console.error(`Failed to toggle like for product ${id}:`, error);
-    throw new Error('좋아요 처리에 실패했습니다.');
+    throw error;
   }
 };

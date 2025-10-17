@@ -13,7 +13,7 @@ export const fetchStarterPack = async (): Promise<StarterPackResponse> => {
     return response.data;
   } catch (error) {
     console.error('Failed to fetch starter packs:', error);
-    throw new Error('스타터팩 목록을 불러오는데 실패했습니다.');
+    throw error;
   }
 };
 
@@ -24,7 +24,7 @@ export const fetchStarterPackById = async (id: number): Promise<StarterPack> => 
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch starter pack ${id}:`, error);
-    throw new Error('스타터팩 정보를 불러오는데 실패했습니다.');
+    throw error;
   }
 };
 
@@ -35,7 +35,7 @@ export const createStarterPack = async (data: StarterPackRequest): Promise<Start
     return response.data;
   } catch (error) {
     console.error('Failed to create starter pack:', error);
-    throw new Error('스타터팩 생성에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -49,7 +49,7 @@ export const updateStarterPack = async (
     return response.data;
   } catch (error) {
     console.error(`Failed to update starter pack ${id}:`, error);
-    throw new Error('스타터팩 수정에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -59,7 +59,7 @@ export const deleteStarterPack = async (id: number): Promise<void> => {
     await axiosInstance.delete(`/api/packs/${id}`);
   } catch (error) {
     console.error(`Failed to delete starter pack ${id}:`, error);
-    throw new Error('스타터팩 삭제에 실패했습니다.');
+    throw error;
   }
 };
 
@@ -70,6 +70,6 @@ export const toggleStarterPackLike = async (id: number): Promise<LikeStarterPack
     return response.data;
   } catch (error) {
     console.error(`Failed to toggle like for starter pack ${id}:`, error);
-    throw new Error('좋아요 처리에 실패했습니다.');
+    throw error;
   }
 };
