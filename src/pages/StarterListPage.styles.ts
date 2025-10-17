@@ -33,11 +33,11 @@ export const CategoryTabs = styled.div`
   flex-wrap: wrap;
 `;
 
-export const CategoryBtn = styled.button<{ active: boolean }>`
+export const CategoryBtn = styled.button<{ $active: boolean }>`
   padding: 0.5rem 1rem;
-  border: 1px solid ${(props) => (props.active ? '#ff6b35' : '#dbdbdb')};
-  background-color: ${(props) => (props.active ? '#ff6b35' : '#ffffff')};
-  color: ${(props) => (props.active ? '#ffffff' : '#262626')};
+  border: 1px solid ${(props) => (props.$active ? '#ff6b35' : '#dbdbdb')};
+  background-color: ${(props) => (props.$active ? '#ff6b35' : '#ffffff')};
+  color: ${(props) => (props.$active ? '#ffffff' : '#262626')};
   border-radius: 1.25rem;
   font-size: 0.875rem;
   font-weight: 500;
@@ -46,8 +46,8 @@ export const CategoryBtn = styled.button<{ active: boolean }>`
 
   &:hover:not(:disabled) {
     border-color: #ff6b35;
-    background-color: ${(props) => (props.active ? '#ff6b35' : '#fff5f0')};
-    color: ${(props) => (props.active ? '#ffffff' : '#ff6b35')};
+    background-color: ${(props) => (props.$active ? '#ff6b35' : '#fff5f0')};
+    color: ${(props) => (props.$active ? '#ffffff' : '#ff6b35')};
   }
 
   &:disabled {

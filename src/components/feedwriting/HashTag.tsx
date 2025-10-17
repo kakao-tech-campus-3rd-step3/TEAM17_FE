@@ -41,7 +41,7 @@ const HashTag = () => {
       <TitleStyle>관련 해시태그</TitleStyle>
       <HashTagBox>
         {tags.length === 0 ? (
-          <Desc>작성 후 Enter키 누르면, 해시태그 자동생성됩니다.</Desc>
+          <Desc>작성 후 Enter키 누르면, <br/> 해시태그 자동생성됩니다.</Desc>
         ) : (
           <>
             {tags.map((tag) => (
@@ -58,7 +58,7 @@ const HashTag = () => {
         <InputTag
           type="text"
           value={inputValue}
-          placeholder="Click! 여기를 클릭하여 해시태그를 입력하세요"
+          placeholder="여기 클릭하여 해시태그를 입력하세요"
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
         />

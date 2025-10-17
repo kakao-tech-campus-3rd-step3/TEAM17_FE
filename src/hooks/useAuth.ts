@@ -26,9 +26,12 @@ export const useLogin = () => {
 };
 
 export const useUser = () => {
+  const { isLogin } = useAuth();
+
   return useQuery<User>({
     queryKey: QUERY_KEYS.auth.user,
     queryFn: getUser,
+    enabled: isLogin,
     retry: false,
   });
 };
