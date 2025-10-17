@@ -9,7 +9,10 @@ export const useSuspenseQuery = <
 >(
   queryKey: TQueryKey,
   queryFn: (context: { queryKey: TQueryKey }) => Promise<TQueryFnData>,
-  options?: Omit<UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>, 'throwOnError'>
+  options?: Omit<
+    UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+    'throwOnError' | 'queryKey' | 'queryFn'
+  >
 ): UseQueryResult<TData, TError> => {
   const result = useQuery({
     queryKey,
