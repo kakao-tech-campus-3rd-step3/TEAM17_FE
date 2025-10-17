@@ -97,6 +97,20 @@ const StarterPackDetailPage: React.FC = () => {
     );
   }
 
+  if (!displayPack) {
+    return (
+      <StarterPackDetailPageContainer>
+        <PageHeader>
+          <BackButton onClick={handleBack}>←</BackButton>
+          <PageTitle>스타터팩 상세보기</PageTitle>
+        </PageHeader>
+        <ErrorContainer>
+          <ErrorMessage>스타터팩을 찾을 수 없습니다.</ErrorMessage>
+        </ErrorContainer>
+      </StarterPackDetailPageContainer>
+    );
+  }
+
   // 데모 모드가 아니고 데이터가 없는 경우
   if (!isDemoMode && !starterPack) {
     return (
@@ -149,7 +163,7 @@ const StarterPackDetailPage: React.FC = () => {
             borderBottom: '1px solid #f3e8ff',
           }}
         >
-          📝 데모 모드 - Mock 데이터로 표시 중
+          📝 데모 모드
         </div>
       )}
 
