@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import { tokens } from '@/styles/tokens';
 
-export const LinkUploadBox = styled.div<{ hasProducts: boolean }>`
+export const LinkUploadBox = styled.div<{ $hasProducts: boolean }>`
   display: flex;
   justify-content: center;
-  align-items: ${({ hasProducts }) => (hasProducts ? 'flex-start' : 'center')};
+  align-items: ${({ $hasProducts }) => ($hasProducts ? 'flex-start' : 'center')};
   text-align: center;
 
   width: 60%;
@@ -14,7 +14,7 @@ export const LinkUploadBox = styled.div<{ hasProducts: boolean }>`
   margin-bottom: 1rem;
   padding: 2rem;
 
-  overflow-y: ${({ hasProducts }) => (hasProducts ? 'auto' : 'hidden')};
+  overflow-y: ${({ $hasProducts }) => ($hasProducts ? 'auto' : 'hidden')};
   overflow-x: hidden;
 
   scrollbar-width: thin;
