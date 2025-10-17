@@ -446,7 +446,7 @@ export const useCommentActions = (feedId: number) => {
 
   // 댓글 삭제
   const deleteCommentMutation = useMutation({
-    mutationFn: ({ commentId }: { commentId: number }) => deleteComment(commentId),
+    mutationFn: ({ commentId }: { commentId: number }) => deleteComment(feedId, commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.comments(feedId) });
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.detail(feedId) });
