@@ -70,16 +70,20 @@ const FeedDetailData = () => {
   const handleAddComment = async (comment: CreateCommentRequest) => {
     try {
       await addComment(comment);
+      alert('댓글이 추가되었습니다!');
     } catch (error) {
-      console.error('댓글 추가 실패:', error);
+      console.error('댓글 작성 실패:', error);
+      alert('댓글 작성에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
   const handleAddReply = async (reply: CreateReplyRequest) => {
     try {
       await addReply(reply);
+      alert('답글이 추가되었습니다!');
     } catch (error) {
-      console.error('답글 추가 실패:', error);
+      console.error('답글 작성 실패:', error);
+      alert('답글 작성에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
