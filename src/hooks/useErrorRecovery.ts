@@ -11,32 +11,32 @@ interface UseErrorRecoveryOptions {
 export const useErrorRecovery = (options: UseErrorRecoveryOptions = {}) => {
   const navigate = useNavigate();
   const [retryCount, setRetryCount] = useState(0);
-  const { maxRetries = 3 } = options;
+  const { maxRetries = 3, onRetry, onGoHome, onLogin } = options;
 
   const handleRetry = useCallback(() => {
     if (retryCount < maxRetries) {
       setRetryCount((prev) => prev + 1);
-      options.onRetry?.();
+      onRetry?.();
     } else {
       window.location.reload();
     }
-  }, [retryCount, maxRetries, options]);
+  }, [retryCount, maxRetries, onRetry]);
 
   const handleGoHome = useCallback(() => {
-    if (options.onGoHome) {
-      options.onGoHome();
+    if (onGoHome) {
+      onGoHome();
     } else {
       navigate('/');
     }
-  }, [navigate, options]);
+  }, [navigate, onGoHome]);
 
   const handleLogin = useCallback(() => {
-    if (options.onLogin) {
-      options.onLogin();
+    if (onLogin) {
+      onLogin();
     } else {
       navigate('/login');
     }
-  }, [navigate, options]);
+  }, [navigate, onLogin]);
 
   const resetRetryCount = useCallback(() => {
     setRetryCount(0);
