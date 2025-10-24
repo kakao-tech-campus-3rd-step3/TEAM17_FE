@@ -21,10 +21,21 @@ export const HeaderWrap = styled.header`
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 `;
 
+export const BrandWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  text-decoration: none;
+`;
+
 export const Brand = styled.div`
   color: #f97316;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
+`;
+
+export const Logo = styled.img`
+  width: 1.5rem;
 `;
 
 export const Actions = styled.div`
@@ -101,7 +112,8 @@ export const Avatar = styled.img`
 export const LogoutButton = styled.button`
   ${baseButtonStyles};
   color: #ffffff;
-  background-color: #111827;
+  background-color: #f97316;
+  border: none;
 
   &:hover {
     background-color: #0b1220;
