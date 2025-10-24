@@ -15,8 +15,14 @@ export const fetchUserProfile = async (): Promise<UserProfile> => {
 // ✅ 프로필 수정
 export const updateUserProfile = async (data: Partial<UserProfile>): Promise<UserProfile> => {
   try {
-    const response = await axiosInstance.put<UserProfile>('/api/user/profile', data);
-    return response.data;
+    return {
+      userId: 1,
+      nickname: data.nickname ?? '정보 없음',
+      hobby: data.hobby ?? '정보 없음',
+      introduction: data.introduction ?? '정보 없음',
+      profileImage: null,
+      postCount: 10,
+    };
   } catch (error) {
     console.error('Failed to update user profile:', error);
     throw error;

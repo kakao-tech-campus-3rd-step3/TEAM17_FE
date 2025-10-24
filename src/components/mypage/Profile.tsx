@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useUserProfile } from '@/hooks/useUser';
 import defaultProfile from '@/assets/defaultProfile.png';
 import icongrid from '@/assets/icon-grid.svg';
@@ -15,9 +16,11 @@ import {
   EditButton,
   ButtonWrapper,
 } from '@/components/mypage/Profile.style';
+import ProfileEditModal from '@/components/mypage/ProfileEditModal';
 
 const Profile = () => {
   const { data: profile, isLoading, isError } = useUserProfile();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (isLoading) return <div>로딩 중...</div>;
 
@@ -29,7 +32,7 @@ const Profile = () => {
         profileImage: null,
         postCount: 0,
       }
-    : profile ?? {};
+    : (profile ?? {});
 
   const {
     nickname = '정보 없음',
@@ -40,25 +43,29 @@ const Profile = () => {
   } = safeProfile;
 
   return (
-    <Container>
-      <ProfileImage src={profileImage || defaultProfile} alt="프로필 이미지" />
-      <InfoContainer>
-        <Nickname>{nickname}</Nickname>
-        <RowContainer>
-          <Icon src={icongrid} alt="게시물 아이콘" />
-          <Content>게시물 :</Content>
-          <Content>{postCount}</Content>
-          <Gap />
-          <Icon src={iconsmile} alt="취미 아이콘" />
-          <Content>취미 :</Content>
-          <Content>{hobby}</Content>
-        </RowContainer>
-        <SubInfo>{introduction}</SubInfo>
-      </InfoContainer>
-      <ButtonWrapper>
-        <EditButton>정보 수정</EditButton>
-      </ButtonWrapper>
-    </Container>
+    <>
+      <Container>
+        <ProfileImage src={profileImage || defaultProfile} alt="프로필 이미지" />
+        <InfoContainer>
+          <Nickname>{nickname}</Nickname>
+          <RowContainer>
+            <Icon src={icongrid} alt="게시물 아이콘" />
+            <Content>게시물 :</Content>
+            <Content>{postCount}</Content>
+            <Gap />
+            <Icon src={iconsmile} alt="취미 아이콘" />
+            <Content>취미 :</Content>
+            <Content>{hobby}</Content>
+          </RowContainer>
+          <SubInfo>{introduction}</SubInfo>
+        </InfoContainer>
+        <ButtonWrapper>
+          <EditButton onClick={() => setIsModalOpen(true)}>정보 수정</EditButton>
+        </ButtonWrapper>
+      </Container>
+
+      {isModalOpen && <ProfileEditModal onClose={() => setIsModalOpen(false)} />}
+    </>
   );
 };
 
