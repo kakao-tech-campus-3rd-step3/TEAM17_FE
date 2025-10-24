@@ -1,7 +1,9 @@
 import React from 'react';
 import {
   HeaderWrap,
+  BrandWrapper,
   Brand,
+  Logo,
   Actions,
   GhostLink,
   PrimaryLink,
@@ -12,6 +14,7 @@ import {
 import { Link } from 'react-router-dom';
 
 import { User as UserIcon } from 'lucide-react';
+import LogoImg from '@/assets/Logo.svg';
 
 type HeaderProps = {
   isAuthenticated?: boolean;
@@ -34,10 +37,12 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <HeaderWrap>
-      {/* 나중에 로고 이미지 제작하면 그걸로 바꾸기 */}
-      <Brand as={Link} to="/" aria-label="홈으로 이동" title="홈으로 이동">
-        장비빨🔥
-      </Brand>
+      <BrandWrapper as={Link} to="/">
+        <Brand aria-label="홈으로 이동" title="홈으로 이동">
+          장비빨
+        </Brand>
+        <Logo src={LogoImg} />
+      </BrandWrapper>
 
       <Actions>
         {isAuthenticated ? (
