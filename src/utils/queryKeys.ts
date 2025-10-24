@@ -26,4 +26,9 @@ export const QUERY_KEYS = {
     detail: (id: number) => ['feeds', 'detail', id] as const,
     comments: (feedId: number) => ['feeds', 'detail', feedId, 'comments'] as const,
   },
+
+  user: {
+    all: ['user'] as const,
+    profile: () => [...QUERY_KEYS.user.all, 'profile'] as const,
+  },
 } as const;

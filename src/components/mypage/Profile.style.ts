@@ -6,8 +6,7 @@ export const Container = styled.div`
 `;
 
 export const ProfileImage = styled.img`
-  width: 15%;
-  height: 15%;
+  width: 8rem;
   border-radius: 70px;
   margin: 3rem 4rem auto 4rem;
 `;
