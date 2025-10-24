@@ -64,7 +64,12 @@ const Profile = () => {
         </ButtonWrapper>
       </Container>
 
-      {isModalOpen && <ProfileEditModal onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && (
+        <ProfileEditModal
+          profile={safeProfile}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </>
   );
 };
