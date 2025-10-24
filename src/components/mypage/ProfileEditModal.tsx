@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useUpdateUserProfile } from '@/hooks/useUser';
+import { getPresignedUrls, uploadToS3 } from '@/api/s3Api';
 import {
   ModalBackdrop,
   ModalBox,
@@ -25,13 +26,13 @@ const ProfileEditModal = ({ onClose }: Props) => {
     nickname: '',
     hobby: '',
     introduction: '',
-    profileImage: null as File | null, 
+    profileImage: null as File | null,
   });
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]; 
+    const file = e.target.files?.[0];
     if (file) {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
 
@@ -49,9 +50,31 @@ const ProfileEditModal = ({ onClose }: Props) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    mutate(formData);
-    onClose();
+  const handleSubmit = async () => {
+    try {
+      let uploadedImageUrl = null;
+
+      if (formData.profileImage) {
+        const presignedData = await getPresignedUrls('profiles', [formData.profileImage]);
+        const { presignedUrl, fileUrl } = presignedData[0];
+
+        await uploadToS3(presignedUrl, formData.profileImage);
+
+        uploadedImageUrl = fileUrl;
+      }
+
+      mutate({
+        nickname: formData.nickname,
+        hobby: formData.hobby,
+        introduction: formData.introduction,
+        profileImage: uploadedImageUrl,
+      });
+
+      onClose();
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      alert('이미지 업로드 중 오류가 발생했습니다.');
+    }
   };
 
   useEffect(() => {
@@ -66,12 +89,7 @@ const ProfileEditModal = ({ onClose }: Props) => {
         <h3>프로필 수정</h3>
 
         <ImageUploadBox onClick={handleBoxClick}>
-          <FileInput
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
+          <FileInput ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} />
           <PreviewImage src={previewUrl || defaultProfile} alt="프로필 미리보기" />
         </ImageUploadBox>
 
@@ -81,12 +99,7 @@ const ProfileEditModal = ({ onClose }: Props) => {
           onChange={handleChange}
           placeholder="닉네임"
         />
-        <Input
-          name="hobby"
-          value={formData.hobby}
-          onChange={handleChange}
-          placeholder="취미"
-        />
+        <Input name="hobby" value={formData.hobby} onChange={handleChange} placeholder="취미" />
         <Textarea
           name="introduction"
           value={formData.introduction}

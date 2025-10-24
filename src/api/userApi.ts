@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from '@/api/axiosInstance';
 import type { UserProfile } from '@/types/User';
 
 // ✅ 내 프로필 조회
