@@ -62,11 +62,11 @@ export const ButtonWrapper = styled.div`
 
 export const EditButton = styled.button`
   width: 8rem;
-  height: 2rem;
-  background-color: ${({ theme }) => theme.colors.orange};
+  margin-right: 2rem;
+  background-color: ${({ theme }) => theme.colors.background.blue};
   color: ${({ theme }) => theme.colors.text.white};
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 400;
   border: none;
   border-radius: 10px;
 `;
