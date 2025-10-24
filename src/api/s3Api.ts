@@ -56,7 +56,8 @@ export const uploadToS3 = async (presignedUrl: string, file: File) => {
       throw new Error(`S3 업로드 실패: 상태 코드 ${res.status}`);
     }
   } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('S3 업로드 실패:', error);
-    throw new Error('이미지 업로드 중 오류가 발생했습니다.');
+    throw new Error(`이미지 업로드 중 오류가 발생했습니다: ${message}`);
   }
 };
