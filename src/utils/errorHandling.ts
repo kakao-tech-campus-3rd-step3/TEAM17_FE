@@ -1,18 +1,51 @@
 import { AxiosError } from 'axios';
 
+export type ErrorType = 'network' | 'auth' | 'server' | 'notFound' | 'unknown';
+
 export interface ApiError {
   message: string;
   status?: number;
   code?: string;
+  type: ErrorType;
   originalError: unknown;
 }
 
+const getErrorType = (status?: number, code?: string): ErrorType => {
+  if (
+    code === 'NETWORK_ERROR' ||
+    code === 'ERR_NETWORK' ||
+    code === 'ECONNABORTED' ||
+    code === 'ETIMEDOUT'
+  ) {
+    return 'network';
+  }
+
+  if (status === 401 || status === 403) {
+    return 'auth';
+  }
+
+  if (status === 404) {
+    return 'notFound';
+  }
+
+  if (status && status >= 500) {
+    return 'server';
+  }
+
+  return 'unknown';
+};
+
 export const parseAxiosError = (error: unknown): ApiError => {
   if (error instanceof AxiosError) {
+    const status = error.response?.status;
+    const code = error.code;
+    const type = getErrorType(status, code);
+
     return {
       message: error.response?.data?.message || error.message || '알 수 없는 오류가 발생했습니다.',
-      status: error.response?.status,
-      code: error.code,
+      status,
+      code,
+      type,
       originalError: error,
     };
   }
@@ -20,12 +53,14 @@ export const parseAxiosError = (error: unknown): ApiError => {
   if (error instanceof Error) {
     return {
       message: error.message,
+      type: 'unknown',
       originalError: error,
     };
   }
 
   return {
     message: '알 수 없는 오류가 발생했습니다.',
+    type: 'unknown',
     originalError: error,
   };
 };
@@ -86,4 +121,9 @@ export const createUserFriendlyMessage = (apiError: ApiError, context?: string):
   }
 
   return getDefaultErrorMessage(apiError.status);
+};
+
+export const getErrorTypeFromError = (error: unknown): ErrorType => {
+  const apiError = parseAxiosError(error);
+  return apiError.type;
 };

@@ -2,10 +2,10 @@ import { Routes, Route } from 'react-router-dom';
 import Home from '@/pages/Home';
 import SignupProfile from '@/pages/SignupProfile';
 import SignupAccount from '@/pages/SignupAccount';
-import StarterListPage from '@/pages/StarterListPage';
-import StarterPackDetailPage from '@/pages/StarterPackDetailPage';
-import FeedPage from '@/pages/FeedPage';
-import FeedDetailPage from '@/pages/FeedDetailPage';
+import StarterListPageSuspense from '@/pages/suspense/StarterListPageSuspense';
+import StarterPackDetailPageSuspense from '@/pages/suspense/StarterPackDetailPageSuspense';
+import FeedPageSuspense from '@/pages/suspense/FeedPageSuspense';
+import FeedDetailPageSuspense from '@/pages/suspense/FeedDetailPageSuspense';
 import Layout from '@/components/common/Layout';
 import Login from '@/pages/Login';
 import MyPage from '@/pages/MyPage';
@@ -18,11 +18,11 @@ export const Router = () => (
       <Route path="/signup/profile" element={<SignupProfile />} />
       <Route path="/signup/account" element={<SignupAccount />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/starterpack" element={<StarterListPage />} />
-      <Route path="/starterpack/:id" element={<StarterPackDetailPage />} />
+      <Route path="/starterpack" element={<StarterListPageSuspense />} />
+      <Route path="/starterpack/:id" element={<StarterPackDetailPageSuspense />} />
       <Route path="/mypage/*" element={<MyPage />} />
-      <Route path="/feed" element={<FeedPage />} />
-      <Route path="/feed/:id" element={<FeedDetailPage />} />
+      <Route path="/feed" element={<FeedPageSuspense />} />
+      <Route path="/feed/:id" element={<FeedDetailPageSuspense />} />
       <Route path="/feedwriting" element={<FeedWriting />} />
     </Route>
   </Routes>
