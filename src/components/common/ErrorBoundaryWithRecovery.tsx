@@ -49,11 +49,19 @@ class ErrorBoundaryWithRecovery extends Component<Props, State> {
   };
 
   handleGoHome = () => {
-    this.props.onGoHome?.() || (window.location.href = '/');
+    if (this.props.onGoHome) {
+      this.props.onGoHome();
+    } else {
+      window.location.href = '/';
+    }
   };
 
   handleLogin = () => {
-    this.props.onLogin?.() || (window.location.href = '/login');
+    if (this.props.onLogin) {
+      this.props.onLogin();
+    } else {
+      window.location.href = '/login';
+    }
   };
 
   render() {

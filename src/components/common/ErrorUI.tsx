@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { tokens } from '@/styles/tokens';
 
 const ErrorContainer = styled.div`
   padding: 2rem;
@@ -14,8 +15,8 @@ const NetworkErrorContainer = styled(ErrorContainer)`
 `;
 
 const AuthErrorContainer = styled(ErrorContainer)`
-  background-color: #fef3cd;
-  border: 1px solid #fde68a;
+  background-color: ${tokens.colors.orange.muted};
+  border: 1px solid ${tokens.colors.orange.lighter};
 `;
 
 const ServerErrorContainer = styled(ErrorContainer)`
@@ -24,8 +25,8 @@ const ServerErrorContainer = styled(ErrorContainer)`
 `;
 
 const NotFoundErrorContainer = styled(ErrorContainer)`
-  background-color: #f0f9ff;
-  border: 1px solid #bae6fd;
+  background-color: ${tokens.colors.background.lightGray};
+  border: 1px solid ${tokens.colors.line.gray};
 `;
 
 const ErrorTitle = styled.h2`
@@ -58,19 +59,19 @@ const ErrorButton = styled.button<{ variant?: 'primary' | 'secondary' }>`
     switch (variant) {
       case 'primary':
         return `
-          background-color: #dc2626;
-          color: white;
+          background-color: ${tokens.colors.orange.primary};
+          color: ${tokens.colors.text.white};
           &:hover {
-            background-color: #b91c1c;
+            background-color: ${tokens.colors.orange.hover};
           }
         `;
       case 'secondary':
         return `
-          background-color: #f3f4f6;
-          color: #374151;
-          border: 1px solid #d1d5db;
+          background-color: ${tokens.colors.background.gray};
+          color: ${tokens.colors.text.gray};
+          border: 1px solid ${tokens.colors.line.gray};
           &:hover {
-            background-color: #e5e7eb;
+            background-color: ${tokens.colors.background.lightGray};
           }
         `;
     }
@@ -93,35 +94,35 @@ const ErrorUI: React.FC<ErrorUIProps> = ({ type, message, onRetry, onGoHome, onL
           container: NetworkErrorContainer,
           title: '네트워크 연결 오류',
           defaultMessage: '인터넷 연결을 확인해주세요.',
-          color: '#dc2626',
+          color: tokens.colors.text.warning,
         };
       case 'auth':
         return {
           container: AuthErrorContainer,
           title: '인증이 필요합니다',
           defaultMessage: '로그인이 필요한 서비스입니다.',
-          color: '#d97706',
+          color: tokens.colors.orange.secondary,
         };
       case 'server':
         return {
           container: ServerErrorContainer,
           title: '서버 오류',
           defaultMessage: '서버에 일시적인 문제가 발생했습니다.',
-          color: '#dc2626',
+          color: tokens.colors.text.warning,
         };
       case 'notFound':
         return {
           container: NotFoundErrorContainer,
           title: '페이지를 찾을 수 없습니다',
           defaultMessage: '요청하신 페이지가 존재하지 않습니다.',
-          color: '#0284c7',
+          color: tokens.colors.blue,
         };
       default:
         return {
           container: ErrorContainer,
           title: '오류가 발생했습니다',
           defaultMessage: '알 수 없는 오류가 발생했습니다.',
-          color: '#dc2626',
+          color: tokens.colors.text.warning,
         };
     }
   };
