@@ -1,3 +1,4 @@
+import { useUserProfile } from '@/hooks/useUser';
 import defaultProfile from '@/assets/defaultProfile.png';
 import icongrid from '@/assets/icon-grid.svg';
 import iconsmile from '@/assets/icon-smile.svg';
@@ -14,34 +15,21 @@ import {
   EditButton,
   ButtonWrapper,
 } from '@/components/mypage/Profile.style';
-import { useUserProfile } from '@/hooks/useUser';
 
 const Profile = () => {
   const { data: profile, isLoading, isError } = useUserProfile();
 
   if (isLoading) return <div>로딩 중...</div>;
 
-  if (isError) {
-    return (
-      <Container>
-        <ProfileImage src={defaultProfile} alt="기본 프로필 이미지" />
-        <InfoContainer>
-          <Nickname>정보 없음</Nickname>
-          <RowContainer>
-            <Icon src={icongrid} />
-            <Content>게시물 :</Content>
-            <Content>0</Content>
-            <Gap />
-            <Icon src={iconsmile} />
-            <Content>취미 :</Content>
-            <Content>정보 없음</Content>
-          </RowContainer>
-          <SubInfo>프로필 정보를 불러오지 못했습니다.</SubInfo>
-          
-        </InfoContainer>
-      </Container>
-    );
-  }
+  const safeProfile = isError
+    ? {
+        nickname: '정보 없음',
+        hobby: '정보 없음',
+        introduction: '프로필 정보를 불러오지 못했습니다.',
+        profileImage: null,
+        postCount: 0,
+      }
+    : profile ?? {};
 
   const {
     nickname = '정보 없음',
@@ -49,7 +37,7 @@ const Profile = () => {
     introduction = '정보 없음',
     profileImage,
     postCount = 0,
-  } = profile ?? {};
+  } = safeProfile;
 
   return (
     <Container>
