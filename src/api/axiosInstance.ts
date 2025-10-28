@@ -2,8 +2,14 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true,
+  withCredentials: true, 
 });
+
+
+function getCookieValue(name: string): string | null {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : null;
+}
 
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -20,7 +26,13 @@ axiosInstance.interceptors.request.use(
 
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const tokenFromHeader = response.headers['x-xsrf-token'];
+    if (tokenFromHeader) {
+      axiosInstance.defaults.headers['X-XSRF-TOKEN'] = tokenFromHeader;
+    }
+    return response;
+  },
   (error) => {
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
@@ -38,10 +50,5 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-function getCookieValue(name: string): string | null {
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  return match ? decodeURIComponent(match[2]) : null;
-}
 
 export default axiosInstance;
