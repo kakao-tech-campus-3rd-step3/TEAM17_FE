@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import {
   fetchFeeds,
   fetchFeedById,
@@ -537,42 +538,30 @@ export const useCommentActions = (feedId: number) => {
     deleteReplyMutation.isPending ||
     toggleReplyLikeMutation.isPending;
 
-  const error = createCommentMutation.error
-    ? createUserFriendlyMessage(
-        parseAxiosError(createCommentMutation.error),
-        '댓글 작성에 실패했습니다.'
-      )
-    : updateCommentMutation.error
-      ? createUserFriendlyMessage(
-          parseAxiosError(updateCommentMutation.error),
-          '댓글 수정에 실패했습니다.'
-        )
-      : deleteCommentMutation.error
-        ? createUserFriendlyMessage(
-            parseAxiosError(deleteCommentMutation.error),
-            '댓글 삭제에 실패했습니다.'
-          )
-        : toggleCommentLikeMutation.error
-          ? createUserFriendlyMessage(
-              parseAxiosError(toggleCommentLikeMutation.error),
-              '댓글 좋아요 처리에 실패했습니다.'
-            )
-          : createReplyMutation.error
-            ? createUserFriendlyMessage(
-                parseAxiosError(createReplyMutation.error),
-                '답글 작성에 실패했습니다.'
-              )
-            : deleteReplyMutation.error
-              ? createUserFriendlyMessage(
-                  parseAxiosError(deleteReplyMutation.error),
-                  '답글 삭제에 실패했습니다.'
-                )
-              : toggleReplyLikeMutation.error
-                ? createUserFriendlyMessage(
-                    parseAxiosError(toggleReplyLikeMutation.error),
-                    '답글 좋아요 처리에 실패했습니다.'
-                  )
-                : null;
+  const error = useMemo(() => {
+    const candidates: Array<{ err: unknown | null | undefined; msg: string }> = [
+      { err: createCommentMutation.error, msg: '댓글 작성에 실패했습니다.' },
+      { err: updateCommentMutation.error, msg: '댓글 수정에 실패했습니다.' },
+      { err: deleteCommentMutation.error, msg: '댓글 삭제에 실패했습니다.' },
+      { err: toggleCommentLikeMutation.error, msg: '댓글 좋아요 처리에 실패했습니다.' },
+      { err: createReplyMutation.error, msg: '답글 작성에 실패했습니다.' },
+      { err: deleteReplyMutation.error, msg: '답글 삭제에 실패했습니다.' },
+      { err: toggleReplyLikeMutation.error, msg: '답글 좋아요 처리에 실패했습니다.' },
+    ];
+
+    const firstError = candidates.find((candidate) => candidate.err);
+    return firstError
+      ? createUserFriendlyMessage(parseAxiosError(firstError.err), firstError.msg)
+      : null;
+  }, [
+    createCommentMutation.error,
+    updateCommentMutation.error,
+    deleteCommentMutation.error,
+    toggleCommentLikeMutation.error,
+    createReplyMutation.error,
+    deleteReplyMutation.error,
+    toggleReplyLikeMutation.error,
+  ]);
 
   const clearError = () => {
     createCommentMutation.reset();
