@@ -18,7 +18,7 @@ import {
   SubmitButton,
   ErrorText,
   ExistingImage,
-} from '@/components/packwriting/LinkModal.style';
+} from '@/components/pack_feed_writing/LinkModal.style';
 import type { ProductForm } from '@/types/LinkWriteForm';
 
 interface ProductModalProps {

@@ -3,13 +3,13 @@ import {
   LayoutLine,
   ContentLinkWrapper,
   TagWrapper,
-} from '@/components/packwriting/Layout.style';
-import ThumbnailImage from '@/components/packwriting/ThumbnailImage';
-import ContentWriting from '@/components/packwriting/ContentWriting';
-import LinkWriting from '@/components/packwriting/LinkWriting';
-import HobbyTag from '@/components/packwriting/HobbyTag';
-import HashTag from '@/components/packwriting/HashTag';
-import Price from '@/components/packwriting/Price';
+} from '@/components/pack_feed_writing/Layout.style';
+import ThumbnailImage from '@/components/pack_feed_writing/ThumbnailImage';
+import ContentWriting from '@/components/pack_feed_writing/ContentWriting';
+import LinkWriting from '@/components/pack_feed_writing/LinkWriting';
+import HobbyTag from '@/components/pack_feed_writing/HobbyTag';
+import HashTag from '@/components/pack_feed_writing/HashTag';
+import Price from '@/components/pack_feed_writing/Price';
 const PackWriting = () => {
   return (
     <>

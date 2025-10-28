@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import { ColumnWrapper } from '@/components/packwriting/Layout.style';
-import { Desc, TitleStyle } from '@/components/packwriting/Title.style';
+import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.style';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
 import {
   LinkUploadBox,
   ProductWrapper,
   Product,
   ProductImage,
-} from '@/components/packwriting/LinkWriting.style';
+} from '@/components/pack_feed_writing/LinkWriting.style';
 
-import LinkModal from '@/components/packwriting/LinkModal';
+import LinkModal from '@/components/pack_feed_writing/LinkModal';
 import type { ProductForm } from '@/types/LinkWriteForm';
 
 const LinkWriting = () => {
