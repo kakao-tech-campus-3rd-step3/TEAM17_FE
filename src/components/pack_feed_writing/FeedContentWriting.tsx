@@ -3,13 +3,19 @@ import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.style';
 import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
 import { ContentBox2, TextArea, Counter } from '@/components/pack_feed_writing/UploadBox.style';
 
-const ContentWriting = () => {
+type FeedContentWritingProps = {
+  onChange: (value: string) => void;
+};
+
+const FeedContentWriting = ({ onChange }: FeedContentWritingProps) => {
   const [content, setContent] = useState('');
   const [isActive, setIsActive] = useState(false);
   const maxLength = 200;
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
     setContent(e.target.value);
+    onChange(newValue);
   };
 
   const handleBlur = () => {
@@ -43,4 +49,4 @@ const ContentWriting = () => {
   );
 };
 
-export default ContentWriting;
+export default FeedContentWriting;

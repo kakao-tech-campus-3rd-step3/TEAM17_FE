@@ -11,7 +11,11 @@ import {
 import LinkModal from '@/components/pack_feed_writing/LinkModal';
 import type { ProductForm } from '@/types/LinkWriteForm';
 
-const LinkWriting = () => {
+type LinkWritingProps = {
+  onChange: (items: ProductForm['products']) => void;
+};
+
+const LinkWriting = ({ onChange }: LinkWritingProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [formData, setFormData] = useState<ProductForm>({
@@ -33,6 +37,7 @@ const LinkWriting = () => {
 
     setFormData({ products: productsWithPreview });
     setSubmittedProducts(productsWithPreview);
+    onChange(productsWithPreview);
     setIsOpen(false);
   };
 

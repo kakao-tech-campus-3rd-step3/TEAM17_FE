@@ -8,7 +8,11 @@ import {
 import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.style';
 import { TitleStyle } from '@/components/pack_feed_writing/Title.style';
 
-const HobbyTag = () => {
+type HobbyTagProps = {
+  onChange: (category: string) => void;
+};
+
+const HobbyTag = ({ onChange }: HobbyTagProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState('전체');
 
@@ -17,6 +21,7 @@ const HobbyTag = () => {
   const handleSelect = (option: string) => {
     setSelected(option);
     setIsOpen(false);
+    onChange(option);
   };
 
   return (

@@ -3,7 +3,11 @@ import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
 import { PriceContainer, PriceBox, Priceinput } from '@/components/pack_feed_writing/Price.style';
 import { formatNumberInput, parseNumberInput } from '@/utils/price';
 
-const Price = () => {
+type PriceProps = {
+  onChange: (value: number) => void;
+};
+
+const Price = ({ onChange }: PriceProps) => {
   const [price, setPrice] = useState<number>(0);
   console.log(price); // api 연동 시 주석 지우기 (eslint 무시용)
   const [displayValue, setDisplayValue] = useState<string>('0');
@@ -17,6 +21,7 @@ const Price = () => {
 
     const numeric = parseNumberInput(formatted);
     setPrice(numeric);
+    onChange(numeric);
   };
 
   return (
