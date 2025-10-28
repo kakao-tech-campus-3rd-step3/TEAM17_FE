@@ -9,7 +9,7 @@ export const uploadPack = async (packData: {
   items: {
     name: string;
     linkUrl: string;
-    description: string;
+    description?: string;
     imageUrl: string;
   }[];
   hashtagNames: string[];

@@ -15,6 +15,7 @@ import HobbyTag from '@/components/pack_feed_writing/HobbyTag';
 import HashTag from '@/components/pack_feed_writing/HashTag';
 import Price from '@/components/pack_feed_writing/Price';
 import { useUploadPack } from '@/hooks/useUploadPack';
+import type { WriteProduct } from '@/types/Product';
 
 const PackWriting = () => {
   const [mainImageUrl, setMainImageUrl] = useState('');
@@ -23,9 +24,7 @@ const PackWriting = () => {
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [price, setPrice] = useState<number | null>(null);
-  const [items, setItems] = useState<
-    { name: string; linkUrl: string; description: string; imageUrl: string }[]
-  >([]);
+  const [items, setItems] = useState<WriteProduct[]>([]);
   const [error, setError] = useState('');
 
   const { mutate: uploadPack } = useUploadPack();

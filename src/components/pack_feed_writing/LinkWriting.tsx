@@ -10,16 +10,18 @@ import {
 
 import LinkModal from '@/components/pack_feed_writing/LinkModal';
 import type { ProductForm } from '@/types/LinkWriteForm';
+import type { WriteProduct } from '@/types/Product';
 
 type LinkWritingProps = {
-  onChange: (items: ProductForm['products']) => void;
+  onChange: (items: WriteProduct[]) => void;
 };
-
 const LinkWriting = ({ onChange }: LinkWritingProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [formData, setFormData] = useState<ProductForm>({
-    products: [{ name: '', url: '', description: '', imageFile: undefined, imageUrl: undefined }],
+    products: [
+      { name: '', linkUrl: '', description: '', imageFile: undefined, imageUrl: undefined },
+    ],
   });
 
   const [submittedProducts, setSubmittedProducts] = useState<{ name: string; imageUrl?: string }[]>(
@@ -27,10 +29,12 @@ const LinkWriting = ({ onChange }: LinkWritingProps) => {
   );
 
   const handleSubmit = (data: ProductForm) => {
-    const productsWithPreview = data.products.map((p) => {
-      const newImageUrl = p.imageFile ? URL.createObjectURL(p.imageFile) : p.imageUrl;
+    const productsWithPreview: WriteProduct[] = data.products.map((p) => {
+      const newImageUrl = p.imageFile ? URL.createObjectURL(p.imageFile) : (p.imageUrl ?? ''); // ✅ undefined → ''
       return {
-        ...p,
+        name: p.name,
+        linkUrl: p.linkUrl,
+        description: p.description ?? '',
         imageUrl: newImageUrl,
       };
     });
