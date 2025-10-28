@@ -13,9 +13,9 @@ const FeedContentWriting = ({ onChange }: FeedContentWritingProps) => {
   const maxLength = 200;
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
-    setContent(e.target.value);
-    onChange(newValue);
+    const { value } = e.target;
+    setContent(value);
+    onChange(value);
   };
 
   const handleBlur = () => {
