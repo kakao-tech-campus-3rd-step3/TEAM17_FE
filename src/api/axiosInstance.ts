@@ -2,9 +2,8 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true, 
+  withCredentials: true,
 });
-
 
 function getCookieValue(name: string): string | null {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -24,12 +23,11 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-
 axiosInstance.interceptors.response.use(
   (response) => {
     const tokenFromHeader = response.headers['x-xsrf-token'];
     if (tokenFromHeader) {
-      axiosInstance.defaults.headers['X-XSRF-TOKEN'] = tokenFromHeader;
+      axiosInstance.defaults.headers.common['X-XSRF-TOKEN'] = tokenFromHeader;
     }
     return response;
   },

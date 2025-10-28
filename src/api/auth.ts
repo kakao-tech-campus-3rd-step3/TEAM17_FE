@@ -6,7 +6,7 @@ const ensureCsrfToken = async () => {
 
   const token = res.headers['x-xsrf-token'];
   if (token) {
-    axiosInstance.defaults.headers['X-XSRF-TOKEN'] = token;
+     axiosInstance.defaults.headers.common['X-XSRF-TOKEN'] = token;
   }
 };
 
