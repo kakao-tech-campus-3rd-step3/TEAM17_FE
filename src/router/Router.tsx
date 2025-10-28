@@ -23,8 +23,8 @@ export const Router = () => (
       <Route path="/mypage/*" element={<MyPage />} />
       <Route path="/feed" element={<FeedPageSuspense />} />
       <Route path="/feed/:id" element={<FeedDetailPageSuspense />} />
-      <Route path="/Packwriting" element={<PackWriting />} />
-      <Route path="/Feedwriting" element={<FeedWriting />} />
+      <Route path="/pack-writing" element={<PackWriting />} />
+      <Route path="/feed-writing" element={<FeedWriting />} />
     </Route>
   </Routes>
 );
