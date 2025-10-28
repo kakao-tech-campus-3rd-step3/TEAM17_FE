@@ -9,7 +9,7 @@ import FeedDetailPageSuspense from '@/pages/suspense/FeedDetailPageSuspense';
 import Layout from '@/components/common/Layout';
 import Login from '@/pages/Login';
 import MyPage from '@/pages/MyPage';
-import FeedWriting from '@/pages/FeedWriting';
+import PackWriting from '@/pages/PackWriting';
 
 export const Router = () => (
   <Routes>
@@ -23,7 +23,7 @@ export const Router = () => (
       <Route path="/mypage/*" element={<MyPage />} />
       <Route path="/feed" element={<FeedPageSuspense />} />
       <Route path="/feed/:id" element={<FeedDetailPageSuspense />} />
-      <Route path="/feedwriting" element={<FeedWriting />} />
+      <Route path="/Packwriting" element={<PackWriting />} />
     </Route>
   </Routes>
 );

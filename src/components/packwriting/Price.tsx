@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Desc, TitleStyle } from '@/components/feedwriting/Title.style';
-import { PriceContainer, PriceBox, Priceinput } from '@/components/feedwriting/Price.style';
+import { Desc, TitleStyle } from '@/components/packwriting/Title.style';
+import { PriceContainer, PriceBox, Priceinput } from '@/components/packwriting/Price.style';
 import { formatNumberInput, parseNumberInput } from '@/utils/price';
 
 const Price = () => {

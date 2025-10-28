@@ -4,9 +4,9 @@ import {
   ToggleButton,
   DropdownMenu,
   DropdownItem,
-} from '@/components/feedwriting/HobbyTagToggle.style';
-import { ColumnWrapper } from '@/components/feedwriting/Layout.style';
-import { TitleStyle } from '@/components/feedwriting/Title.style';
+} from '@/components/packwriting/HobbyTagToggle.style';
+import { ColumnWrapper } from '@/components/packwriting/Layout.style';
+import { TitleStyle } from '@/components/packwriting/Title.style';
 
 const HobbyTag = () => {
   const [isOpen, setIsOpen] = useState(false);

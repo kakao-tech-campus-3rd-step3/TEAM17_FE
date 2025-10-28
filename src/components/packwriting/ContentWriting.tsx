@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { ColumnWrapper } from '@/components/feedwriting/Layout.style';
-import { Desc, TitleStyle } from '@/components/feedwriting/Title.style';
-import { ContentBox, TextArea, Counter } from '@/components/feedwriting/UploadBox.style';
+import { ColumnWrapper } from '@/components/packwriting/Layout.style';
+import { Desc, TitleStyle } from '@/components/packwriting/Title.style';
+import { ContentBox, TextArea, Counter } from '@/components/packwriting/UploadBox.style';
 
 const ContentWriting = () => {
   const [content, setContent] = useState('');

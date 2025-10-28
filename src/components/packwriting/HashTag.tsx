@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { ColumnWrapper } from '@/components/feedwriting/Layout.style';
-import { Desc, TitleStyle } from '@/components/feedwriting/Title.style';
+import { ColumnWrapper } from '@/components/packwriting/Layout.style';
+import { Desc, TitleStyle } from '@/components/packwriting/Title.style';
 import {
   HashTagBox,
   TagContainer,
   Tag,
   RemoveBtn,
-  InputTag,WarningText
-} from '@/components/feedwriting/HashTag.style';
+  InputTag,
+  WarningText,
+} from '@/components/packwriting/HashTag.style';
 
 import { validateTag } from '@/utils/validateHashTag';
 
@@ -41,7 +42,9 @@ const HashTag = () => {
       <TitleStyle>관련 해시태그</TitleStyle>
       <HashTagBox>
         {tags.length === 0 ? (
-          <Desc>작성 후 Enter키 누르면, <br/> 해시태그 자동생성됩니다.</Desc>
+          <Desc>
+            작성 후 Enter키 누르면, <br /> 해시태그 자동생성됩니다.
+          </Desc>
         ) : (
           <>
             {tags.map((tag) => (

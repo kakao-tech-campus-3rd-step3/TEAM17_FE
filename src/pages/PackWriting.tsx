@@ -10,7 +10,7 @@ import LinkWriting from '@/components/packwriting/LinkWriting';
 import HobbyTag from '@/components/packwriting/HobbyTag';
 import HashTag from '@/components/packwriting/HashTag';
 import Price from '@/components/packwriting/Price';
-const FeedWriting = () => {
+const PackWriting = () => {
   return (
     <>
       <TotalContainer>
@@ -31,4 +31,4 @@ const FeedWriting = () => {
   );
 };
 
-export default FeedWriting;
+export default PackWriting;

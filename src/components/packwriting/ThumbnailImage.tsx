@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
-import { Desc, TitleStyle } from '@/components/feedwriting/Title.style';
-import { ImageUploadBox, ScrollContainer } from '@/components/feedwriting/UploadBox.style';
+import { Desc, TitleStyle } from '@/components/packwriting/Title.style';
+import { ImageUploadBox, ScrollContainer } from '@/components/packwriting/UploadBox.style';
 
 const ThumbnailImage = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
