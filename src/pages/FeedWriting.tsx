@@ -11,7 +11,6 @@ import FeedContentWriting from '@/components/pack_feed_writing/FeedContentWritin
 import HobbyTag from '@/components/pack_feed_writing/HobbyTag';
 import HashTag from '@/components/pack_feed_writing/HashTag';
 import { useUploadFeed } from '@/hooks/useUploadFeed';
-
 const FeedWriting = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [description, setDescription] = useState('');
