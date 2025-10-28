@@ -8,8 +8,6 @@ type PriceProps = {
 };
 
 const Price = ({ onChange }: PriceProps) => {
-  const [price, setPrice] = useState<number>(0);
-  console.log(price); // api 연동 시 주석 지우기 (eslint 무시용)
   const [displayValue, setDisplayValue] = useState<string>('0');
   const [isActive, setIsActive] = useState(false);
 
@@ -20,7 +18,6 @@ const Price = ({ onChange }: PriceProps) => {
     setDisplayValue(formatted);
 
     const numeric = parseNumberInput(formatted);
-    setPrice(numeric);
     onChange(numeric);
   };
 

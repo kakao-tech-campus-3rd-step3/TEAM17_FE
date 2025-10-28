@@ -8,6 +8,7 @@ import {
   WarningText,
   InputField,
 } from '@/components/pack_feed_writing/Layout.style';
+import { TitleStyle } from '@/components/pack_feed_writing/Title.style';
 import ThumbnailImage from '@/components/pack_feed_writing/ThumbnailImage';
 import ContentWriting from '@/components/pack_feed_writing/ContentWriting';
 import LinkWriting from '@/components/pack_feed_writing/LinkWriting';
@@ -54,13 +55,10 @@ const PackWriting = () => {
   return (
     <TotalContainer>
       <LayoutLine>
+        <TitleStyle>제목작성</TitleStyle>
+        <InputField type="text" value={name} onChange={(e) => setName(e.target.value)} />
         <ThumbnailImage onChange={setMainImageUrl} />
-        <InputField
-          type="text"
-          placeholder="스타터팩 이름을 입력하세요"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+
         <ContentLinkWrapper>
           <ContentWriting onChange={setDescription} />
           <LinkWriting onChange={setItems} />

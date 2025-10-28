@@ -40,10 +40,10 @@ export const TagWrapper = styled.div`
 `;
 
 export const InputField = styled.input`
-  width: 60%;
+  width: 50%;
   padding: 0.8rem 1rem;
-  margin: 1rem auto;
-  border: 1px solid ${({ theme }) => theme.colors.line.blue};
+  margin: 0.3rem auto 1rem auto;
+  border:  2px solid ${({ theme }) => theme.colors.line.blue};
   border-radius: 8px;
   font-size: 1rem;
   text-align: center;
@@ -54,9 +54,6 @@ export const InputField = styled.input`
     color: ${({ theme }) => theme.colors.text.gray};
   }
 
-  &:focus {
-    border-color: ${({ theme }) => theme.colors.text.primary};
-  }
 `;
 
 export const SubmitButton = styled.button`
