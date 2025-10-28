@@ -1,4 +1,5 @@
 import axiosInstance from '@/api/axiosInstance';
+import type { FeedUploadData } from '@/types/FeedUpload';
 
 const ensureCsrfToken = async () => {
   if (!axiosInstance.defaults.headers.common['X-XSRF-TOKEN']) {
@@ -10,13 +11,8 @@ const ensureCsrfToken = async () => {
   }
 };
 
-export const uploadFeed = async (feedData: {
-  description: string;
-  imageUrl: string;
-  categoryId: number;
-  hashtagNames: string[];
-}) => {
-  await ensureCsrfToken(); 
+export const uploadFeed = async (feedData: FeedUploadData) => {
+  await ensureCsrfToken();
   const response = await axiosInstance.post('/api/feeds', feedData);
   return response.data;
 };
