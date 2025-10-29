@@ -25,6 +25,7 @@ dist-ssr
 
 .env
 .env.local
+.env.*
 
 # Local HTTPS certificates
 cert/
