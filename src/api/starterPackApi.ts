@@ -5,6 +5,9 @@ import type {
   StarterPackRequest,
   LikeStarterPackResponse,
   BookmarkStarterPackResponse,
+  PagePackLikerResponse,
+  PagePackCommentResponse,
+  PackCommentResponse,
 } from '@/types/StarterPack';
 
 // 모든 스타터팩 목록 조회
@@ -101,9 +104,11 @@ export const toggleStarterPackBookmark = async (
 };
 
 // 팩 좋아요 목록 조회
-export const fetchPackLikers = async (id: number): Promise<any> => {
+export const fetchPackLikers = async (id: number): Promise<PagePackLikerResponse> => {
   try {
-    const response = await axiosInstance.get(`/api/starterPack/packs/${id}/likes`);
+    const response = await axiosInstance.get<PagePackLikerResponse>(
+      `/api/starterPack/packs/${id}/likes`
+    );
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch pack likers for pack ${id}:`, error);
@@ -129,9 +134,11 @@ export const fetchStarterPackByCategory = async (
 // ==================== 댓글 관련 API ====================
 
 // 스타터팩 댓글 목록 조회
-export const fetchPackComments = async (packId: number): Promise<any> => {
+export const fetchPackComments = async (packId: number): Promise<PagePackCommentResponse> => {
   try {
-    const response = await axiosInstance.get(`/api/starterPack/${packId}/comments`);
+    const response = await axiosInstance.get<PagePackCommentResponse>(
+      `/api/starterPack/${packId}/comments`
+    );
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch comments for pack ${packId}:`, error);
@@ -140,11 +147,17 @@ export const fetchPackComments = async (packId: number): Promise<any> => {
 };
 
 // 스타터팩 댓글 작성
-export const createPackComment = async (packId: number, content: string): Promise<any> => {
+export const createPackComment = async (
+  packId: number,
+  content: string
+): Promise<PackCommentResponse> => {
   try {
-    const response = await axiosInstance.post(`/api/starterPack/${packId}/comments`, {
-      content,
-    });
+    const response = await axiosInstance.post<PackCommentResponse>(
+      `/api/starterPack/${packId}/comments`,
+      {
+        content,
+      }
+    );
     return response.data;
   } catch (error) {
     console.error(`Failed to create comment for pack ${packId}:`, error);
@@ -153,11 +166,17 @@ export const createPackComment = async (packId: number, content: string): Promis
 };
 
 // 스타터팩 댓글 수정
-export const updatePackComment = async (commentId: number, content: string): Promise<any> => {
+export const updatePackComment = async (
+  commentId: number,
+  content: string
+): Promise<PackCommentResponse> => {
   try {
-    const response = await axiosInstance.put(`/api/starterPack/comments/${commentId}`, {
-      content,
-    });
+    const response = await axiosInstance.put<PackCommentResponse>(
+      `/api/starterPack/comments/${commentId}`,
+      {
+        content,
+      }
+    );
     return response.data;
   } catch (error) {
     console.error(`Failed to update comment ${commentId}:`, error);

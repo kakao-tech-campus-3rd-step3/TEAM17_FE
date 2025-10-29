@@ -11,6 +11,7 @@ import type {
   CreateCommentRequest,
   CreateReplyRequest,
   Reply,
+  PageFeedLikerResponse,
 } from '@/types/Feed';
 
 // ==================== Feed 관련 API ====================
@@ -104,9 +105,9 @@ export const toggleFeedBookmark = async (
 };
 
 // 피드 좋아요 목록 조회
-export const fetchFeedLikers = async (feedId: number): Promise<any> => {
+export const fetchFeedLikers = async (feedId: number): Promise<PageFeedLikerResponse> => {
   try {
-    const response = await axiosInstance.get(`/api/feeds/${feedId}/likes`);
+    const response = await axiosInstance.get<PageFeedLikerResponse>(`/api/feeds/${feedId}/likes`);
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch feed likers for feed ${feedId}:`, error);
