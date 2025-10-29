@@ -1,19 +1,12 @@
 import axiosInstance from '@/api/axiosInstance';
+import { ensureCsrfToken } from '@/utils/csrf';
+import type { UploadPackRequest, UploadPackResponse } from '@/types/PackUpload';
 
-export const uploadPack = async (packData: {
-  categoryId: number;
-  name: string;
-  price: number;
-  mainImageUrl: string;
-  description: string;
-  items: {
-    name: string;
-    linkUrl: string;
-    description?: string;
-    imageUrl: string;
-  }[];
-  hashtagNames: string[];
-}) => {
-  const response = await axiosInstance.post('/api/starterPack/packs', packData);
-  return response.data;
+export const uploadPack = async (packData: UploadPackRequest) => {
+  await ensureCsrfToken();
+  const { data } = await axiosInstance.post<UploadPackResponse>(
+    '/api/starterPack/packs',
+    packData
+  );
+  return data;
 };
