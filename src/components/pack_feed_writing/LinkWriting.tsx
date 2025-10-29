@@ -24,13 +24,13 @@ const LinkWriting = ({ onChange }: LinkWritingProps) => {
     ],
   });
 
-  const [submittedProducts, setSubmittedProducts] = useState<{ name: string; imageUrl?: string }[]>(
-    []
-  );
+  const [submittedProducts, setSubmittedProducts] = useState<WriteProduct[]>([]);
 
   const handleSubmit = (data: ProductForm) => {
+    setFormData(data);
+
     const productsWithPreview: WriteProduct[] = data.products.map((p) => {
-      const newImageUrl = p.imageFile ? URL.createObjectURL(p.imageFile) : (p.imageUrl ?? ''); // ✅ undefined → ''
+      const newImageUrl = p.imageFile ? URL.createObjectURL(p.imageFile) : (p.imageUrl ?? ''); 
       return {
         name: p.name,
         linkUrl: p.linkUrl,
@@ -39,7 +39,6 @@ const LinkWriting = ({ onChange }: LinkWritingProps) => {
       };
     });
 
-    setFormData({ products: productsWithPreview });
     setSubmittedProducts(productsWithPreview);
     onChange(productsWithPreview);
     setIsOpen(false);
