@@ -1,15 +1,20 @@
 import { useState } from 'react';
-import { ColumnWrapper } from '@/components/feedwriting/Layout.style';
-import { Desc, TitleStyle } from '@/components/feedwriting/Title.style';
-import { ContentBox, TextArea, Counter } from '@/components/feedwriting/UploadBox.style';
+import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.style';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
+import { ContentBox, TextArea, Counter } from '@/components/pack_feed_writing/UploadBox.style';
 
-const ContentWriting = () => {
+type ContentWritingProps = {
+  onChange: (value: string) => void;
+};
+
+const ContentWriting = ({ onChange }: ContentWritingProps) => {
   const [content, setContent] = useState('');
   const [isActive, setIsActive] = useState(false);
   const maxLength = 200;
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
+    onChange(e.target.value);
   };
 
   const handleBlur = () => {

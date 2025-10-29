@@ -1,8 +1,12 @@
 import { useRef, useState, useEffect } from 'react';
-import { Desc, TitleStyle } from '@/components/feedwriting/Title.style';
-import { ImageUploadBox, ScrollContainer } from '@/components/feedwriting/UploadBox.style';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
+import { ImageUploadBox, ScrollContainer } from '@/components/pack_feed_writing/UploadBox.style';
 
-const ThumbnailImage = () => {
+type ThumbnailImageProps = {
+  onChange: (url: string) => void;
+};
+
+const ThumbnailImage = ({ onChange }: ThumbnailImageProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previews, setPreviews] = useState<string[]>([]);
 
@@ -18,6 +22,8 @@ const ThumbnailImage = () => {
 
     const urls = fileArray.map((file) => URL.createObjectURL(file));
     setPreviews(urls);
+
+    if (urls[0]) onChange(urls[0]);
 
     e.currentTarget.value = '';
   };

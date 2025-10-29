@@ -18,7 +18,7 @@ import {
   SubmitButton,
   ErrorText,
   ExistingImage,
-} from '@/components/feedwriting/LinkModal.style';
+} from '@/components/pack_feed_writing/LinkModal.style';
 import type { ProductForm } from '@/types/LinkWriteForm';
 
 interface ProductModalProps {
@@ -64,7 +64,7 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
           <Desc>- 상품명과 상품 링크, 상품 이미지는 "필수", 설명은 "선택"입니다.</Desc>
           <AddButton
             type="button"
-            onClick={() => append({ name: '', url: '', description: '', imageFile: undefined })}
+            onClick={() => append({ name: '', linkUrl: '', description: '', imageFile: undefined })}
           >
             상품 추가
           </AddButton>
@@ -108,12 +108,12 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
                     <div className="input-wrapper">
                       <input
                         placeholder="상품링크를 입력하세요 (필수)"
-                        {...register(`products.${idx}.url`, {
+                        {...register(`products.${idx}.linkUrl`, {
                           required: '상품링크를 입력해주세요.',
                         })}
                       />
-                      {errors.products?.[idx]?.url && (
-                        <ErrorText>{errors.products[idx].url?.message}</ErrorText>
+                      {errors.products?.[idx]?.linkUrl && (
+                        <ErrorText>{errors.products[idx].linkUrl?.message}</ErrorText>
                       )}
                     </div>
                   </FormGroup>
