@@ -13,6 +13,7 @@ import {
   Grid,
   GridItem,
   ImagePlaceholder,
+  PackImage,
   ErrorContainer,
   ErrorMessage,
   EmptyState,
@@ -108,18 +109,7 @@ const StarterPreview = () => {
             style={{ cursor: 'pointer' }}
           >
             {pack.mainImage ? (
-              <img
-                src={pack.mainImage}
-                alt={pack.name}
-                loading="lazy"
-                decoding="async"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  borderRadius: '0.5rem',
-                }}
-              />
+              <PackImage src={pack.mainImage} alt={pack.name} loading="lazy" decoding="async" />
             ) : (
               <ImagePlaceholder>{pack.name}</ImagePlaceholder>
             )}

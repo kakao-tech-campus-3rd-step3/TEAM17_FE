@@ -142,3 +142,10 @@ export const EmptyState = styled.div`
   color: #9ca3af;
   font-size: 0.875rem;
 `;
+
+export const PackImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.5rem;
+`;
