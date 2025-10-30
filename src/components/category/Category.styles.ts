@@ -2,61 +2,70 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
 export const Wrap = styled.nav`
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 16px;
+  background: #fff;
+  border-radius: 12px;
 `;
 
 export const Item = styled(NavLink)`
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 12px 14px;
-  border-radius: 10px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
   text-decoration: none;
   color: inherit;
   cursor: pointer;
-  transition:
-    transform 0.08s ease,
-    box-shadow 0.15s ease,
-    border-color 0.15s ease;
+  padding: 4px;
+  transition: transform 0.2s ease;
 
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-    border-color: #f97316;
-  }
-  &:focus-visible {
-    outline: 2px solid #f97316;
-    outline-offset: 2px;
+    transform: translateY(-2px);
   }
 
-  &[aria-current='page'] {
-    border-color: #f97316;
-    background: #fff7ed;
+  &:focus-visible {
+    outline: 2px solid #f97316;
+    outline-offset: 4px;
+    border-radius: 8px;
   }
 `;
 
 export const IconBox = styled.span`
   display: inline-flex;
-  width: 28px;
-  height: 28px;
+  width: 48px;
+  height: 48px;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 50%;
   background: #fff7ed;
-  border: 1px solid #fed7aa;
+`;
+
+export const Icon = styled.img`
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(58%) sepia(94%) saturate(3000%) hue-rotate(0deg)
+    brightness(100%) contrast(100%);
+  transition: filter 0.2s ease;
+
+  ${Item}[aria-current='page'] & {
+    filter: brightness(0) saturate(100%) invert(58%) sepia(94%) saturate(3000%) hue-rotate(0deg)
+      brightness(100%) contrast(100%);
+  }
 `;
 
 export const Label = styled.span`
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: -0.2px;
   color: #374151;
+  text-align: center;
+  transition: color 0.2s ease;
+
+  ${Item}[aria-current='page'] & {
+    color: #f97316;
+    font-weight: 700;
+  }
 `;

@@ -30,3 +30,8 @@ dist-ssr
 # Local HTTPS certificates
 cert/
 *.pem
+
+API_DOCUMENTATION.md
+swagger.json
+swagger2.json
+swagger3.json
