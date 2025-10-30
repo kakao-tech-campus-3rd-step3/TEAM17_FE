@@ -11,6 +11,7 @@ import type {
   CreateCommentRequest,
   CreateReplyRequest,
   Reply,
+  PageFeedLikerResponse,
 } from '@/types/Feed';
 
 // ==================== Feed 관련 API ====================
@@ -59,7 +60,7 @@ export const updateFeed = async (
   data: Partial<CreatePostRequest>
 ): Promise<FeedPost> => {
   try {
-    const response = await axiosInstance.put<FeedPost>(`/api/feeds/${id}`, data);
+    const response = await axiosInstance.patch<FeedPost>(`/api/feeds/${id}`, data);
     return response.data;
   } catch (error) {
     console.error(`Failed to update feed ${id}:`, error);
@@ -103,6 +104,17 @@ export const toggleFeedBookmark = async (
   }
 };
 
+// 피드 좋아요 목록 조회
+export const fetchFeedLikers = async (feedId: number): Promise<PageFeedLikerResponse> => {
+  try {
+    const response = await axiosInstance.get<PageFeedLikerResponse>(`/api/feeds/${feedId}/likes`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch feed likers for feed ${feedId}:`, error);
+    throw error;
+  }
+};
+
 // ==================== 댓글 관련 API ====================
 
 // 피드의 댓글 목록 조회
@@ -129,10 +141,24 @@ export const createComment = async (data: CreateCommentRequest): Promise<Comment
   }
 };
 
-// 댓글 삭제
-export const deleteComment = async (feedId: number, commentId: number): Promise<void> => {
+// 댓글 수정
+export const updateComment = async (
+  commentId: number,
+  data: { content: string }
+): Promise<Comment> => {
   try {
-    await axiosInstance.delete(`/api/feeds/${feedId}/comments/${commentId}`);
+    const response = await axiosInstance.put<Comment>(`/api/feeds/comments/${commentId}`, data);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to update comment ${commentId}:`, error);
+    throw error;
+  }
+};
+
+// 댓글 삭제
+export const deleteComment = async (commentId: number): Promise<void> => {
+  try {
+    await axiosInstance.delete(`/api/feeds/comments/${commentId}`);
   } catch (error) {
     console.error(`Failed to delete comment ${commentId}:`, error);
     throw error;
