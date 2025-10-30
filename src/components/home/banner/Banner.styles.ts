@@ -18,7 +18,7 @@ export const Card = styled.div<{ $variant: 'left' | 'right' }>`
   position: relative;
   flex: 1;
   min-width: 0;
-  height: 40em;
+  height: 16rem;
   border-radius: 0.5rem;
   overflow: hidden;
   background-image: ${({ $variant }) =>

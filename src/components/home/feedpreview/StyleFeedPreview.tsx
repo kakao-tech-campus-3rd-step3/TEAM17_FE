@@ -71,7 +71,7 @@ const StyleFeedPreview = () => {
       <Wrap>
         <Header>
           <TitleWrapper>
-            <Title>개성 넘치는 피드러들을 보러 오세요~!</Title>
+            <Title>개성 넘치는 피드러들을 보러 오세요!</Title>
             <Emoji>😊</Emoji>
           </TitleWrapper>
           <Button onClick={handleMoreClick}>더보기</Button>
@@ -88,7 +88,7 @@ const StyleFeedPreview = () => {
       <Wrap>
         <Header>
           <TitleWrapper>
-            <Title>개성 넘치는 피드러들을 보러 오세요~!</Title>
+            <Title>개성 넘치는 피드러들을 보러 오세요!</Title>
             <Emoji>😊</Emoji>
           </TitleWrapper>
           <Button onClick={handleMoreClick}>더보기</Button>

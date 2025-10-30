@@ -23,10 +23,10 @@ const PageWrapper = styled.div`
 `;
 
 const Main = styled.main`
-  padding: 16px;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
 `;
 
 export default HomePage;
