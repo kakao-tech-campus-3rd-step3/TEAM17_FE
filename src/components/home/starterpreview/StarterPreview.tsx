@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStarterPack } from '@/hooks/useStarterPacks';
 import type { StarterPack } from '@/types/StarterPack';
@@ -22,14 +23,11 @@ const StarterPreview = () => {
   const { starterPack, loading, error } = useStarterPack();
 
   // 인기순으로 정렬된 스타터팩 3개 추출
-  const getPopularStarterPacks = (): StarterPack[] => {
+  const popularPacks = useMemo<StarterPack[]>(() => {
     if (!starterPack || typeof starterPack !== 'object') return [];
-
-    const allPacks: StarterPack[] = Object.values(starterPack).flat();
-    return allPacks.sort((a, b) => b.likeCount - a.likeCount).slice(0, 3);
-  };
-
-  const popularPacks = getPopularStarterPacks();
+    const allPacks: StarterPack[] = (Object.values(starterPack) as StarterPack[][]).flat();
+    return [...allPacks].sort((a, b) => b.likeCount - a.likeCount).slice(0, 3);
+  }, [starterPack]);
 
   const handleMoreClick = () => {
     navigate('/starterpack');
@@ -110,6 +108,8 @@ const StarterPreview = () => {
               <img
                 src={pack.mainImage}
                 alt={pack.name}
+                loading="lazy"
+                decoding="async"
                 style={{
                   width: '100%',
                   height: '100%',

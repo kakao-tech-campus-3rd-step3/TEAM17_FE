@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share } from 'lucide-react';
 import { useFeeds } from '@/hooks/useFeeds';
@@ -33,12 +34,11 @@ const StyleFeedPreview = () => {
   const navigate = useNavigate();
   const { feeds, loading, error } = useFeeds(0, 6); // 첫 페이지에서 6개 가져오기
 
-  // 인기순으로 정렬된 피드 6개 추출
-  const getPopularFeeds = (): FeedPost[] => {
-    return feeds.sort((a, b) => b.likeCount - a.likeCount).slice(0, 6);
-  };
-
-  const popularFeeds = getPopularFeeds();
+  // 인기순으로 정렬된 피드 6개 추출 (원본 불변 + 메모이즈)
+  const popularFeeds = useMemo<FeedPost[]>(() => {
+    if (!Array.isArray(feeds)) return [];
+    return [...feeds].sort((a, b) => b.likeCount - a.likeCount).slice(0, 6);
+  }, [feeds]);
 
   const handleMoreClick = () => {
     navigate('/feed');
@@ -114,13 +114,23 @@ const StyleFeedPreview = () => {
           <FeedItem key={feed.feedId} onClick={() => handleFeedClick(feed)}>
             <PostHeader>
               <UserInfo>
-                <Avatar src={feed.author.profileImageUrl} alt={feed.author.name} />
+                <Avatar
+                  src={feed.author.profileImageUrl}
+                  alt={feed.author.name}
+                  loading="lazy"
+                  decoding="async"
+                />
                 <Username>@{feed.author.name}</Username>
               </UserInfo>
             </PostHeader>
 
             {feed.imageUrl ? (
-              <PostImage src={feed.imageUrl} alt={`Post by ${feed.author.name}`} />
+              <PostImage
+                src={feed.imageUrl}
+                alt={`Post by ${feed.author.name}`}
+                loading="lazy"
+                decoding="async"
+              />
             ) : (
               <ImagePlaceholder>이미지 없음</ImagePlaceholder>
             )}
