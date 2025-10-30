@@ -119,7 +119,7 @@ export const Title = styled.div`
   }
 `;
 
-export const Badge = styled.span`
+export const BannerBadge = styled.span`
   display: inline-block;
   background: rgba(255, 255, 255, 0.2);
   color: #ffffff;

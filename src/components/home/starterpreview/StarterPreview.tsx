@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useStarterPack } from '@/hooks/useStarterPacks';
 import type { StarterPack } from '@/types/StarterPack';
+import StarterSkeleton from './StarterSkeleton';
 import {
   Wrap,
   Header,
@@ -11,8 +12,6 @@ import {
   Grid,
   GridItem,
   ImagePlaceholder,
-  LoadingContainer,
-  LoadingSpinner,
   ErrorContainer,
   ErrorMessage,
   EmptyState,
@@ -50,9 +49,11 @@ const StarterPreview = () => {
           </TitleWrapper>
           <Button onClick={handleMoreClick}>더보기</Button>
         </Header>
-        <LoadingContainer>
-          <LoadingSpinner />
-        </LoadingContainer>
+        <Grid>
+          {Array.from({ length: 3 }).map((_, index) => (
+            <StarterSkeleton key={index} />
+          ))}
+        </Grid>
       </Wrap>
     );
   }

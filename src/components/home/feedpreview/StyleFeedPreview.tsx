@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share } from 'lucide-react';
 import { useFeeds } from '@/hooks/useFeeds';
 import type { FeedPost } from '@/types/Feed';
+import FeedSkeleton from './FeedSkeleton';
 import {
   Wrap,
   Header,
@@ -23,8 +24,6 @@ import {
   Caption,
   CategoryTag,
   FeedTypeTag,
-  LoadingContainer,
-  LoadingSpinner,
   ErrorContainer,
   ErrorMessage,
   EmptyState,
@@ -59,9 +58,11 @@ const StyleFeedPreview = () => {
           </TitleWrapper>
           <Button onClick={handleMoreClick}>더보기</Button>
         </Header>
-        <LoadingContainer>
-          <LoadingSpinner />
-        </LoadingContainer>
+        <Grid>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <FeedSkeleton key={index} />
+          ))}
+        </Grid>
       </Wrap>
     );
   }

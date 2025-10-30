@@ -9,7 +9,7 @@ import {
   TopRight,
   Kicker,
   Title,
-  Badge,
+  BannerBadge,
   NavigationButton,
   Indicator,
 } from '@/components/home/banner/Banner.styles';
@@ -166,7 +166,7 @@ const Banner = () => {
             <Title>{leftItem.title}</Title>
           </BottomLeft>
           <TopRight>
-            <Badge>{leftItem.badge}</Badge>
+            <BannerBadge>{leftItem.badge}</BannerBadge>
           </TopRight>
           <Indicator>
             {leftIndex + 1}/{LEFT_TOTAL_ITEMS}
@@ -203,7 +203,7 @@ const Banner = () => {
             <Title>{rightItem.title}</Title>
           </BottomLeft>
           <TopRight>
-            <Badge>{rightItem.badge}</Badge>
+            <BannerBadge>{rightItem.badge}</BannerBadge>
           </TopRight>
           <Indicator>
             {rightIndex + 1}/{RIGHT_TOTAL_ITEMS}
