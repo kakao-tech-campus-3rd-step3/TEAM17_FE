@@ -34,14 +34,7 @@ export const Card = styled.div<{ $variant: 'left' | 'right' }>`
     $variant === 'left'
       ? 'linear-gradient(135deg, #1e3a8a 0%, #581c87 100%)'
       : 'linear-gradient(135deg, #22d3ee 0%, #2563eb 100%)'};
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-
-  &:hover {
-    transform: translateY(-0.125rem);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-  }
+  transition: transform 0.3s ease;
 
   @media (max-width: 768px) {
     height: 14rem;
