@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share } from 'lucide-react';
 import { useFeeds } from '@/hooks/useFeeds';
@@ -40,13 +40,16 @@ const StyleFeedPreview = () => {
     return [...feeds].sort((a, b) => b.likeCount - a.likeCount).slice(0, 6);
   }, [feeds]);
 
-  const handleMoreClick = () => {
+  const handleMoreClick = useCallback(() => {
     navigate('/feed');
-  };
+  }, [navigate]);
 
-  const handleFeedClick = (feed: FeedPost) => {
-    navigate(`/feed/${feed.feedId}`);
-  };
+  const handleFeedClick = useCallback(
+    (feed: FeedPost) => {
+      navigate(`/feed/${feed.feedId}`);
+    },
+    [navigate]
+  );
 
   if (loading) {
     return (

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStarterPack } from '@/hooks/useStarterPacks';
 import type { StarterPack } from '@/types/StarterPack';
@@ -29,13 +29,16 @@ const StarterPreview = () => {
     return [...allPacks].sort((a, b) => b.likeCount - a.likeCount).slice(0, 3);
   }, [starterPack]);
 
-  const handleMoreClick = () => {
+  const handleMoreClick = useCallback(() => {
     navigate('/starterpack');
-  };
+  }, [navigate]);
 
-  const handlePackClick = (pack: StarterPack) => {
-    navigate(`/starterpack/${pack.packId}`);
-  };
+  const handlePackClick = useCallback(
+    (pack: StarterPack) => {
+      navigate(`/starterpack/${pack.packId}`);
+    },
+    [navigate]
+  );
 
   if (loading) {
     return (
