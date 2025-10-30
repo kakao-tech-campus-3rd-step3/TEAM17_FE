@@ -18,11 +18,12 @@ import type {
 // 피드 목록 조회 (페이지네이션)
 export const fetchFeeds = async (
   page: number = FEED_API_CONSTANTS.DEFAULT_PAGE,
-  limit: number = FEED_API_CONSTANTS.DEFAULT_PAGE_SIZE
+  limit: number = FEED_API_CONSTANTS.DEFAULT_PAGE_SIZE,
+  options?: { sort?: string }
 ): Promise<FeedResponse> => {
   try {
     const response = await axiosInstance.get<FeedResponse>('/api/feeds', {
-      params: { page, limit },
+      params: { page, limit, ...(options?.sort ? { sort: options.sort } : {}) },
     });
     return response.data;
   } catch (error) {

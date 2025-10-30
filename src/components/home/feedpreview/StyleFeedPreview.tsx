@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share } from 'lucide-react';
 import { useFeeds } from '@/hooks/useFeeds';
@@ -32,13 +32,11 @@ import {
 
 const StyleFeedPreview = () => {
   const navigate = useNavigate();
-  const { feeds, loading, error } = useFeeds(0, 6); // 첫 페이지에서 6개 가져오기
+  // 서버에서 인기순으로 상위 6개를 정렬
+  const { feeds, loading, error } = useFeeds(0, 6, { sort: 'likeCount,desc' });
 
-  // 인기순으로 정렬된 피드 6개 추출 (원본 불변 + 메모이즈)
-  const popularFeeds = useMemo<FeedPost[]>(() => {
-    if (!Array.isArray(feeds)) return [];
-    return [...feeds].sort((a, b) => b.likeCount - a.likeCount).slice(0, 6);
-  }, [feeds]);
+  // 인기순으로 정렬된 피드 6개 추출
+  const popularFeeds = feeds as FeedPost[];
 
   const handleMoreClick = useCallback(() => {
     navigate('/feed');
