@@ -100,20 +100,34 @@ const Banner = () => {
   const [leftIndex, setLeftIndex] = useState(0);
   const [rightIndex, setRightIndex] = useState(1);
 
-  const handleLeftPrev = () => {
+  const handleLeftPrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setLeftIndex((prev) => Math.max(0, prev - 1));
   };
 
-  const handleLeftNext = () => {
+  const handleLeftNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setLeftIndex((prev) => Math.min(LEFT_TOTAL_ITEMS - 1, prev + 1));
   };
 
-  const handleRightPrev = () => {
+  const handleRightPrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setRightIndex((prev) => Math.max(0, prev - 1));
   };
 
-  const handleRightNext = () => {
+  const handleRightNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setRightIndex((prev) => Math.min(RIGHT_TOTAL_ITEMS - 1, prev + 1));
+  };
+
+  const handleLeftCardClick = () => {
+    // TODO: 팀에서 카테고리 분류 방식 확인 후 URL 설정
+    console.log('Left card clicked:', leftItem);
+  };
+
+  const handleRightCardClick = () => {
+    // TODO: 팀에서 카테고리 분류 방식 확인 후 URL 설정
+    console.log('Right card clicked:', rightItem);
   };
 
   const leftItem = LEFT_BANNER_ITEMS[leftIndex];
@@ -122,7 +136,12 @@ const Banner = () => {
   return (
     <CarouselContainer>
       <CarouselWrapper>
-        <Card key={`left-${leftItem.id}`} $variant={leftItem.variant}>
+        <Card
+          key={`left-${leftItem.id}`}
+          $variant={leftItem.variant}
+          onClick={handleLeftCardClick}
+          style={{ cursor: 'pointer' }}
+        >
           {leftIndex > 0 && (
             <NavigationButton
               onClick={handleLeftPrev}
@@ -154,7 +173,12 @@ const Banner = () => {
           </Indicator>
         </Card>
 
-        <Card key={`right-${rightItem.id}`} $variant={rightItem.variant}>
+        <Card
+          key={`right-${rightItem.id}`}
+          $variant={rightItem.variant}
+          onClick={handleRightCardClick}
+          style={{ cursor: 'pointer' }}
+        >
           {rightIndex > 0 && (
             <NavigationButton
               onClick={handleRightPrev}
