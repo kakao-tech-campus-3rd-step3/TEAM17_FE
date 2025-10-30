@@ -27,6 +27,18 @@ const Main = styled.main`
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  max-width: 75rem;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+    gap: 0.375rem;
+  }
 `;
 
 export default HomePage;

@@ -61,6 +61,15 @@ export const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
+
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.375rem;
+  }
 `;
 
 export const GridItem = styled.div`
@@ -70,6 +79,14 @@ export const GridItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    height: 5rem;
+  }
+
+  @media (max-width: 480px) {
+    height: 4rem;
+  }
 `;
 
 export const ImagePlaceholder = styled.span`

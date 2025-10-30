@@ -61,6 +61,15 @@ export const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
+
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.375rem;
+  }
 `;
 
 export const FeedItem = styled.article`
@@ -110,6 +119,14 @@ export const PostImage = styled.img`
   height: 8rem;
   object-fit: cover;
   display: block;
+
+  @media (max-width: 768px) {
+    height: 7rem;
+  }
+
+  @media (max-width: 480px) {
+    height: 6rem;
+  }
 `;
 
 export const ImagePlaceholder = styled.div`
@@ -121,6 +138,14 @@ export const ImagePlaceholder = styled.div`
   justify-content: center;
   color: #9ca3af;
   font-size: 0.75rem;
+
+  @media (max-width: 768px) {
+    height: 7rem;
+  }
+
+  @media (max-width: 480px) {
+    height: 6rem;
+  }
 `;
 
 export const PostActions = styled.div`

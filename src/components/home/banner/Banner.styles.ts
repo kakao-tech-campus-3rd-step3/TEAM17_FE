@@ -12,6 +12,15 @@ export const CarouselWrapper = styled.div`
   gap: 0.75rem;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 `;
 
 export const Card = styled.div<{ $variant: 'left' | 'right' }>`
@@ -26,6 +35,15 @@ export const Card = styled.div<{ $variant: 'left' | 'right' }>`
       ? 'linear-gradient(135deg, #1e3a8a 0%, #581c87 100%)'
       : 'linear-gradient(135deg, #22d3ee 0%, #2563eb 100%)'};
   transition: transform 0.3s ease;
+
+  @media (max-width: 768px) {
+    height: 14rem;
+  }
+
+  @media (max-width: 480px) {
+    height: 12rem;
+    width: 100%;
+  }
 `;
 
 export const Overlay = styled.div<{ $alpha?: number }>`
@@ -46,6 +64,20 @@ export const BottomLeft = styled.div`
   padding-right: 2.25rem;
   max-width: calc(100% - 3rem);
   z-index: 1;
+
+  @media (max-width: 768px) {
+    left: 0.5rem;
+    bottom: 0.5rem;
+    padding-right: 1.5rem;
+    max-width: calc(100% - 2rem);
+  }
+
+  @media (max-width: 480px) {
+    left: 0.5rem;
+    bottom: 0.5rem;
+    padding-right: 1rem;
+    max-width: calc(100% - 1.5rem);
+  }
 `;
 
 export const TopRight = styled.div`
@@ -53,6 +85,16 @@ export const TopRight = styled.div`
   right: 0.75rem;
   top: 0.75rem;
   z-index: 1;
+
+  @media (max-width: 768px) {
+    right: 0.5rem;
+    top: 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    right: 0.5rem;
+    top: 0.5rem;
+  }
 `;
 
 export const Kicker = styled.div`
@@ -65,6 +107,16 @@ export const Title = styled.div`
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.25rem;
+
+  @media (max-width: 768px) {
+    font-size: 0.8125rem;
+    line-height: 1.125rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
 `;
 
 export const Badge = styled.span`
