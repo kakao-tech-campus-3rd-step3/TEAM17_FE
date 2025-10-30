@@ -23,7 +23,7 @@ type BannerItem = {
   alpha: number;
 };
 
-const BANNER_ITEMS: BannerItem[] = [
+const LEFT_BANNER_ITEMS: BannerItem[] = [
   {
     id: 1,
     kicker: '캠핑장',
@@ -34,6 +34,33 @@ const BANNER_ITEMS: BannerItem[] = [
   },
   {
     id: 2,
+    kicker: '요리',
+    title: '집에서 만드는 수제 파스타!',
+    badge: '팁',
+    variant: 'left',
+    alpha: 0.3,
+  },
+  {
+    id: 3,
+    kicker: '독서',
+    title: '이번 주 베스트셀러 읽기',
+    badge: '리뷰',
+    variant: 'left',
+    alpha: 0.3,
+  },
+  {
+    id: 4,
+    kicker: '운동',
+    title: '홈트레이닝으로 건강하게!',
+    badge: '정보공유',
+    variant: 'left',
+    alpha: 0.3,
+  },
+];
+
+const RIGHT_BANNER_ITEMS: BannerItem[] = [
+  {
+    id: 1,
     kicker: '젊음의 바다',
     title: '취미 서핑하러 양양 가기!',
     badge: '정보공유',
@@ -41,24 +68,33 @@ const BANNER_ITEMS: BannerItem[] = [
     alpha: 0.2,
   },
   {
-    id: 3,
-    kicker: '테스트1',
-    title: '테스트 타이틀 1',
+    id: 2,
+    kicker: '여행',
+    title: '제주도 한 달 살기 도전',
     badge: '리뷰',
-    variant: 'left',
-    alpha: 0.3,
+    variant: 'right',
+    alpha: 0.2,
+  },
+  {
+    id: 3,
+    kicker: '사진',
+    title: '인스타 감성 사진 찍기',
+    badge: '팁',
+    variant: 'right',
+    alpha: 0.2,
   },
   {
     id: 4,
-    kicker: '테스트2',
-    title: '테스트 타이틀 2',
+    kicker: '게임',
+    title: '친구들과 온라인 게임',
     badge: '정보공유',
     variant: 'right',
     alpha: 0.2,
   },
 ];
 
-const TOTAL_ITEMS = BANNER_ITEMS.length;
+const LEFT_TOTAL_ITEMS = LEFT_BANNER_ITEMS.length;
+const RIGHT_TOTAL_ITEMS = RIGHT_BANNER_ITEMS.length;
 
 const Banner = () => {
   const [leftIndex, setLeftIndex] = useState(0);
@@ -69,7 +105,7 @@ const Banner = () => {
   };
 
   const handleLeftNext = () => {
-    setLeftIndex((prev) => Math.min(TOTAL_ITEMS - 1, prev + 1));
+    setLeftIndex((prev) => Math.min(LEFT_TOTAL_ITEMS - 1, prev + 1));
   };
 
   const handleRightPrev = () => {
@@ -77,11 +113,11 @@ const Banner = () => {
   };
 
   const handleRightNext = () => {
-    setRightIndex((prev) => Math.min(TOTAL_ITEMS - 1, prev + 1));
+    setRightIndex((prev) => Math.min(RIGHT_TOTAL_ITEMS - 1, prev + 1));
   };
 
-  const leftItem = BANNER_ITEMS[leftIndex];
-  const rightItem = BANNER_ITEMS[rightIndex];
+  const leftItem = LEFT_BANNER_ITEMS[leftIndex];
+  const rightItem = RIGHT_BANNER_ITEMS[rightIndex];
 
   return (
     <CarouselContainer>
@@ -96,7 +132,7 @@ const Banner = () => {
               <ChevronLeft size={20} />
             </NavigationButton>
           )}
-          {leftIndex < TOTAL_ITEMS - 1 && (
+          {leftIndex < LEFT_TOTAL_ITEMS - 1 && (
             <NavigationButton
               onClick={handleLeftNext}
               $position="right"
@@ -114,7 +150,7 @@ const Banner = () => {
             <Badge>{leftItem.badge}</Badge>
           </TopRight>
           <Indicator>
-            {leftIndex + 1}/{TOTAL_ITEMS}
+            {leftIndex + 1}/{LEFT_TOTAL_ITEMS}
           </Indicator>
         </Card>
 
@@ -128,7 +164,7 @@ const Banner = () => {
               <ChevronLeft size={20} />
             </NavigationButton>
           )}
-          {rightIndex < TOTAL_ITEMS - 1 && (
+          {rightIndex < RIGHT_TOTAL_ITEMS - 1 && (
             <NavigationButton
               onClick={handleRightNext}
               $position="right"
@@ -146,7 +182,7 @@ const Banner = () => {
             <Badge>{rightItem.badge}</Badge>
           </TopRight>
           <Indicator>
-            {rightIndex + 1}/{TOTAL_ITEMS}
+            {rightIndex + 1}/{RIGHT_TOTAL_ITEMS}
           </Indicator>
         </Card>
       </CarouselWrapper>
