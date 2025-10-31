@@ -1,21 +1,16 @@
 import axiosInstance from '@/api/axiosInstance';
+import axios, { AxiosError } from 'axios';
 import { ensureCsrfToken } from '@/utils/csrf';
-import { AxiosError } from 'axios';
 
 type PresignedUrlRequest = {
-  files: {
-    fileName: string;
-    contentType: string;
-  }[];
+  files: { fileName: string; contentType: string }[];
 };
 
-// POST presigned URL 구조 대응
 export type PresignedUrlResponse = {
   presignedUrl: string;
   fileUrl: string;
 }[];
 
-// ==================== Presigned URL 발급 ====================
 export const getPresignedUrls = async (
   dirName: string,
   files: File[]
@@ -27,48 +22,38 @@ export const getPresignedUrls = async (
     })),
   };
 
-  try {
-    await ensureCsrfToken();
+  await ensureCsrfToken();
 
-    const { data } = await axiosInstance.post<PresignedUrlResponse>(
-      `/api/s3/presigned-urls?dirName=${encodeURIComponent(dirName)}`,
-      payload
-    );
+  const { data } = await axiosInstance.post<PresignedUrlResponse>(
+    `/api/s3/presigned-urls?dirName=${encodeURIComponent(dirName)}`,
+    payload
+  );
 
-    if (!Array.isArray(data) || data.length === 0) {
-      throw new Error('Presigned URL 발급 실패: 응답 데이터가 비어 있습니다.');
-    }
-
-    return data;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      console.error('[Presigned URL 요청 실패]', error.response?.data || error.message);
-      throw error;
-    }
-    console.error('[Presigned URL 요청 실패 - Unknown]', error);
-    throw error;
-  }
+  return data;
 };
+
 export const uploadToS3 = async (presignedUrl: string, file: File): Promise<void> => {
+  const s3Axios = axios.create(); 
+
   try {
-    const res = await fetch(presignedUrl, {
-      method: 'PUT',
+    const res = await s3Axios.put(presignedUrl, file, {
       headers: {
         'Content-Type': file.type,
         'x-amz-acl': 'public-read',
       },
-      body: file,
     });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`S3 업로드 실패 (상태 ${res.status}): ${errText}`);
+    if (res.status < 200 || res.status >= 300) {
+      throw new Error(`S3 업로드 실패 (상태 ${res.status})`);
     }
 
     console.info(`[S3 업로드 성공] ${file.name}`);
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[S3 업로드 실패]', message);
+    if (error instanceof AxiosError) {
+      console.error('[S3 업로드 실패]', error.response?.data || error.message);
+    } else {
+      console.error('[S3 업로드 실패 - Unknown]', error);
+    }
     throw error;
   }
 };
