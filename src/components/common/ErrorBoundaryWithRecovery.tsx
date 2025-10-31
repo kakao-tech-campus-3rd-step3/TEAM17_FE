@@ -15,15 +15,12 @@ interface Props {
 interface State {
   hasError: boolean;
   error: Error | null;
-  retryCount: number;
 }
 
 class ErrorBoundaryWithRecovery extends Component<Props, State> {
-  private maxRetries = 3;
-
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false, error: null, retryCount: 0 };
+    this.state = { hasError: false, error: null };
   }
 
   static getDerivedStateFromError(error: Error): Partial<State> {
@@ -36,16 +33,11 @@ class ErrorBoundaryWithRecovery extends Component<Props, State> {
   }
 
   handleRetry = () => {
-    if (this.state.retryCount < this.maxRetries) {
-      this.setState((prevState) => ({
-        hasError: false,
-        error: null,
-        retryCount: prevState.retryCount + 1,
-      }));
-      this.props.onRetry?.();
-    } else {
-      window.location.reload();
-    }
+    this.setState({
+      hasError: false,
+      error: null,
+    });
+    this.props.onRetry?.();
   };
 
   handleGoHome = () => {
@@ -71,13 +63,11 @@ class ErrorBoundaryWithRecovery extends Component<Props, State> {
       }
 
       const errorType = getErrorTypeFromError(this.state.error);
-      const retryMessage =
-        this.state.retryCount > 0 ? ` (${this.state.retryCount}/${this.maxRetries}번 시도)` : '';
 
       return (
         <ErrorUI
           type={errorType}
-          message={this.state.error.message + retryMessage}
+          message={this.state.error.message}
           onRetry={this.handleRetry}
           onGoHome={this.handleGoHome}
           onLogin={errorType === 'auth' ? this.handleLogin : undefined}
