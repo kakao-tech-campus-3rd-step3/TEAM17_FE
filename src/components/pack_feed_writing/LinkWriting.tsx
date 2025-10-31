@@ -15,6 +15,7 @@ import type { WriteProduct } from '@/types/Product';
 type LinkWritingProps = {
   onChange: (items: WriteProduct[]) => void;
 };
+
 const LinkWriting = ({ onChange }: LinkWritingProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -29,25 +30,24 @@ const LinkWriting = ({ onChange }: LinkWritingProps) => {
   const handleSubmit = (data: ProductForm) => {
     setFormData(data);
 
-    const productsWithPreview: WriteProduct[] = data.products.map((p) => {
-      const newImageUrl = p.imageFile ? URL.createObjectURL(p.imageFile) : (p.imageUrl ?? ''); 
-      return {
-        name: p.name,
-        linkUrl: p.linkUrl,
-        description: p.description ?? '',
-        imageUrl: newImageUrl,
-      };
-    });
+    const productsWithUrl: WriteProduct[] = data.products.map((p) => ({
+      name: p.name,
+      linkUrl: p.linkUrl,
+      description: p.description ?? '',
+      imageUrl: p.imageUrl ?? '',
+    }));
 
-    setSubmittedProducts(productsWithPreview);
-    onChange(productsWithPreview);
+    setSubmittedProducts(productsWithUrl);
+    onChange(productsWithUrl);
     setIsOpen(false);
   };
 
   useEffect(() => {
     return () => {
       submittedProducts.forEach((p) => {
-        if (p.imageUrl) URL.revokeObjectURL(p.imageUrl);
+        if (p.imageUrl && p.imageUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(p.imageUrl);
+        }
       });
     };
   }, [submittedProducts]);

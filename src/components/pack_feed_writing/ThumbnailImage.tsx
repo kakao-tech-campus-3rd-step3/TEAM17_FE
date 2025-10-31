@@ -5,12 +5,13 @@ import { useUploadImages } from '@/hooks/useUploadImages';
 
 type ThumbnailImageProps = {
   onChange: (url: string) => void;
+  dirName?: 'feed' | 'packs';
 };
 
-const ThumbnailImage = ({ onChange }: ThumbnailImageProps) => {
+const ThumbnailImage = ({ onChange, dirName = 'feed' }: ThumbnailImageProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previews, setPreviews] = useState<string[]>([]);
-  const { mutateAsync: uploadImages, isPending } = useUploadImages();
+  const { mutateAsync: uploadImages, isPending } = useUploadImages(dirName);
 
   const handleBoxClick = () => {
     if (!isPending) fileInputRef.current?.click();
@@ -32,7 +33,6 @@ const ThumbnailImage = ({ onChange }: ThumbnailImageProps) => {
     }
 
     if (e.currentTarget) e.currentTarget.value = '';
-
   };
 
   useEffect(() => {
