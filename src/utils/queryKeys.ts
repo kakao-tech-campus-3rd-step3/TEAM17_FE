@@ -22,7 +22,8 @@ export const QUERY_KEYS = {
   feeds: {
     all: ['feeds'] as const,
     lists: ['feeds', 'list'] as const,
-    list: (page: number, limit: number) => ['feeds', 'list', { page, limit }] as const,
+    list: (page: number, limit: number, sort?: string) =>
+      ['feeds', 'list', { page, limit, sort: sort ?? null }] as const,
     detail: (id: number) => ['feeds', 'detail', id] as const,
     comments: (feedId: number) => ['feeds', 'detail', feedId, 'comments'] as const,
   },

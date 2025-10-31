@@ -38,7 +38,8 @@ const MIN_VALID_ID = 1;
 // 피드 목록 조회 (페이지네이션)
 export const useFeeds = (
   page: number = FEED_API_CONSTANTS.DEFAULT_PAGE,
-  size: number = FEED_API_CONSTANTS.DEFAULT_PAGE_SIZE
+  size: number = FEED_API_CONSTANTS.DEFAULT_PAGE_SIZE,
+  options?: { sort?: string }
 ) => {
   const {
     data: feedResponse,
@@ -46,8 +47,8 @@ export const useFeeds = (
     error,
     refetch,
   } = useQuery({
-    queryKey: QUERY_KEYS.feeds.list(page, size),
-    queryFn: () => fetchFeeds(page, size),
+    queryKey: QUERY_KEYS.feeds.list(page, size, options?.sort),
+    queryFn: () => fetchFeeds(page, size, { sort: options?.sort }),
     throwOnError: false,
   });
 

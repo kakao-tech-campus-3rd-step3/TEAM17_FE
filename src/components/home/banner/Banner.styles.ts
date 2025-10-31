@@ -1,20 +1,49 @@
 import styled from 'styled-components';
 
-export const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+export const CarouselContainer = styled.div`
+  position: relative;
+  width: 100%;
+  margin-bottom: 1.5rem;
+`;
+
+export const CarouselWrapper = styled.div`
+  display: flex;
+  align-items: center;
   gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 `;
 
 export const Card = styled.div<{ $variant: 'left' | 'right' }>`
   position: relative;
-  height: 10rem;
+  flex: 1;
+  min-width: 0;
+  height: 16rem;
   border-radius: 0.5rem;
   overflow: hidden;
   background-image: ${({ $variant }) =>
     $variant === 'left'
       ? 'linear-gradient(135deg, #1e3a8a 0%, #581c87 100%)'
       : 'linear-gradient(135deg, #22d3ee 0%, #2563eb 100%)'};
+  transition: transform 0.3s ease;
+
+  @media (max-width: 768px) {
+    height: 14rem;
+  }
+
+  @media (max-width: 480px) {
+    height: 12rem;
+    width: 100%;
+  }
 `;
 
 export const Overlay = styled.div<{ $alpha?: number }>`
@@ -34,12 +63,38 @@ export const BottomLeft = styled.div`
   text-align: left;
   padding-right: 2.25rem;
   max-width: calc(100% - 3rem);
+  z-index: 1;
+
+  @media (max-width: 768px) {
+    left: 0.5rem;
+    bottom: 0.5rem;
+    padding-right: 1.5rem;
+    max-width: calc(100% - 2rem);
+  }
+
+  @media (max-width: 480px) {
+    left: 0.5rem;
+    bottom: 0.5rem;
+    padding-right: 1rem;
+    max-width: calc(100% - 1.5rem);
+  }
 `;
 
 export const TopRight = styled.div`
   position: absolute;
   right: 0.75rem;
   top: 0.75rem;
+  z-index: 1;
+
+  @media (max-width: 768px) {
+    right: 0.5rem;
+    top: 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    right: 0.5rem;
+    top: 0.5rem;
+  }
 `;
 
 export const Kicker = styled.div`
@@ -52,13 +107,63 @@ export const Title = styled.div`
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.25rem;
+
+  @media (max-width: 768px) {
+    font-size: 0.8125rem;
+    line-height: 1.125rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
 `;
 
-export const Badge = styled.span`
+export const BannerBadge = styled.span`
   display: inline-block;
   background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
+`;
+
+export const NavigationButton = styled.button<{ $position: 'left' | 'right' }>`
+  position: absolute;
+  ${({ $position }) => ($position === 'left' ? 'left: 0.5rem' : 'right: 0.5rem')};
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    background: rgba(255, 255, 255, 1);
+  }
+
+  &:focus-visible {
+    outline: 0.125rem solid #f97316;
+    outline-offset: 0.125rem;
+  }
+`;
+
+export const Indicator = styled.div`
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  font-size: 0.625rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  z-index: 2;
 `;
