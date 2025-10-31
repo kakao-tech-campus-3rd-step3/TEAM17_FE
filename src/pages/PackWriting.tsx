@@ -57,7 +57,7 @@ const PackWriting = () => {
       <LayoutLine>
         <TitleStyle>제목작성</TitleStyle>
         <InputField type="text" value={name} onChange={(e) => setName(e.target.value)} />
-        <ThumbnailImage onChange={setMainImageUrl} />
+        <ThumbnailImage onChange={setMainImageUrl}  dirName="packs" />
 
         <ContentLinkWrapper>
           <ContentWriting onChange={setDescription} />
