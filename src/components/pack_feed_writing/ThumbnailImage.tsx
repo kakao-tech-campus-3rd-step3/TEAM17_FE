@@ -10,7 +10,7 @@ type ThumbnailImageProps = {
 const ThumbnailImage = ({ onChange }: ThumbnailImageProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previews, setPreviews] = useState<string[]>([]);
-  const { mutateAsync: uploadImages, isPending } = useUploadImages(); 
+  const { mutateAsync: uploadImages, isPending } = useUploadImages();
 
   const handleBoxClick = () => {
     if (!isPending) fileInputRef.current?.click();
@@ -25,14 +25,14 @@ const ThumbnailImage = ({ onChange }: ThumbnailImageProps) => {
     setPreviews(urls);
 
     try {
-
       const uploadedUrls = await uploadImages(fileArray);
-      if (uploadedUrls.length > 0) onChange(uploadedUrls[0]); 
+      if (uploadedUrls.length > 0) onChange(uploadedUrls[0]);
     } catch (err) {
       console.error('이미지 업로드 실패:', err);
     }
 
-    e.currentTarget.value = '';
+    if (e.currentTarget) e.currentTarget.value = '';
+
   };
 
   useEffect(() => {
