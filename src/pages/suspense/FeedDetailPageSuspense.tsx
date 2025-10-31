@@ -40,7 +40,7 @@ const FeedDetailData = () => {
     staleTime: 5 * 60 * 1000,
   });
 
-  const { addComment, addReply } = useCommentActions(feedId);
+  const { addComment } = useCommentActions(feedId);
 
   const [localFeed, setLocalFeed] = useState<FeedDetail>(feed);
 
@@ -82,7 +82,14 @@ const FeedDetailData = () => {
 
   const handleAddReply = async (reply: CreateReplyRequest) => {
     try {
-      await addReply(reply);
+      // 답글은 댓글 작성 API에 parentId를 포함하여 호출
+      await addComment({
+        feedId: reply.feedId,
+        content: reply.content,
+        parentId: reply.commentId,
+      });
+      // 답글 작성 성공 후 피드 상세 정보 새로고침
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.detail(feedId) });
       alert('답글이 추가되었습니다!');
     } catch (error) {
       console.error('답글 작성 실패:', error);

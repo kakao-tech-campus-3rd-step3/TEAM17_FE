@@ -54,9 +54,9 @@ const FeedPage = () => {
           FEED_CONSTANTS.INITIAL_PAGE_SIZE
         );
 
-        setPosts(response.content);
-        setCurrentPage(response.number);
-        setIsLastPage(response.last);
+        setPosts(response?.content || []);
+        setCurrentPage(response?.number ?? FEED_CONSTANTS.INITIAL_PAGE);
+        setIsLastPage(response?.last ?? false);
       } catch (err) {
         setError('피드를 불러오는데 실패했습니다.');
         console.error('Failed to load posts:', err);
@@ -77,9 +77,9 @@ const FeedPage = () => {
           FEED_CONSTANTS.LOAD_MORE_PAGE_SIZE
         );
 
-        setPosts((prev) => [...prev, ...response.content]);
-        setCurrentPage(response.number);
-        setIsLastPage(response.last);
+        setPosts((prev) => [...prev, ...(response?.content || [])]);
+        setCurrentPage(response?.number ?? currentPage + 1);
+        setIsLastPage(response?.last ?? false);
       } catch (err) {
         setError('피드를 불러오는데 실패했습니다.');
         console.error('Failed to load more posts:', err);
