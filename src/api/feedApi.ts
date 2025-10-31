@@ -158,7 +158,7 @@ export const createComment = async (data: CreateCommentRequest): Promise<Comment
       content: data.content,
     };
 
-    if (data.parentId !== undefined && data.parentId !== null) {
+    if (data.parentId !== null) {
       requestBody.parentId = data.parentId;
     }
 
