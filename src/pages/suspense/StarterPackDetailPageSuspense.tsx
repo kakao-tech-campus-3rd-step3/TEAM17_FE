@@ -40,15 +40,17 @@ import {
   ProductName,
 } from '../StarterPackDetailPage.styles';
 
+const DECIMAL_RADIX = 10;
+
 const StarterPackDetailData = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  if (!id || isNaN(parseInt(id, 10))) {
+  if (!id || isNaN(parseInt(id, DECIMAL_RADIX))) {
     throw new Error('유효하지 않은 스타터팩 ID입니다.');
   }
 
-  const packId = parseInt(id, 10);
+  const packId = parseInt(id, DECIMAL_RADIX);
 
   const { data: displayPack } = useSuspenseQuery<StarterPack>({
     queryKey: ['starterPack', packId],

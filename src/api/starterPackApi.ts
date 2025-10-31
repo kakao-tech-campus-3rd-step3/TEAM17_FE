@@ -10,11 +10,38 @@ import type {
   PackCommentResponse,
 } from '@/types/StarterPack';
 
+// API 응답의 id를 packId로 변환
+const normalizeStarterPack = (
+  pack: StarterPack | (Omit<StarterPack, 'packId'> & { id: number })
+): StarterPack => {
+  if ('id' in pack && !('packId' in pack)) {
+    const { id, ...rest } = pack as Omit<StarterPack, 'packId'> & { id: number };
+    return { ...rest, packId: id };
+  }
+  return pack as StarterPack;
+};
+
 // 모든 스타터팩 목록 조회
 export const fetchStarterPack = async (): Promise<StarterPackResponse> => {
   try {
-    const response = await axiosInstance.get<StarterPackResponse>('/api/starterPack/packs');
-    return response.data;
+    const response = await axiosInstance.get<
+      | StarterPackResponse
+      | Record<string, (StarterPack | (Omit<StarterPack, 'packId'> & { id: number }))[]>
+    >('/api/starterPack/packs');
+    const data = response.data;
+
+    // 응답이 카테고리별 객체인 경우 각 아이템을 정규화
+    if (data && typeof data === 'object') {
+      const normalized: StarterPackResponse = {};
+      for (const [category, packs] of Object.entries(data)) {
+        if (Array.isArray(packs)) {
+          normalized[category] = packs.map(normalizeStarterPack);
+        }
+      }
+      return normalized;
+    }
+
+    return data as StarterPackResponse;
   } catch (error) {
     console.error('Failed to fetch starter packs:', error);
     throw error;
@@ -24,8 +51,10 @@ export const fetchStarterPack = async (): Promise<StarterPackResponse> => {
 // 특정 스타터팩 조회
 export const fetchStarterPackById = async (id: number): Promise<StarterPack> => {
   try {
-    const response = await axiosInstance.get<StarterPack>(`/api/starterPack/packs/${id}`);
-    return response.data;
+    const response = await axiosInstance.get<
+      StarterPack | (Omit<StarterPack, 'packId'> & { id: number })
+    >(`/api/starterPack/packs/${id}`);
+    return normalizeStarterPack(response.data);
   } catch (error) {
     console.error(`Failed to fetch starter pack ${id}:`, error);
     throw error;
