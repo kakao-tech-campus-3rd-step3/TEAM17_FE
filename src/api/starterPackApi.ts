@@ -133,11 +133,26 @@ export const fetchStarterPackByCategory = async (
 
 // ==================== 댓글 관련 API ====================
 
-// 스타터팩 댓글 목록 조회
-export const fetchPackComments = async (packId: number): Promise<PagePackCommentResponse> => {
+// 스타터팩 댓글 목록 조회 (페이지네이션)
+export const fetchPackComments = async (
+  packId: number,
+  page: number = 0,
+  size: number = 10,
+  options?: { sort?: string }
+): Promise<PagePackCommentResponse> => {
   try {
+    const params: Record<string, string | number> = {
+      page,
+      size,
+    };
+
+    if (options?.sort) {
+      params.sort = options.sort;
+    }
+
     const response = await axiosInstance.get<PagePackCommentResponse>(
-      `/api/starterPack/${packId}/comments`
+      `/api/starterPack/${packId}/comments`,
+      { params }
     );
     return response.data;
   } catch (error) {
