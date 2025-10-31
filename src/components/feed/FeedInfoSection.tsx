@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { FeedDetail } from '@/types/Feed';
+import { FEED_CONSTANTS } from '@/constants/feed';
 import {
   InfoContainer,
   UserProfile,
@@ -27,7 +28,9 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({ feed }) => {
   const [showAllProducts, setShowAllProducts] = useState(false);
 
   const products = feed.products || [];
-  const displayedProducts = showAllProducts ? products : products.slice(0, 3);
+  const displayedProducts = showAllProducts
+    ? products
+    : products.slice(0, FEED_CONSTANTS.INITIAL_PRODUCT_DISPLAY_COUNT);
 
   return (
     <InfoContainer>
@@ -57,7 +60,7 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({ feed }) => {
               <ProductLink>링크로 이동</ProductLink>
             </ProductItem>
           ))}
-          {products.length > 3 && !showAllProducts && (
+          {products.length > FEED_CONSTANTS.INITIAL_PRODUCT_DISPLAY_COUNT && !showAllProducts && (
             <MoreProductsButton onClick={() => setShowAllProducts(true)}>
               취미 팩 더보기 ↓
             </MoreProductsButton>
