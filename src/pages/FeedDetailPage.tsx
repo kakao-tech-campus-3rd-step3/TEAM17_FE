@@ -45,7 +45,7 @@ const FeedDetailPage: React.FC = () => {
   };
 
   const handleLikeComment = (commentId: number, isLiked: boolean, likeCount: number) => {
-    if (feed) {
+    if (feed && feed.comments) {
       const updatedComments = feed.comments.map((comment) =>
         comment.commentId === commentId ? { ...comment, isLiked, likeCount } : comment
       );
@@ -54,7 +54,7 @@ const FeedDetailPage: React.FC = () => {
   };
 
   const handleLikeReply = (replyId: number, isLiked: boolean, likeCount: number) => {
-    if (feed) {
+    if (feed && feed.comments) {
       const updatedComments = feed.comments.map((comment) => ({
         ...comment,
         replies:
@@ -135,7 +135,7 @@ const FeedDetailPage: React.FC = () => {
 
         <BottomSection>
           <CommentSection
-            comments={feed.comments}
+            comments={feed.comments || []}
             feedId={feed.feedId}
             onAddComment={handleAddComment}
             onAddReply={handleAddReply}
