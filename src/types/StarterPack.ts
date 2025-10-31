@@ -17,6 +17,7 @@ export interface StarterPack {
   salePrice?: number;
   discountRate?: number;
   reviewCount?: number;
+  commentCount?: number;
 }
 
 export interface StarterPackResponse {

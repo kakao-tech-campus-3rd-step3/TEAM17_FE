@@ -1,8 +1,8 @@
 import { Suspense, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useSuspenseQuery } from '@/hooks/useSuspenseQuery';
-import { fetchFeeds } from '@/api/feedApi';
+import { useSuspenseQuery, useQueryClient } from '@tanstack/react-query';
+import { fetchFeeds, toggleFeedLike } from '@/api/feedApi';
 import type { FeedPost as FeedPostType, FeedResponse } from '@/types/Feed';
 import FeedPost from '@/components/feed/FeedPost';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
@@ -26,14 +26,13 @@ const FEED_CONSTANTS = {
 const FeedData = () => {
   const navigate = useNavigate();
   const { isLogin } = useAuth();
+  const queryClient = useQueryClient();
 
-  const { data: feedResponse } = useSuspenseQuery<FeedResponse>(
-    ['feeds', FEED_CONSTANTS.INITIAL_PAGE, FEED_CONSTANTS.INITIAL_PAGE_SIZE],
-    () => fetchFeeds(FEED_CONSTANTS.INITIAL_PAGE, FEED_CONSTANTS.INITIAL_PAGE_SIZE),
-    {
-      staleTime: 5 * 60 * 1000,
-    }
-  ) as { data: FeedResponse };
+  const { data: feedResponse } = useSuspenseQuery<FeedResponse>({
+    queryKey: ['feeds', FEED_CONSTANTS.INITIAL_PAGE, FEED_CONSTANTS.INITIAL_PAGE_SIZE],
+    queryFn: () => fetchFeeds(FEED_CONSTANTS.INITIAL_PAGE, FEED_CONSTANTS.INITIAL_PAGE_SIZE),
+    staleTime: 5 * 60 * 1000,
+  });
 
   const handleWriteClick = () => {
     if (!isLogin) {
@@ -44,9 +43,50 @@ const FeedData = () => {
     navigate('/feedwriting');
   };
 
-  const handleLike = useCallback((feedId: number, isLiked: boolean, likeCount: number) => {
-    console.log('Like updated:', { feedId, isLiked, likeCount });
-  }, []);
+  const handleLike = useCallback(
+    async (feedId: number, isLiked: boolean, likeCount: number) => {
+      const queryKey = [
+        'feeds',
+        FEED_CONSTANTS.INITIAL_PAGE,
+        FEED_CONSTANTS.INITIAL_PAGE_SIZE,
+      ] as const;
+
+      const previousData = queryClient.getQueryData<FeedResponse>(queryKey);
+
+      if (!previousData) return;
+
+      queryClient.setQueryData<FeedResponse>(queryKey, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          content: old.content.map((post) => ({
+            ...post,
+            ...(post.feedId === feedId && { isLiked, likeCount }),
+          })),
+        };
+      });
+
+      try {
+        const response = await toggleFeedLike(feedId);
+        queryClient.setQueryData<FeedResponse>(queryKey, (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            content: old.content.map((post) => ({
+              ...post,
+              ...(post.feedId === feedId && {
+                isLiked: response.isLiked,
+                likeCount: response.likeCount,
+              }),
+            })),
+          };
+        });
+      } catch {
+        queryClient.setQueryData(queryKey, previousData);
+      }
+    },
+    [queryClient]
+  );
 
   if (feedResponse.content.length === 0) {
     return (
