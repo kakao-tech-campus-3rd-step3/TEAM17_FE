@@ -1,20 +1,35 @@
 import axiosInstance from './axiosInstance';
 import type { LoginRequest, SignupRequest, User, RefreshResponse } from '@/types/AuthTypes';
 
+const ensureCsrfToken = async () => {
+  const res = await axiosInstance.get('/api/auth/csrf-token');
+
+  const token = res.headers['x-xsrf-token'];
+  if (token) {
+     axiosInstance.defaults.headers.common['X-XSRF-TOKEN'] = token;
+  }
+};
+
 export const signup = async (data: SignupRequest): Promise<User> => {
+  await ensureCsrfToken();
   const res = await axiosInstance.post<User>('/api/auth/signup', data);
   return res.data;
 };
 
 export const login = async (data: LoginRequest): Promise<void> => {
+  await ensureCsrfToken();
   await axiosInstance.post('/api/auth/login', data);
 };
 
+
 export const logout = async (): Promise<void> => {
+  await ensureCsrfToken();
   await axiosInstance.post('/api/auth/logout');
 };
 
+
 export const refresh = async (): Promise<RefreshResponse> => {
+  await ensureCsrfToken();
   const res = await axiosInstance.post<RefreshResponse>('/api/auth/refresh');
   return res.data;
 };

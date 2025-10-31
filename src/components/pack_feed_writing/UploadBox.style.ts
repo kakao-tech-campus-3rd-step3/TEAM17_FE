@@ -52,6 +52,19 @@ export const ContentBox = styled.div`
   margin-bottom: 1rem;
 `;
 
+export const ContentBox2 = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  
+  width: 50%;
+  height: 20rem;
+  border: 2px solid ${({ theme }) => theme.colors.line.blue};
+  border-radius: 5%;
+  margin-bottom: 1.5rem;
+`;
+
 export const TextArea = styled.textarea`
   width: 90%;
   height: 90%;
@@ -69,5 +82,3 @@ export const Counter = styled.div`
   font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.text.black};
 `;
-
-

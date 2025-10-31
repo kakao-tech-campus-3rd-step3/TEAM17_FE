@@ -22,11 +22,11 @@ import {
   ToggleButton,
   InputWrapper,
 } from '@/components/login/Login.style';
+import KakaoLoginButton from '@/components/login/KakaoLoginButton';
 
 import EyeOn from '@/assets/icon-eye.svg';
 import EyeOff from '@/assets/icon-eye-off.svg';
 import google from '@/assets/google.png';
-import kakao from '@/assets/kakao.svg';
 import naver from '@/assets/naver.png';
 
 export default function LoginForm() {
@@ -101,10 +101,7 @@ export default function LoginForm() {
           Google 계정으로 로그인
         </SocialButton>
 
-        <SocialButton $bgColor="#FEE500" $color="#000">
-          <img src={kakao} alt="Kakao" />
-          카카오 계정으로 로그인
-        </SocialButton>
+        <KakaoLoginButton />
 
         <SocialButton $bgColor="#03C75A" $color="#fff">
           <img src={naver} alt="Naver" />

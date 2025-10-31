@@ -1,7 +1,7 @@
 import { Suspense, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StarterPackCard from '@/components/card/StarterPackCard';
-import { useSuspenseQuery } from '@/hooks/useSuspenseQuery';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { fetchStarterPack } from '@/api/starterPackApi';
 import type { StarterPack } from '@/types/StarterPack';
 import { STARTER_PACK_CATEGORIES, type CategoryKey } from '@/constants/starterPack';
@@ -45,13 +45,11 @@ const StarterPackData = () => {
   const navigate = useNavigate();
   const [active, setActive] = useState<CategoryKey>('전체');
 
-  const { data: starterPackResponse } = useSuspenseQuery(
-    ['starterPacks'],
-    () => fetchStarterPack(),
-    {
-      staleTime: 5 * 60 * 1000,
-    }
-  ) as { data: { content: StarterPack[] } };
+  const { data: starterPackResponse } = useSuspenseQuery({
+    queryKey: ['starterPacks'],
+    queryFn: () => fetchStarterPack(),
+    staleTime: 5 * 60 * 1000,
+  });
 
   const filteredPacks = useMemo(() => {
     return starterPackResponse.content.filter((pack: StarterPack) => matchCategory(pack, active));

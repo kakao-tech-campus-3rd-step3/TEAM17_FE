@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { FeedDetail } from '@/types/Feed';
+import { FEED_CONSTANTS } from '@/constants/feed';
 import {
   InfoContainer,
   UserProfile,
@@ -26,7 +27,10 @@ interface FeedInfoSectionProps {
 const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({ feed }) => {
   const [showAllProducts, setShowAllProducts] = useState(false);
 
-  const displayedProducts = showAllProducts ? feed.products : feed.products.slice(0, 3);
+  const products = feed.products || [];
+  const displayedProducts = showAllProducts
+    ? products
+    : products.slice(0, FEED_CONSTANTS.INITIAL_PRODUCT_DISPLAY_COUNT);
 
   return (
     <InfoContainer>
@@ -44,7 +48,7 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({ feed }) => {
       <PostDate>{feed.createdAt}</PostDate>
 
       {/* 취미팩 상품링크 */}
-      {feed.products.length > 0 && (
+      {products.length > 0 && (
         <ProductSection>
           <ProductTitle>취미팩 상품링크</ProductTitle>
           {displayedProducts.map((product) => (
@@ -56,7 +60,7 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({ feed }) => {
               <ProductLink>링크로 이동</ProductLink>
             </ProductItem>
           ))}
-          {feed.products.length > 3 && !showAllProducts && (
+          {products.length > FEED_CONSTANTS.INITIAL_PRODUCT_DISPLAY_COUNT && !showAllProducts && (
             <MoreProductsButton onClick={() => setShowAllProducts(true)}>
               취미 팩 더보기 ↓
             </MoreProductsButton>

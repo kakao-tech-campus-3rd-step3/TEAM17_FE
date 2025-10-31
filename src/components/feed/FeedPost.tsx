@@ -32,7 +32,7 @@ interface FeedPostProps {
 const FeedPost = ({ post, onLike }: FeedPostProps) => {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(post.isLiked);
-  const [likeCount, setLikeCount] = useState(post.likeCount);
+  const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLike = useCallback(async () => {
@@ -143,7 +143,7 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
         </ActionButton>
       </PostActions>
 
-      <LikesCount>{likeCount.toLocaleString()}개 좋아요</LikesCount>
+      <LikesCount>{(likeCount ?? 0).toLocaleString()}개 좋아요</LikesCount>
 
       <Caption>
         <Username>@{post.author.name}</Username> {post.description}

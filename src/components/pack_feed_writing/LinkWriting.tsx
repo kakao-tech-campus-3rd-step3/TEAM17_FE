@@ -1,45 +1,53 @@
 import { useState, useEffect } from 'react';
-import { ColumnWrapper } from '@/components/feedwriting/Layout.style';
-import { Desc, TitleStyle } from '@/components/feedwriting/Title.style';
+import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.style';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
 import {
   LinkUploadBox,
   ProductWrapper,
   Product,
   ProductImage,
-} from '@/components/feedwriting/LinkWriting.style';
+} from '@/components/pack_feed_writing/LinkWriting.style';
 
-import LinkModal from '@/components/feedwriting/LinkModal';
+import LinkModal from '@/components/pack_feed_writing/LinkModal';
 import type { ProductForm } from '@/types/LinkWriteForm';
+import type { WriteProduct } from '@/types/Product';
 
-const LinkWriting = () => {
+type LinkWritingProps = {
+  onChange: (items: WriteProduct[]) => void;
+};
+
+const LinkWriting = ({ onChange }: LinkWritingProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [formData, setFormData] = useState<ProductForm>({
-    products: [{ name: '', url: '', description: '', imageFile: undefined, imageUrl: undefined }],
+    products: [
+      { name: '', linkUrl: '', description: '', imageFile: undefined, imageUrl: undefined },
+    ],
   });
 
-  const [submittedProducts, setSubmittedProducts] = useState<{ name: string; imageUrl?: string }[]>(
-    []
-  );
+  const [submittedProducts, setSubmittedProducts] = useState<WriteProduct[]>([]);
 
   const handleSubmit = (data: ProductForm) => {
-    const productsWithPreview = data.products.map((p) => {
-      const newImageUrl = p.imageFile ? URL.createObjectURL(p.imageFile) : p.imageUrl;
-      return {
-        ...p,
-        imageUrl: newImageUrl,
-      };
-    });
+    setFormData(data);
 
-    setFormData({ products: productsWithPreview });
-    setSubmittedProducts(productsWithPreview);
+    const productsWithUrl: WriteProduct[] = data.products.map((p) => ({
+      name: p.name,
+      linkUrl: p.linkUrl,
+      description: p.description ?? '',
+      imageUrl: p.imageUrl ?? '',
+    }));
+
+    setSubmittedProducts(productsWithUrl);
+    onChange(productsWithUrl);
     setIsOpen(false);
   };
 
   useEffect(() => {
     return () => {
       submittedProducts.forEach((p) => {
-        if (p.imageUrl) URL.revokeObjectURL(p.imageUrl);
+        if (p.imageUrl && p.imageUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(p.imageUrl);
+        }
       });
     };
   }, [submittedProducts]);

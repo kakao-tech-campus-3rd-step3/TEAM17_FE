@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
-
 import {
   Overlay,
   Modal,
@@ -18,7 +17,8 @@ import {
   SubmitButton,
   ErrorText,
   ExistingImage,
-} from '@/components/feedwriting/LinkModal.style';
+} from '@/components/pack_feed_writing/LinkModal.style';
+import { useUploadImages } from '@/hooks/useUploadImages';
 import type { ProductForm } from '@/types/LinkWriteForm';
 
 interface ProductModalProps {
@@ -46,6 +46,8 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
     name: 'products',
   });
 
+  const { mutateAsync: uploadImages, isPending } = useUploadImages('products');
+
   useEffect(() => {
     if (isOpen) {
       reset(defaultValues);
@@ -56,6 +58,22 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
 
   const watchedProducts = watch('products');
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const uploadedUrls = await uploadImages([file]);
+      const uploadedUrl = uploadedUrls[0];
+
+      setValue(`products.${idx}.imageFile`, file, { shouldValidate: true });
+      setValue(`products.${idx}.imageUrl`, uploadedUrl, { shouldValidate: true });
+    } catch (err) {
+      console.error('상품 이미지 업로드 실패:', err);
+      alert('상품 이미지 업로드 중 오류가 발생했습니다.');
+    }
+  };
+
   return (
     <Overlay>
       <Modal>
@@ -64,7 +82,7 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
           <Desc>- 상품명과 상품 링크, 상품 이미지는 "필수", 설명은 "선택"입니다.</Desc>
           <AddButton
             type="button"
-            onClick={() => append({ name: '', url: '', description: '', imageFile: undefined })}
+            onClick={() => append({ name: '', linkUrl: '', description: '', imageFile: undefined })}
           >
             상품 추가
           </AddButton>
@@ -74,11 +92,6 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
           <form onSubmit={handleSubmit(onSubmit)}>
             {fields.map((field, idx) => {
               const existingImageUrl = watchedProducts[idx]?.imageUrl;
-
-              const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-                const file = e.target.files?.[0];
-                if (file) setValue(`products.${idx}.imageFile`, file, { shouldValidate: true });
-              };
 
               return (
                 <FieldSet key={field.id}>
@@ -103,17 +116,18 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
                       )}
                     </div>
                   </FormGroup>
+
                   <FormGroup>
                     <label>상품링크</label>
                     <div className="input-wrapper">
                       <input
                         placeholder="상품링크를 입력하세요 (필수)"
-                        {...register(`products.${idx}.url`, {
+                        {...register(`products.${idx}.linkUrl`, {
                           required: '상품링크를 입력해주세요.',
                         })}
                       />
-                      {errors.products?.[idx]?.url && (
-                        <ErrorText>{errors.products[idx].url?.message}</ErrorText>
+                      {errors.products?.[idx]?.linkUrl && (
+                        <ErrorText>{errors.products[idx].linkUrl?.message}</ErrorText>
                       )}
                     </div>
                   </FormGroup>
@@ -134,8 +148,12 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
                       {existingImageUrl && (
                         <ExistingImage src={existingImageUrl} alt="상품 이미지 미리보기" />
                       )}
-
-                      <input type="file" accept="image/*" onChange={handleFileChange} />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={isPending}
+                        onChange={(e) => handleFileChange(e, idx)}
+                      />
                       {errors.products?.[idx]?.imageFile && (
                         <ErrorText>{errors.products[idx].imageFile?.message}</ErrorText>
                       )}
@@ -149,7 +167,9 @@ const LinkModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSubmit, def
               <CancelButton type="button" onClick={onClose}>
                 취소
               </CancelButton>
-              <SubmitButton type="submit">작성 완료</SubmitButton>
+              <SubmitButton type="submit" disabled={isPending}>
+                {isPending ? '이미지 업로드 중...' : '작성 완료'}
+              </SubmitButton>
             </Footer>
           </form>
         </FormWrapper>
