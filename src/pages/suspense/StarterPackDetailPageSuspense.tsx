@@ -127,11 +127,11 @@ const StarterPackDetailData = () => {
               <StatsSection>
                 <StatItem>
                   <Heart size={16} />
-                  {displayPack.likeCount}개
+                  {displayPack.likeCount ?? 0}개
                 </StatItem>
                 <StatItem>
                   <MessageSquare size={16} />
-                  {displayPack.commentCount || 0}개
+                  {displayPack.commentCount ?? 0}개
                 </StatItem>
                 <StatItem>
                   <Clock size={16} />
