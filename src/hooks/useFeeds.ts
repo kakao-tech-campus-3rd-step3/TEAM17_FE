@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import {
   fetchFeeds,
   fetchFeedById,
@@ -9,7 +10,9 @@ import {
   toggleFeedBookmark,
   fetchComments,
   createComment,
+  updateComment,
   deleteComment,
+  toggleCommentLike,
   createReply,
   deleteReply,
   toggleReplyLike,
@@ -445,9 +448,19 @@ export const useCommentActions = (feedId: number) => {
     },
   });
 
+  // 댓글 수정
+  const updateCommentMutation = useMutation({
+    mutationFn: ({ commentId, content }: { commentId: number; content: string }) =>
+      updateComment(commentId, { content }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.comments(feedId) });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.detail(feedId) });
+    },
+  });
+
   // 댓글 삭제
   const deleteCommentMutation = useMutation({
-    mutationFn: ({ commentId }: { commentId: number }) => deleteComment(feedId, commentId),
+    mutationFn: ({ commentId }: { commentId: number }) => deleteComment(commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.comments(feedId) });
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.detail(feedId) });
@@ -455,10 +468,7 @@ export const useCommentActions = (feedId: number) => {
   });
 
   const toggleCommentLikeMutation = useMutation({
-    mutationFn: () => {
-      console.warn('toggleCommentLike: 백엔드 API 스펙 확인 필요');
-      throw new Error('댓글 좋아요 API 미구현');
-    },
+    mutationFn: ({ commentId }: { commentId: number }) => toggleCommentLike(feedId, commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.comments(feedId) });
     },
@@ -496,13 +506,16 @@ export const useCommentActions = (feedId: number) => {
     return createCommentMutation.mutateAsync(data);
   };
 
+  const editComment = async (commentId: number, content: string) => {
+    return updateCommentMutation.mutateAsync({ commentId, content });
+  };
+
   const removeComment = async (commentId: number) => {
     return deleteCommentMutation.mutateAsync({ commentId });
   };
 
   const likeComment = async (commentId: number) => {
-    void commentId; // (API 미구현)
-    return toggleCommentLikeMutation.mutateAsync();
+    return toggleCommentLikeMutation.mutateAsync({ commentId });
   };
 
   const addReply = async (data: CreateReplyRequest) => {
@@ -519,46 +532,41 @@ export const useCommentActions = (feedId: number) => {
 
   const loading =
     createCommentMutation.isPending ||
+    updateCommentMutation.isPending ||
     deleteCommentMutation.isPending ||
     toggleCommentLikeMutation.isPending ||
     createReplyMutation.isPending ||
     deleteReplyMutation.isPending ||
     toggleReplyLikeMutation.isPending;
 
-  const error = createCommentMutation.error
-    ? createUserFriendlyMessage(
-        parseAxiosError(createCommentMutation.error),
-        '댓글 작성에 실패했습니다.'
-      )
-    : deleteCommentMutation.error
-      ? createUserFriendlyMessage(
-          parseAxiosError(deleteCommentMutation.error),
-          '댓글 삭제에 실패했습니다.'
-        )
-      : toggleCommentLikeMutation.error
-        ? createUserFriendlyMessage(
-            parseAxiosError(toggleCommentLikeMutation.error),
-            '댓글 좋아요 처리에 실패했습니다.'
-          )
-        : createReplyMutation.error
-          ? createUserFriendlyMessage(
-              parseAxiosError(createReplyMutation.error),
-              '답글 작성에 실패했습니다.'
-            )
-          : deleteReplyMutation.error
-            ? createUserFriendlyMessage(
-                parseAxiosError(deleteReplyMutation.error),
-                '답글 삭제에 실패했습니다.'
-              )
-            : toggleReplyLikeMutation.error
-              ? createUserFriendlyMessage(
-                  parseAxiosError(toggleReplyLikeMutation.error),
-                  '답글 좋아요 처리에 실패했습니다.'
-                )
-              : null;
+  const error = useMemo(() => {
+    const candidates: Array<{ err: unknown | null | undefined; msg: string }> = [
+      { err: createCommentMutation.error, msg: '댓글 작성에 실패했습니다.' },
+      { err: updateCommentMutation.error, msg: '댓글 수정에 실패했습니다.' },
+      { err: deleteCommentMutation.error, msg: '댓글 삭제에 실패했습니다.' },
+      { err: toggleCommentLikeMutation.error, msg: '댓글 좋아요 처리에 실패했습니다.' },
+      { err: createReplyMutation.error, msg: '답글 작성에 실패했습니다.' },
+      { err: deleteReplyMutation.error, msg: '답글 삭제에 실패했습니다.' },
+      { err: toggleReplyLikeMutation.error, msg: '답글 좋아요 처리에 실패했습니다.' },
+    ];
+
+    const firstError = candidates.find((candidate) => candidate.err);
+    return firstError
+      ? createUserFriendlyMessage(parseAxiosError(firstError.err), firstError.msg)
+      : null;
+  }, [
+    createCommentMutation.error,
+    updateCommentMutation.error,
+    deleteCommentMutation.error,
+    toggleCommentLikeMutation.error,
+    createReplyMutation.error,
+    deleteReplyMutation.error,
+    toggleReplyLikeMutation.error,
+  ]);
 
   const clearError = () => {
     createCommentMutation.reset();
+    updateCommentMutation.reset();
     deleteCommentMutation.reset();
     toggleCommentLikeMutation.reset();
     createReplyMutation.reset();
@@ -568,6 +576,7 @@ export const useCommentActions = (feedId: number) => {
 
   return {
     addComment,
+    editComment,
     removeComment,
     likeComment,
     addReply,

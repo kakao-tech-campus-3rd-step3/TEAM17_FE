@@ -31,7 +31,8 @@ dist-ssr
 cert/
 *.pem
 
-API_DOCUMENTATION.md
+# Swagger json 파일
 swagger.json
 swagger2.json
 swagger3.json
+API_DOCUMENTATION.md
