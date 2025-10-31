@@ -27,7 +27,12 @@ const FeedDetailData = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const feedId = id ? parseInt(id, 10) : 0;
+
+  if (!id || isNaN(parseInt(id, 10))) {
+    throw new Error('유효하지 않은 피드 ID입니다.');
+  }
+
+  const feedId = parseInt(id, 10);
 
   const { data: feed } = useSuspenseQuery<FeedDetail>({
     queryKey: QUERY_KEYS.feeds.detail(feedId),

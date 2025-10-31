@@ -43,7 +43,12 @@ import {
 const StarterPackDetailData = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const packId = id ? parseInt(id, 10) : 0;
+
+  if (!id || isNaN(parseInt(id, 10))) {
+    throw new Error('유효하지 않은 스타터팩 ID입니다.');
+  }
+
+  const packId = parseInt(id, 10);
 
   const { data: displayPack } = useSuspenseQuery<StarterPack>({
     queryKey: ['starterPack', packId],
@@ -122,11 +127,11 @@ const StarterPackDetailData = () => {
               <StatsSection>
                 <StatItem>
                   <Heart size={16} />
-                  {displayPack.likeCount || 0}개
+                  {displayPack.likeCount}개
                 </StatItem>
                 <StatItem>
                   <MessageSquare size={16} />
-                  0개
+                  {displayPack.commentCount || 0}개
                 </StatItem>
                 <StatItem>
                   <Clock size={16} />
