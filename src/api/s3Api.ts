@@ -1,6 +1,6 @@
 import axiosInstance from '@/api/axiosInstance';
 import { ensureCsrfToken } from '@/utils/csrf';
-import  { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 
 type PresignedUrlRequest = {
   files: {
@@ -9,11 +9,13 @@ type PresignedUrlRequest = {
   }[];
 };
 
+// POST presigned URL 구조 대응
 export type PresignedUrlResponse = {
   presignedUrl: string;
   fileUrl: string;
 }[];
 
+// ==================== Presigned URL 발급 ====================
 export const getPresignedUrls = async (
   dirName: string,
   files: File[]
@@ -39,23 +41,21 @@ export const getPresignedUrls = async (
 
     return data;
   } catch (error) {
- 
     if (error instanceof AxiosError) {
       console.error('[Presigned URL 요청 실패]', error.response?.data || error.message);
       throw error;
     }
-
     console.error('[Presigned URL 요청 실패 - Unknown]', error);
     throw error;
   }
 };
-
 export const uploadToS3 = async (presignedUrl: string, file: File): Promise<void> => {
   try {
     const res = await fetch(presignedUrl, {
       method: 'PUT',
       headers: {
         'Content-Type': file.type,
+        'x-amz-acl': 'public-read',
       },
       body: file,
     });
