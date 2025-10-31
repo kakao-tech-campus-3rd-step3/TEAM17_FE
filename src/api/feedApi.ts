@@ -150,12 +150,22 @@ export const fetchComments = async (
   }
 };
 
-// 댓글 생성
+// 댓글 생성 (댓글/대댓글 작성)
+// parentId가 있으면 대댓글, 없으면 일반 댓글
 export const createComment = async (data: CreateCommentRequest): Promise<Comment> => {
   try {
-    const response = await axiosInstance.post<Comment>(`/api/feeds/${data.feedId}/comments`, {
+    const requestBody: { content: string; parentId?: number | null } = {
       content: data.content,
-    });
+    };
+
+    if (data.parentId !== undefined && data.parentId !== null) {
+      requestBody.parentId = data.parentId;
+    }
+
+    const response = await axiosInstance.post<Comment>(
+      `/api/feeds/${data.feedId}/comments`,
+      requestBody
+    );
     return response.data;
   } catch (error) {
     console.error('Failed to create comment:', error);
