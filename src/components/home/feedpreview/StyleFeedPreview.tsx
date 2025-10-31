@@ -148,7 +148,7 @@ const StyleFeedPreview = () => {
               </ActionButton>
             </PostActions>
 
-            <LikesCount>{feed.likeCount.toLocaleString()}개 좋아요</LikesCount>
+            <LikesCount>{(feed.likeCount ?? 0).toLocaleString()}개 좋아요</LikesCount>
 
             <Caption>
               <Username>@{feed.author.name}</Username> {feed.description}
