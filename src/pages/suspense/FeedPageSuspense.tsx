@@ -1,7 +1,7 @@
 import { Suspense, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useSuspenseQuery } from '@/hooks/useSuspenseQuery';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { fetchFeeds } from '@/api/feedApi';
 import type { FeedPost as FeedPostType, FeedResponse } from '@/types/Feed';
 import FeedPost from '@/components/feed/FeedPost';
@@ -27,13 +27,11 @@ const FeedData = () => {
   const navigate = useNavigate();
   const { isLogin } = useAuth();
 
-  const { data: feedResponse } = useSuspenseQuery<FeedResponse>(
-    ['feeds', FEED_CONSTANTS.INITIAL_PAGE, FEED_CONSTANTS.INITIAL_PAGE_SIZE],
-    () => fetchFeeds(FEED_CONSTANTS.INITIAL_PAGE, FEED_CONSTANTS.INITIAL_PAGE_SIZE),
-    {
-      staleTime: 5 * 60 * 1000,
-    }
-  ) as { data: FeedResponse };
+  const { data: feedResponse } = useSuspenseQuery<FeedResponse>({
+    queryKey: ['feeds', FEED_CONSTANTS.INITIAL_PAGE, FEED_CONSTANTS.INITIAL_PAGE_SIZE],
+    queryFn: () => fetchFeeds(FEED_CONSTANTS.INITIAL_PAGE, FEED_CONSTANTS.INITIAL_PAGE_SIZE),
+    staleTime: 5 * 60 * 1000,
+  });
 
   const handleWriteClick = () => {
     if (!isLogin) {

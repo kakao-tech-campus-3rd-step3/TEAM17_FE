@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag, Clock } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
-import { useSuspenseQuery } from '@/hooks/useSuspenseQuery';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { fetchStarterPackById } from '@/api/starterPackApi';
 import type { StarterPack } from '@/types/StarterPack';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
@@ -45,13 +45,11 @@ const StarterPackDetailData = () => {
   const navigate = useNavigate();
   const packId = id ? parseInt(id, 10) : 0;
 
-  const { data: displayPack } = useSuspenseQuery<StarterPack>(
-    ['starterPack', packId],
-    () => fetchStarterPackById(packId),
-    {
-      staleTime: 5 * 60 * 1000,
-    }
-  ) as { data: StarterPack };
+  const { data: displayPack } = useSuspenseQuery<StarterPack>({
+    queryKey: ['starterPack', packId],
+    queryFn: () => fetchStarterPackById(packId),
+    staleTime: 5 * 60 * 1000,
+  });
 
   if (!displayPack) {
     return (
