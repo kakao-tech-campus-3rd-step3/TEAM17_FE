@@ -44,10 +44,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const handleLogout = async () => {
     try {
       await logout();
+    } catch (error) {
+      console.error('로그아웃 중 오류 발생:', error);
     } finally {
       setUser(null);
       setIsLogin(false);
-      navigate('/login');
+      navigate('/login', { replace: true }); 
     }
   };
 

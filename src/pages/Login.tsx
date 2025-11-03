@@ -46,8 +46,9 @@ export default function LoginForm() {
 
   const onSubmit = (data: LoginValues) => {
     loginMutate(data, {
-      onSuccess: () => {
-        login();
+      onSuccess: (userData) => {
+        login(userData);
+
         alert('로그인 성공!');
         navigate('/');
       },
