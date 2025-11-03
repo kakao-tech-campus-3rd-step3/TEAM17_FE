@@ -20,6 +20,7 @@ import {
   MediaSection,
   MediaImage,
   InfoSection,
+  TitleWrapper,
   MoreButton,
   StarterPackTitle,
   StarterPackDescription,
@@ -34,6 +35,8 @@ import {
   ProductCard,
   ProductImage,
   ProductName,
+  EmptyStateContainer,
+  ErrorStateContainer,
 } from '../StarterPackDetailPage.styles';
 
 const DECIMAL_RADIX = 10;
@@ -61,9 +64,9 @@ const StarterPackDetailData = () => {
           <BackButton onClick={() => navigate(-1)}>← 뒤로</BackButton>
           <PageTitle>스타터팩 상세</PageTitle>
         </PageHeader>
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <ErrorStateContainer>
           <p>스타터팩을 찾을 수 없습니다.</p>
-        </div>
+        </ErrorStateContainer>
       </StarterPackDetailPageContainer>
     );
   }
@@ -104,12 +107,12 @@ const StarterPackDetailData = () => {
           </LeftColumn>
           <RightColumn>
             <InfoSection>
-              <div style={{ position: 'relative' }}>
-                <MoreButton onClick={handleMore} style={{ position: 'absolute', top: 0, right: 0 }}>
+              <TitleWrapper>
+                <MoreButton onClick={handleMore}>
                   <MoreHorizontal size={20} />
                 </MoreButton>
                 <StarterPackTitle>{displayPack.name}</StarterPackTitle>
-              </div>
+              </TitleWrapper>
               <StarterPackDescription>{displayPack.description}</StarterPackDescription>
 
               <CategoryTag>
@@ -154,17 +157,20 @@ const StarterPackDetailData = () => {
           <ProductsSection>
             <SectionTitle>포함된 제품들</SectionTitle>
             <ProductsGrid>
-              {displayPack.items?.map(
-                (item: { name: string; imageUrl?: string }, index: number) => (
-                  <ProductCard key={index}>
-                    <ProductImage src={item.imageUrl || defaultAvatar} alt={item.name} />
-                    <ProductName>{item.name}</ProductName>
-                  </ProductCard>
-                )
-              ) || (
-                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
+              {displayPack.items && displayPack.items.length > 0 ? (
+                displayPack.items.map((item) => {
+                  const itemKey = `${item.name}-${item.linkUrl}`;
+                  return (
+                    <ProductCard key={itemKey}>
+                      <ProductImage src={item.imageUrl || defaultAvatar} alt={item.name} />
+                      <ProductName>{item.name}</ProductName>
+                    </ProductCard>
+                  );
+                })
+              ) : (
+                <EmptyStateContainer>
                   <p>포함된 제품이 없습니다.</p>
-                </div>
+                </EmptyStateContainer>
               )}
             </ProductsGrid>
           </ProductsSection>
