@@ -56,7 +56,7 @@ const FeedData = () => {
       if (!previousData) return;
 
       queryClient.setQueryData<FeedResponse>(queryKey, (old) => {
-        if (!old) return old;
+        if (!old?.content) return old;
         return {
           ...old,
           content: old.content.map((post) => ({
@@ -69,7 +69,7 @@ const FeedData = () => {
       try {
         const response = await toggleFeedLike(feedId);
         queryClient.setQueryData<FeedResponse>(queryKey, (old) => {
-          if (!old) return old;
+          if (!old?.content) return old;
           return {
             ...old,
             content: old.content.map((post) => ({
@@ -88,7 +88,7 @@ const FeedData = () => {
     [queryClient]
   );
 
-  if (feedResponse.content.length === 0) {
+  if (!feedResponse?.content || feedResponse.content.length === 0) {
     return (
       <FeedContainer>
         <FeedHeader>
@@ -110,7 +110,7 @@ const FeedData = () => {
       </FeedHeader>
 
       <FeedGrid>
-        {feedResponse.content.map((post: FeedPostType) => (
+        {feedResponse.content?.map((post: FeedPostType) => (
           <FeedPost key={post.feedId} post={post} onLike={handleLike} />
         ))}
       </FeedGrid>
