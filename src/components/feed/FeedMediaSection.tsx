@@ -73,8 +73,7 @@ const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({
               <>
                 <ImageNavigation>
                   <ImageNavButton onClick={handlePreviousImage} $position="left">
-                    {' '}
-                    // 콘솔 오류 떠서 transient prop 일단 넘김! ←
+                    ←
                   </ImageNavButton>
                   <ImageNavButton onClick={handleNextImage} $position="right">
                     →
