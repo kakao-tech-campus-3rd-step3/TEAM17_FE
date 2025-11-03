@@ -105,11 +105,9 @@ const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({ feed, onLike, onBoo
       {/* 해시태그 */}
       {feed.hashtags && feed.hashtags.length > 0 && (
         <HashtagSection>
-          {feed.hashtags.map((tag, index) => {
-            const tagName =
-              typeof tag === 'string' ? tag : (tag as { hashtagName?: string }).hashtagName || '';
-            return <Hashtag key={index}>#{tagName}</Hashtag>;
-          })}
+          {feed.hashtags.map((tag) => (
+            <Hashtag key={tag}>{tag}</Hashtag>
+          ))}
         </HashtagSection>
       )}
     </MediaContainer>
