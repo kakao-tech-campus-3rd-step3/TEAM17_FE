@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import type { FeedDetail } from '@/types/Feed';
-import { FEED_CONSTANTS } from '@/constants/feed';
 import {
   FeedDetailContainer,
   UserProfile,
@@ -21,14 +20,6 @@ import {
   EngagementCount,
   HashtagSection,
   Hashtag,
-  ProductSection,
-  ProductTitle,
-  ProductItem,
-  ProductInfo,
-  ProductName,
-  ProductDescription,
-  ProductLink,
-  MoreProductsButton,
 } from './FeedDetailSection.styles';
 
 interface FeedDetailSectionProps {
@@ -39,7 +30,6 @@ interface FeedDetailSectionProps {
 
 const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onBookmark }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [showAllProducts, setShowAllProducts] = useState(false);
 
   // 이미지가 여러 개인 경우를 위한 배열 (실제로는 feed.imageUrl이 배열이어야 함)
   const images = Array.isArray(feed.imageUrl) ? feed.imageUrl : [feed.imageUrl];
@@ -63,11 +53,6 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
       feed.isBookmarked ? feed.bookmarkCount - 1 : feed.bookmarkCount + 1
     );
   };
-
-  const products = feed.products || [];
-  const displayedProducts = showAllProducts
-    ? products
-    : products.slice(0, FEED_CONSTANTS.INITIAL_PRODUCT_DISPLAY_COUNT);
 
   return (
     <FeedDetailContainer>
@@ -133,27 +118,6 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
             return <Hashtag key={index}>#{tagName}</Hashtag>;
           })}
         </HashtagSection>
-      )}
-
-      {/* 취미팩 상품링크 */}
-      {products.length > 0 && (
-        <ProductSection>
-          <ProductTitle>취미팩 상품링크</ProductTitle>
-          {displayedProducts.map((product) => (
-            <ProductItem key={product.productId}>
-              <ProductInfo>
-                <ProductName>{product.name}</ProductName>
-                <ProductDescription>{product.description}</ProductDescription>
-              </ProductInfo>
-              <ProductLink>링크로 이동</ProductLink>
-            </ProductItem>
-          ))}
-          {products.length > FEED_CONSTANTS.INITIAL_PRODUCT_DISPLAY_COUNT && !showAllProducts && (
-            <MoreProductsButton onClick={() => setShowAllProducts(true)}>
-              취미 팩 더보기 ↓
-            </MoreProductsButton>
-          )}
-        </ProductSection>
       )}
     </FeedDetailContainer>
   );

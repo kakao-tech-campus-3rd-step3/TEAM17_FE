@@ -15,12 +15,6 @@ export interface FeedPost {
   likeCount: number;
   isLiked: boolean;
   createdAt: string;
-  products: {
-    productId: number;
-    name: string;
-    imageUrl: string;
-    description: string;
-  }[];
 }
 
 export interface PageableResponse {

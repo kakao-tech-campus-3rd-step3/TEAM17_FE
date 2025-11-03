@@ -17,10 +17,6 @@ import {
   TimeStamp,
   CategoryTag,
   FeedTypeTag,
-  ProductsSection,
-  ProductItem,
-  ProductImage,
-  ProductName,
 } from './FeedPost.styles';
 
 interface FeedPostProps {
@@ -127,22 +123,6 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
       </CategoryTag>
 
       <FeedTypeTag $feedType={post.feedType}>{post.feedType}</FeedTypeTag>
-
-      {post.products.length > 0 && (
-        <ProductsSection>
-          <h4>관련 제품</h4>
-          <ul role="list" aria-label="관련 제품 목록">
-            {post.products.map((product) => (
-              <li key={product.productId}>
-                <ProductItem>
-                  <ProductImage src={product.imageUrl} alt={product.name} />
-                  <ProductName>{product.name}</ProductName>
-                </ProductItem>
-              </li>
-            ))}
-          </ul>
-        </ProductsSection>
-      )}
 
       <TimeStamp>{formatTimeAgo(post.createdAt)}</TimeStamp>
     </PostContainer>
