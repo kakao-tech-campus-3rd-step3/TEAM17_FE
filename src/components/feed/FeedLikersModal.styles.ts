@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { tokens } from '@/styles/tokens';
 
 export const Backdrop = styled.div`
   position: fixed;
@@ -13,7 +14,7 @@ export const Backdrop = styled.div`
 `;
 
 export const ModalShell = styled.div`
-  background: #fff;
+  background: ${tokens.colors.background.default};
   border-radius: 16px;
   width: 100%;
   max-width: 480px;
@@ -29,14 +30,14 @@ export const ModalHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid ${tokens.colors.line.gray};
 `;
 
 export const ModalTitle = styled.h2`
   font-size: 20px;
   font-weight: 600;
   margin: 0;
-  color: #111827;
+  color: ${tokens.colors.text.black};
 `;
 
 export const CloseButton = styled.button`
@@ -47,11 +48,11 @@ export const CloseButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  color: ${tokens.colors.text.lightGray};
   transition: color 0.2s;
 
   &:hover {
-    color: #111827;
+    color: ${tokens.colors.text.black};
   }
 `;
 
@@ -69,7 +70,7 @@ export const UserItem = styled.div`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #f9fafb;
+    background-color: ${tokens.colors.background.lightGray};
   }
 `;
 
@@ -90,13 +91,13 @@ export const UserInfo = styled.div`
 export const UserName = styled.span`
   font-size: 14px;
   font-weight: 500;
-  color: #111827;
+  color: ${tokens.colors.text.black};
 `;
 
 export const EmptyState = styled.div`
   padding: 48px 24px;
   text-align: center;
-  color: #6b7280;
+  color: ${tokens.colors.text.lightGray};
   font-size: 14px;
 `;
 
@@ -105,19 +106,19 @@ export const LoadMoreButton = styled.button`
   padding: 12px 24px;
   background: none;
   border: none;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid ${tokens.colors.line.gray};
   cursor: pointer;
-  color: #2563eb;
+  color: ${tokens.colors.blue};
   font-size: 14px;
   font-weight: 500;
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #f9fafb;
+    background-color: ${tokens.colors.background.lightGray};
   }
 
   &:disabled {
-    color: #9ca3af;
+    color: ${tokens.colors.text.lightGray};
     cursor: not-allowed;
   }
 `;
@@ -125,6 +126,6 @@ export const LoadMoreButton = styled.button`
 export const LoadingContainer = styled.div`
   padding: 24px;
   text-align: center;
-  color: #6b7280;
+  color: ${tokens.colors.text.lightGray};
   font-size: 14px;
 `;
