@@ -1,40 +1,18 @@
-export interface Pack {
+export interface Product {
   id: number;
   name: string;
-}
-
-export interface Product {
-  productId: number;
-  name: string;
-  description?: string;
-  imageUrl: string;
+  link: string;
   cost: number;
-  likeCount: number;
-  categoryId: number;
-  categoryName: string;
+}
 
-  id?: number;
-  link?: string;
-  productType?: string;
-  src?: string;
-  packs?: Pack[];
-}
-export interface WriteProduct {
-  name: string;
-  linkUrl: string;
-  description?: string;
-  imageUrl: string;
-}
 export interface ProductResponse {
   [key: string]: Product[]; // 카테고리별로 그룹화된 제품들
 }
 
 export interface ProductRequest {
-  name?: string;
-  link?: string;
-  productType?: string;
-  src?: string;
-  cost?: number;
+  name: string;
+  link: string;
+  cost: number;
   categoryId?: number;
 }
 
