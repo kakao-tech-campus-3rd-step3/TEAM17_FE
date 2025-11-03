@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import FeedMediaSection from '@/components/feed/FeedMediaSection';
 import FeedInfoSection from '@/components/feed/FeedInfoSection';
 import CommentSection from '@/components/comment/CommentSection';
+import FeedLikersModal from '@/components/feed/FeedLikersModal';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useCommentActions } from '@/hooks/useFeeds';
 import { fetchFeedById } from '@/api/feedApi';
@@ -43,6 +44,7 @@ const FeedDetailData = () => {
   const { addComment } = useCommentActions(feedId);
 
   const [localFeed, setLocalFeed] = useState<FeedDetail>(feed);
+  const [isLikersModalOpen, setIsLikersModalOpen] = useState(false);
 
   useEffect(() => {
     setLocalFeed(feed);
@@ -146,7 +148,12 @@ const FeedDetailData = () => {
       <ContentContainer>
         <TopSection>
           <LeftColumn>
-            <FeedMediaSection feed={localFeed} onLike={handleLike} onBookmark={handleBookmark} />
+            <FeedMediaSection
+              feed={localFeed}
+              onLike={handleLike}
+              onBookmark={handleBookmark}
+              onOpenLikers={() => setIsLikersModalOpen(true)}
+            />
           </LeftColumn>
 
           <RightColumn>
@@ -165,6 +172,12 @@ const FeedDetailData = () => {
           />
         </BottomSection>
       </ContentContainer>
+
+      <FeedLikersModal
+        feedId={feedId}
+        isOpen={isLikersModalOpen}
+        onClose={() => setIsLikersModalOpen(false)}
+      />
     </FeedDetailPageContainer>
   );
 };

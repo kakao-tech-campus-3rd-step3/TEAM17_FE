@@ -110,10 +110,26 @@ export const toggleFeedBookmark = async (
   }
 };
 
-// 피드 좋아요 목록 조회
-export const fetchFeedLikers = async (feedId: number): Promise<PageFeedLikerResponse> => {
+// 피드 좋아요 목록 조회 (페이지네이션)
+export const fetchFeedLikers = async (
+  feedId: number,
+  page: number = FEED_API_CONSTANTS.DEFAULT_PAGE,
+  size: number = FEED_API_CONSTANTS.DEFAULT_PAGE_SIZE,
+  options?: { sort?: string[] }
+): Promise<PageFeedLikerResponse> => {
   try {
-    const response = await axiosInstance.get<PageFeedLikerResponse>(`/api/feeds/${feedId}/likes`);
+    const params: Record<string, string | number | string[]> = {
+      page,
+      size,
+    };
+
+    if (options?.sort && options.sort.length > 0) {
+      params.sort = options.sort;
+    }
+
+    const response = await axiosInstance.get<PageFeedLikerResponse>(`/api/feeds/${feedId}/likes`, {
+      params,
+    });
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch feed likers for feed ${feedId}:`, error);

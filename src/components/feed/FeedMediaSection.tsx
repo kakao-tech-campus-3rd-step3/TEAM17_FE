@@ -20,9 +20,15 @@ interface FeedMediaSectionProps {
   feed: FeedDetail;
   onLike: (isLiked: boolean, likeCount: number) => void;
   onBookmark: (isBookmarked: boolean, bookmarkCount: number) => void;
+  onOpenLikers?: () => void;
 }
 
-const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({ feed, onLike, onBookmark }) => {
+const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({
+  feed,
+  onLike,
+  onBookmark,
+  onOpenLikers,
+}) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // 이미지가 여러 개인 경우를 위한 배열
@@ -36,8 +42,16 @@ const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({ feed, onLike, onBoo
     setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  const handleLike = () => {
+  const handleLike = (e: React.MouseEvent) => {
+    e.stopPropagation();
     onLike(!feed.isLiked, feed.isLiked ? feed.likeCount - 1 : feed.likeCount + 1);
+  };
+
+  const handleLikeCountClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onOpenLikers && feed.likeCount > 0) {
+      onOpenLikers();
+    }
   };
 
   const handleBookmark = () => {
@@ -76,11 +90,16 @@ const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({ feed, onLike, onBoo
 
       {/* 좋아요, 댓글, 북마크, 공유 버튼 */}
       <EngagementSection>
-        <EngagementItem onClick={handleLike}>
-          <EngagementIcon>
+        <EngagementItem>
+          <EngagementIcon onClick={handleLike}>
             <Heart size={18} fill={feed.isLiked ? 'currentColor' : 'none'} />
           </EngagementIcon>
-          <EngagementCount>{feed.likeCount}</EngagementCount>
+          <EngagementCount
+            onClick={handleLikeCountClick}
+            style={feed.likeCount > 0 ? { cursor: 'pointer' } : undefined}
+          >
+            {feed.likeCount}
+          </EngagementCount>
         </EngagementItem>
         <EngagementItem>
           <EngagementIcon>
