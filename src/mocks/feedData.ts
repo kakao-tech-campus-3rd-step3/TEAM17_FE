@@ -14,40 +14,6 @@ const mockCategories = [
   { categoryId: 5, categoryName: '푸드' },
 ];
 
-// Mock 제품 데이터
-const mockProducts = [
-  {
-    productId: 1,
-    name: '데님 재킷',
-    imageUrl: 'https://picsum.photos/200/200?random=product1',
-    description: '클래식한 데님 재킷',
-  },
-  {
-    productId: 2,
-    name: '화이트 스니커즈',
-    imageUrl: 'https://picsum.photos/200/200?random=product2',
-    description: '깔끔한 화이트 스니커즈',
-  },
-  {
-    productId: 3,
-    name: '가죽 백팩',
-    imageUrl: 'https://picsum.photos/200/200?random=product3',
-    description: '고급스러운 가죽 백팩',
-  },
-  {
-    productId: 4,
-    name: '실버 목걸이',
-    imageUrl: 'https://picsum.photos/200/200?random=product4',
-    description: '세련된 실버 목걸이',
-  },
-  {
-    productId: 5,
-    name: '니트 스웨터',
-    imageUrl: 'https://picsum.photos/200/200?random=product5',
-    description: '따뜻한 니트 스웨터',
-  },
-];
-
 // Mock 사용자 데이터
 const mockUsers = [
   {
