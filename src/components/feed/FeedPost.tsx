@@ -2,7 +2,6 @@ import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag } from 'luci
 import { useState, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { FeedPost as FeedPostType } from '@/types/Feed';
-import { likePost } from '@/mocks/feedData';
 import {
   PostContainer,
   PostHeader,
@@ -33,42 +32,16 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLike = useCallback(async () => {
-    if (isLoading) return;
-
-    // 낙관적 업데이트: 즉시 UI 업데이트
+  const handleLike = useCallback(() => {
     const newIsLiked = !isLiked;
     const newLikeCount = newIsLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
 
-    // 이전 상태 저장 (롤백용)
-    const previousIsLiked = isLiked;
-    const previousLikeCount = likeCount;
-
     setIsLiked(newIsLiked);
     setLikeCount(newLikeCount);
-    setIsLoading(true);
 
     onLike?.(post.feedId, newIsLiked, newLikeCount);
-
-    try {
-      const response = await likePost(post.feedId, newIsLiked);
-
-      setIsLiked(response.isLiked);
-      setLikeCount(response.likeCount);
-      onLike?.(post.feedId, response.isLiked, response.likeCount);
-    } catch (error) {
-      // 실패 시 롤백
-      console.error('Failed to like post:', error);
-      setIsLiked(previousIsLiked);
-      setLikeCount(previousLikeCount);
-
-      onLike?.(post.feedId, previousIsLiked, previousLikeCount);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [isLiked, likeCount, isLoading, post.feedId, onLike]);
+  }, [isLiked, likeCount, post.feedId, onLike]);
 
   const handlePostClick = useCallback(() => {
     navigate(`/feed/${post.feedId}`);
@@ -121,7 +94,6 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
       <PostActions>
         <ActionButton
           onClick={handleLike}
-          disabled={isLoading}
           type="button"
           aria-label={isLiked ? '좋아요 취소' : '좋아요'}
           aria-pressed={isLiked}
