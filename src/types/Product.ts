@@ -16,6 +16,13 @@ export interface ProductRequest {
   categoryId?: number;
 }
 
+export interface WriteProduct {
+  name: string;
+  linkUrl: string;
+  description: string;
+  imageUrl: string;
+}
+
 export interface ApiResponse<T> {
   data: T;
   message?: string;

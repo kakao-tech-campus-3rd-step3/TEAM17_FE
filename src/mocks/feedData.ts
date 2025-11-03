@@ -110,7 +110,6 @@ export const generateMockFeedPosts = (count: number = 20): FeedPost[] => {
       likeCount: 100 + i * 50,
       isLiked: i % 3 === 0,
       createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-      products: selectedProducts,
     });
   }
 
@@ -183,9 +182,24 @@ export const MOCK_FEED_DETAIL: FeedDetail = {
   feedId: 1,
   author: {
     userId: 1,
+    email: 'bread@example.com',
+    password: '',
     name: '빵수니',
+    nickname: '빵수니',
+    provider: 'EMAIL',
+    providerId: '',
     profileImageUrl:
       'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=48&h=48&fit=crop&crop=face',
+    role: 'USER',
+    birthDate: '1995-01-01',
+    gender: 'FEMALE',
+    phoneNumber: '',
+    hobby: '베이킹',
+    bio: 'INFP 감성 빵 제조기입니당~',
+    refreshToken: '',
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   description: `곧 다가오는 크리스마스를 맞이하여 크리스마스 쿠키를 만들어 보았어요~~
 크리스마스 느낌으로 꾸며보았는데 어떤가요??
