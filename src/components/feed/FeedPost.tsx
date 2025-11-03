@@ -16,7 +16,6 @@ import {
   EngagementIcon,
   EngagementCount,
   BookmarkButton,
-  LikesCount,
   Caption,
   TimeStamp,
   CategoryTag,
@@ -111,14 +110,12 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
           <EngagementIcon role="button" aria-label="댓글 달기">
             <MessageSquare size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
           </EngagementIcon>
-          <EngagementCount>{post.commentCount ?? 0}</EngagementCount>
+          <EngagementCount>0</EngagementCount>
         </EngagementItem>
         <BookmarkButton type="button" aria-label="저장">
           <Bookmark size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
         </BookmarkButton>
       </PostActions>
-
-      <LikesCount>{(likeCount ?? 0).toLocaleString()}개 좋아요</LikesCount>
 
       <Caption>
         <Username>@{post.author.name}</Username> {post.description}

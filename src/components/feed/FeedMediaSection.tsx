@@ -80,7 +80,7 @@ const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({
                   </ImageNavButton>
                 </ImageNavigation>
                 <ImageCounter>
-                  {currentImageIndex + 1}/{images.length}+
+                  {currentImageIndex + 1}/{images.length}
                 </ImageCounter>
               </>
             )}
@@ -127,7 +127,7 @@ const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({
           {feed.hashtags.map((tag, index) => {
             const tagName =
               typeof tag === 'string' ? tag : (tag as { hashtagName?: string }).hashtagName || '';
-            return <Hashtag key={index}>#{tagName}</Hashtag>;
+            return <Hashtag key={index}>{tagName}</Hashtag>;
           })}
         </HashtagSection>
       )}

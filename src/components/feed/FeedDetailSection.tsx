@@ -133,7 +133,7 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
           {feed.hashtags.map((tag, index) => {
             const tagName =
               typeof tag === 'string' ? tag : (tag as { hashtagName?: string }).hashtagName || '';
-            return <Hashtag key={index}>#{tagName}</Hashtag>;
+            return <Hashtag key={index}>{tagName}</Hashtag>;
           })}
         </HashtagSection>
       )}
