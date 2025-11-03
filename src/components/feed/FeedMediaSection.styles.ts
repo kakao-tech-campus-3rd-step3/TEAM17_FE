@@ -73,7 +73,7 @@ export const ImageCounter = styled.div`
 
 export const EngagementSection = styled.div`
   display: flex;
-  gap: 1.5rem;
+  gap: 1.25rem;
   margin-bottom: 1rem;
   padding: 0.75rem 0;
   border-bottom: 1px solid ${tokens.colors.line.lightGray};
@@ -84,11 +84,10 @@ export const EngagementItem = styled.div`
   align-items: center;
   gap: 0.375rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: opacity 0.2s;
 
   &:hover {
-    color: ${tokens.colors.orange.hover};
-    transform: scale(1.05);
+    opacity: 0.7;
   }
 `;
 
@@ -96,13 +95,16 @@ export const EngagementIcon = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${tokens.colors.feed.like};
+  color: ${tokens.colors.orange.primary};
+  cursor: pointer;
 `;
 
-export const EngagementCount = styled.span`
+export const EngagementCount = styled.span<{ $clickable?: boolean }>`
   font-size: 0.875rem;
-  color: ${tokens.colors.text.gray};
-  font-weight: 500;
+  color: ${tokens.colors.text.black};
+  font-weight: 400;
+  cursor: ${(props) => (props.$clickable ? 'pointer' : 'default')};
+  user-select: none;
 `;
 
 export const HashtagSection = styled.div`

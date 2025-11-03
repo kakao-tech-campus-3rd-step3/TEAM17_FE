@@ -1,7 +1,8 @@
-import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
+import { Heart, MessageSquare, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
 import { useState, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { FeedPost as FeedPostType } from '@/types/Feed';
+import { tokens } from '@/styles/tokens';
 import {
   PostContainer,
   PostHeader,
@@ -11,7 +12,10 @@ import {
   MoreButton,
   PostImage,
   PostActions,
-  ActionButton,
+  EngagementItem,
+  EngagementIcon,
+  EngagementCount,
+  BookmarkButton,
   LikesCount,
   Caption,
   TimeStamp,
@@ -84,31 +88,34 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
         src={post.imageUrl}
         alt={`Post by ${post.author.name}`}
         onClick={handlePostClick}
-        style={{ cursor: 'pointer' }}
       />
 
       <PostActions>
-        <ActionButton
-          onClick={handleLike}
-          type="button"
-          aria-label={isLiked ? '좋아요 취소' : '좋아요'}
-          aria-pressed={isLiked}
-        >
-          <Heart
-            size={24}
-            fill={isLiked ? '#ef4444' : 'none'}
-            color={isLiked ? '#ef4444' : '#000'}
-          />
-        </ActionButton>
-        <ActionButton type="button" aria-label="댓글 달기" onClick={handlePostClick}>
-          <MessageSquare size={24} />
-        </ActionButton>
-        <ActionButton type="button" aria-label="공유하기">
-          <Share size={24} />
-        </ActionButton>
-        <ActionButton type="button" aria-label="저장" style={{ marginLeft: 'auto' }}>
-          <Bookmark size={24} />
-        </ActionButton>
+        <EngagementItem>
+          <EngagementIcon
+            onClick={handleLike}
+            role="button"
+            aria-label={isLiked ? '좋아요 취소' : '좋아요'}
+            aria-pressed={isLiked}
+          >
+            <Heart
+              size={18}
+              strokeWidth={2}
+              fill={isLiked ? tokens.colors.orange.primary : 'none'}
+              color={tokens.colors.orange.primary}
+            />
+          </EngagementIcon>
+          <EngagementCount>{likeCount}</EngagementCount>
+        </EngagementItem>
+        <EngagementItem onClick={handlePostClick}>
+          <EngagementIcon role="button" aria-label="댓글 달기">
+            <MessageSquare size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
+          </EngagementIcon>
+          <EngagementCount>{post.commentCount ?? 0}</EngagementCount>
+        </EngagementItem>
+        <BookmarkButton type="button" aria-label="저장">
+          <Bookmark size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
+        </BookmarkButton>
       </PostActions>
 
       <LikesCount>{(likeCount ?? 0).toLocaleString()}개 좋아요</LikesCount>

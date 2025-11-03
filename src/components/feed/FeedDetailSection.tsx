@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Heart, MessageCircle, Bookmark } from 'lucide-react';
 import type { FeedDetail } from '@/types/Feed';
+import { tokens } from '@/styles/tokens';
 import {
   FeedDetailContainer,
   UserProfile,
@@ -96,15 +98,31 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
       {/* 좋아요, 댓글, 북마크 */}
       <EngagementSection>
         <EngagementItem onClick={handleLike}>
-          <EngagementIcon>❤️</EngagementIcon>
+          <EngagementIcon>
+            <Heart
+              size={18}
+              strokeWidth={2}
+              fill={feed.isLiked ? tokens.colors.orange.primary : 'none'}
+              color={tokens.colors.orange.primary}
+            />
+          </EngagementIcon>
           <EngagementCount>{feed.likeCount}</EngagementCount>
         </EngagementItem>
         <EngagementItem>
-          <EngagementIcon>💬</EngagementIcon>
+          <EngagementIcon>
+            <MessageCircle size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
+          </EngagementIcon>
           <EngagementCount>{feed.commentCount}</EngagementCount>
         </EngagementItem>
         <EngagementItem onClick={handleBookmark}>
-          <EngagementIcon>🔖</EngagementIcon>
+          <EngagementIcon>
+            <Bookmark
+              size={18}
+              strokeWidth={2}
+              fill={feed.isBookmarked ? tokens.colors.orange.primary : 'none'}
+              color={tokens.colors.orange.primary}
+            />
+          </EngagementIcon>
           <EngagementCount>{feed.bookmarkCount}</EngagementCount>
         </EngagementItem>
       </EngagementSection>

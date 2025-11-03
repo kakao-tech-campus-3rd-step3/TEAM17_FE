@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Bookmark, Share2 } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark } from 'lucide-react';
 import type { FeedDetail } from '@/types/Feed';
+import { tokens } from '@/styles/tokens';
 import {
   MediaContainer,
   ImageCarousel,
@@ -88,36 +89,36 @@ const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({
         </ImageCarousel>
       )}
 
-      {/* 좋아요, 댓글, 북마크, 공유 버튼 */}
       <EngagementSection>
         <EngagementItem>
           <EngagementIcon onClick={handleLike}>
-            <Heart size={18} fill={feed.isLiked ? 'currentColor' : 'none'} />
+            <Heart
+              size={18}
+              strokeWidth={2}
+              fill={feed.isLiked ? tokens.colors.orange.primary : 'none'}
+              color={tokens.colors.orange.primary}
+            />
           </EngagementIcon>
-          <EngagementCount
-            onClick={handleLikeCountClick}
-            style={feed.likeCount > 0 ? { cursor: 'pointer' } : undefined}
-          >
+          <EngagementCount onClick={handleLikeCountClick} $clickable={feed.likeCount > 0}>
             {feed.likeCount}
           </EngagementCount>
         </EngagementItem>
         <EngagementItem>
           <EngagementIcon>
-            <MessageCircle size={18} />
+            <MessageCircle size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
           </EngagementIcon>
           <EngagementCount>{feed.commentCount}</EngagementCount>
         </EngagementItem>
         <EngagementItem onClick={handleBookmark}>
           <EngagementIcon>
-            <Bookmark size={18} fill={feed.isBookmarked ? 'currentColor' : 'none'} />
+            <Bookmark
+              size={18}
+              strokeWidth={2}
+              fill={feed.isBookmarked ? tokens.colors.orange.primary : 'none'}
+              color={tokens.colors.orange.primary}
+            />
           </EngagementIcon>
           <EngagementCount>{feed.bookmarkCount}</EngagementCount>
-        </EngagementItem>
-        <EngagementItem>
-          <EngagementIcon>
-            <Share2 size={18} />
-          </EngagementIcon>
-          <EngagementCount>공유</EngagementCount>
         </EngagementItem>
       </EngagementSection>
 
