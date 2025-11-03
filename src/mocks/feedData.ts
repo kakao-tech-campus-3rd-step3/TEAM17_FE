@@ -98,8 +98,6 @@ export const generateMockFeedPosts = (count: number = 20): FeedPost[] => {
     const feedType = feedTypes[(i - 1) % feedTypes.length];
     const description = descriptions[(i - 1) % descriptions.length];
 
-    const selectedProducts = mockProducts.slice(0, 2);
-
     posts.push({
       feedId: i,
       author: user,
@@ -221,20 +219,6 @@ export const MOCK_FEED_DETAIL: FeedDetail = {
   likeCount: 111,
   isLiked: false,
   createdAt: '2025.12.01',
-  products: [
-    {
-      productId: 1,
-      name: '스프링클 슈가스트랜드칼라 25g',
-      imageUrl: '/api/placeholder/60/60',
-      description: '스프링클을 사용하면 더 이쁘게 만들어집니다~',
-    },
-    {
-      productId: 2,
-      name: '초코펜다크(데코펜)',
-      imageUrl: '/api/placeholder/60/60',
-      description: '쿠키 장식에 필수 아이템',
-    },
-  ],
   comments: [
     {
       commentId: 1,
