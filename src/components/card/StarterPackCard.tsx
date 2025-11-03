@@ -34,7 +34,7 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
       <PostHeader>
         <UserInfo>
           <Avatar src="/default-avatar.png" alt="스타터팩" />
-          <Username>@{pack.categoryName}_master</Username>
+          <Username>@{pack.authorNickname}</Username>
         </UserInfo>
         <MoreButton>
           <MoreHorizontal size={20} />
@@ -42,7 +42,7 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
       </PostHeader>
 
       <PostImage
-        src={pack.mainImage}
+        src={pack.mainImageUrl}
         alt={pack.name}
         onClick={() => onOpen(pack)}
         style={{ cursor: 'pointer' }}
@@ -52,7 +52,7 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
         <ActionButton
           onClick={(e) => {
             e.stopPropagation();
-            onToggleLike(pack.packId);
+            onToggleLike(pack.id);
           }}
           type="button"
           aria-label={isLiked ? '좋아요 취소' : '좋아요'}
@@ -78,7 +78,7 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
       <LikesCount>{(pack.likeCount ?? 0).toLocaleString()}개 좋아요</LikesCount>
 
       <Caption>
-        <Username>@{pack.categoryName}_master</Username> {pack.description}
+        <Username>@{pack.authorNickname}</Username> {pack.description}
       </Caption>
 
       <CategoryTag>
@@ -86,15 +86,25 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
         {pack.categoryName}
       </CategoryTag>
 
-      {pack.products && pack.products.length > 0 && (
+      {pack.hashtags && pack.hashtags.length > 0 && (
+        <div style={{ padding: '0.5rem 0' }}>
+          {pack.hashtags.map((hashtag) => (
+            <span key={hashtag.id} style={{ marginRight: '0.5rem', color: '#0095f6' }}>
+              #{hashtag.hashtagName}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {pack.items && pack.items.length > 0 && (
         <ProductsSection>
           <h4>관련 제품</h4>
           <ul role="list" aria-label="관련 제품 목록">
-            {pack.products.slice(0, 2).map((product) => (
-              <li key={product.productId}>
+            {pack.items.slice(0, 2).map((item, index) => (
+              <li key={index}>
                 <ProductItem>
-                  <ProductImage src={product.imageUrl} alt={product.name} />
-                  <ProductName>{product.name}</ProductName>
+                  <ProductImage src={item.imageUrl} alt={item.name} />
+                  <ProductName>{item.name}</ProductName>
                 </ProductItem>
               </li>
             ))}

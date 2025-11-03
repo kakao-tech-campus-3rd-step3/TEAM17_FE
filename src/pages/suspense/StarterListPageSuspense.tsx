@@ -27,7 +27,7 @@ const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
   const navigate = useNavigate();
 
   const handleOpenDetail = () => {
-    navigate(`/starterpack/${pack.packId}`);
+    navigate(`/starterpack/${pack.id}`);
   };
 
   return (
@@ -91,7 +91,7 @@ const StarterPackData = () => {
 
       <StarterPackGrid>
         {filteredPacks.map((pack: StarterPack) => (
-          <StarterPackCardWrapper key={pack.packId} pack={pack} />
+          <StarterPackCardWrapper key={pack.id} pack={pack} />
         ))}
       </StarterPackGrid>
     </StarterPackContainer>

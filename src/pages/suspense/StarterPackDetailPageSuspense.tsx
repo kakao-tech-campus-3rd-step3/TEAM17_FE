@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag, Clock } from 'lucide-react';
+import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { fetchStarterPackById } from '@/api/starterPackApi';
@@ -20,10 +20,6 @@ import {
   MediaSection,
   MediaImage,
   InfoSection,
-  StarterPackHeader,
-  UserInfo,
-  Avatar,
-  Username,
   MoreButton,
   StarterPackTitle,
   StarterPackDescription,
@@ -103,22 +99,17 @@ const StarterPackDetailData = () => {
         <TopSection>
           <LeftColumn>
             <MediaSection>
-              <MediaImage src={displayPack.mainImage || defaultAvatar} alt="스타터팩" />
+              <MediaImage src={displayPack.mainImageUrl || defaultAvatar} alt="스타터팩" />
             </MediaSection>
           </LeftColumn>
           <RightColumn>
             <InfoSection>
-              <StarterPackHeader>
-                <UserInfo>
-                  <Avatar src={defaultAvatar} alt="사용자" />
-                  <Username>사용자</Username>
-                </UserInfo>
-                <MoreButton onClick={handleMore}>
+              <div style={{ position: 'relative' }}>
+                <MoreButton onClick={handleMore} style={{ position: 'absolute', top: 0, right: 0 }}>
                   <MoreHorizontal size={20} />
                 </MoreButton>
-              </StarterPackHeader>
-
-              <StarterPackTitle>{displayPack.name}</StarterPackTitle>
+                <StarterPackTitle>{displayPack.name}</StarterPackTitle>
+              </div>
               <StarterPackDescription>{displayPack.description}</StarterPackDescription>
 
               <CategoryTag>
@@ -136,8 +127,8 @@ const StarterPackDetailData = () => {
                   {displayPack.commentCount || 0}개
                 </StatItem>
                 <StatItem>
-                  <Clock size={16} />
-                  {new Date(displayPack.createdAt).toLocaleDateString()}
+                  <Bookmark size={16} />
+                  {displayPack.bookmarkCount || 0}개
                 </StatItem>
               </StatsSection>
 
@@ -163,11 +154,11 @@ const StarterPackDetailData = () => {
           <ProductsSection>
             <SectionTitle>포함된 제품들</SectionTitle>
             <ProductsGrid>
-              {displayPack.products?.map(
-                (product: { name: string; imageUrl?: string }, index: number) => (
+              {displayPack.items?.map(
+                (item: { name: string; imageUrl?: string }, index: number) => (
                   <ProductCard key={index}>
-                    <ProductImage src={product.imageUrl || defaultAvatar} alt={product.name} />
-                    <ProductName>{product.name}</ProductName>
+                    <ProductImage src={item.imageUrl || defaultAvatar} alt={item.name} />
+                    <ProductName>{item.name}</ProductName>
                   </ProductCard>
                 )
               ) || (
