@@ -109,7 +109,7 @@ export default function LoginForm() {
         </SocialButton>
 
         <Comment>
-          이미 계정이 있으신가요? <CommentLink to="/signup/step1">회원가입</CommentLink>
+          이미 계정이 있으신가요? <CommentLink to="/signup/profile">회원가입</CommentLink>
         </Comment>
       </LoginContainer>
     </>

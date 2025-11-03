@@ -6,7 +6,7 @@ export const Container = styled.div`
 `;
 
 export const ProfileImage = styled.img`
-  width: 8rem;
+  width: 13rem;
   border-radius: 70px;
   margin: 3rem 4rem auto 4rem;
 `;
@@ -32,7 +32,7 @@ export const RowContainer = styled.div`
 `;
 
 export const Icon = styled.img`
-  width: 30px;
+  width: 2rem;
 `;
 
 export const Content = styled.div`
@@ -42,7 +42,15 @@ export const Content = styled.div`
 `;
 
 export const Gap = styled.div`
-  width: 2rem;
+  width: 6.5rem;
+`;
+
+export const Gap2 = styled.div`
+  width: 4.2rem;
+`;
+
+export const GapVertical = styled.div`
+  height: 0.5rem ;
 `;
 
 export const SubInfo = styled.div`

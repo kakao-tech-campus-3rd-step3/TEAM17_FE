@@ -3,26 +3,26 @@ import { fetchUserProfile, updateUserProfile } from '@/api/userApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
 import type { UserProfile } from '@/types/User';
 
-export const useUserProfile = () => {
+export const useUserProfile = (userId: number) => {
   return useQuery<UserProfile>({
-    queryKey: QUERY_KEYS.user.profile(),
-    queryFn: fetchUserProfile,
-    staleTime: 1000 * 60 * 5, 
-    retry: 1, 
+    queryKey: QUERY_KEYS.user.profile(userId),
+    queryFn: () => fetchUserProfile(userId),
+    staleTime: 1000 * 60 * 5,
+    retry: 1,
   });
 };
 
-export const useUpdateUserProfile = () => {
+export const useUpdateUserProfile = (userId: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: Partial<UserProfile>) => updateUserProfile(data),
+    mutationFn: (data: Partial<UserProfile>) => updateUserProfile(userId, data),
     onSuccess: (updatedProfile) => {
-      queryClient.setQueryData(QUERY_KEYS.user.profile(), updatedProfile);
-      alert('프로필이 성공적으로 수정되었습니다!');
+      queryClient.setQueryData(QUERY_KEYS.user.profile(userId), updatedProfile);
+      alert('✅ 프로필이 성공적으로 수정되었습니다!');
     },
     onError: () => {
-      alert('프로필 수정에 실패했습니다.');
+      alert('❌ 프로필 수정에 실패했습니다.');
     },
   });
 };
