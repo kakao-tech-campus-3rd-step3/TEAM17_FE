@@ -51,9 +51,14 @@ const StarterPackData = () => {
     staleTime: 5 * 60 * 1000,
   });
 
+  const allStarterPacks = useMemo(() => {
+    if (!starterPackResponse) return [];
+    return Object.values(starterPackResponse).flat();
+  }, [starterPackResponse]);
+
   const filteredPacks = useMemo(() => {
-    return starterPackResponse.content.filter((pack: StarterPack) => matchCategory(pack, active));
-  }, [starterPackResponse.content, active]);
+    return allStarterPacks.filter((pack: StarterPack) => matchCategory(pack, active));
+  }, [allStarterPacks, active]);
 
   const handleDemoClick = () => {
     navigate('/starterpack/demo');
