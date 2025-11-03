@@ -15,7 +15,6 @@ import {
   CategoryBtn,
   StarterPackGrid,
   EmptyState,
-  DemoButton,
 } from '../StarterListPage.styles';
 
 const matchCategory = (pack: StarterPack, active: CategoryKey) => {
@@ -42,7 +41,6 @@ const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
 };
 
 const StarterPackData = () => {
-  const navigate = useNavigate();
   const [active, setActive] = useState<CategoryKey>('전체');
 
   const { data: starterPackResponse } = useSuspenseQuery({
@@ -60,16 +58,11 @@ const StarterPackData = () => {
     return allStarterPacks.filter((pack: StarterPack) => matchCategory(pack, active));
   }, [allStarterPacks, active]);
 
-  const handleDemoClick = () => {
-    navigate('/starterpack/demo');
-  };
-
   if (filteredPacks.length === 0) {
     return (
       <StarterPackContainer>
         <StarterPackHeader>
           <StarterPackTitle>스타터팩</StarterPackTitle>
-          <DemoButton onClick={handleDemoClick}>데모</DemoButton>
         </StarterPackHeader>
         <EmptyState>
           <p>아직 스타터팩이 없습니다.</p>
@@ -82,7 +75,6 @@ const StarterPackData = () => {
     <StarterPackContainer>
       <StarterPackHeader>
         <StarterPackTitle>스타터팩</StarterPackTitle>
-        <DemoButton onClick={handleDemoClick}>데모</DemoButton>
       </StarterPackHeader>
 
       <CategoryTabs>
