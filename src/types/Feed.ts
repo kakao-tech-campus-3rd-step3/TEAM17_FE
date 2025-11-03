@@ -116,9 +116,31 @@ export interface CommentResponse {
   empty: boolean;
 }
 
+export interface Member {
+  userId: number;
+  email: string;
+  password: string;
+  name: string;
+  nickname: string;
+  provider: 'EMAIL' | 'GOOGLE' | 'KAKAO' | 'NAVER';
+  providerId: string;
+  profileImageUrl: string;
+  role: 'USER' | 'ADMIN';
+  birthDate: string;
+  gender: 'MALE' | 'FEMALE' | 'OTHER';
+  phoneNumber: string;
+  hobby: string;
+  bio: string;
+  refreshToken: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // 피드 상세보기용 확장 타입
-export interface FeedDetail extends Omit<FeedPost, 'imageUrl'> {
+export interface FeedDetail extends Omit<FeedPost, 'imageUrl' | 'author'> {
   imageUrl: string[];
+  author: Member;
   comments: Comment[];
   commentCount: number;
   bookmarkCount: number;

@@ -22,8 +22,8 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({ feed }) => {
       <UserProfile>
         <ProfileImage src={feed.author.profileImageUrl} alt={feed.author.name} />
         <UserInfo>
-          <UserName>{feed.author.name}</UserName>
-          <UserBio>INFP 감성 빵 제조기입니당~</UserBio>
+          <UserName>{feed.author.nickname || feed.author.name}</UserName>
+          {feed.author.bio && <UserBio>{feed.author.bio}</UserBio>}
         </UserInfo>
       </UserProfile>
 
