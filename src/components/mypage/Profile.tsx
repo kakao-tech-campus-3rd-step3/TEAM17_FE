@@ -25,10 +25,13 @@ import ProfileEditModal from '@/components/mypage/ProfileEditModal';
 
 const Profile = () => {
   const { user } = useAuth();
-  const userId = user?.userId ?? 1;
-
-  const { data: profile, isLoading, isError } = useUserProfile(userId);
+  const userId = user?.userId;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data: profile, isLoading, isError } = useUserProfile(userId);
+
+  if (!userId) {
+    return <div>로그인이 필요한 서비스입니다.</div>;
+  }
 
   if (isLoading) return <div>로딩 중...</div>;
 
@@ -61,6 +64,7 @@ const Profile = () => {
   const displayCount = profile.totalPostCount ?? 0;
   const displayPackCount = profile.packCount ?? 0;
   const displayFeedCount = profile.feedCount ?? 0;
+
   return (
     <>
       <Container>
@@ -69,6 +73,7 @@ const Profile = () => {
         <InfoContainer>
           <Nickname>{displayNickname}</Nickname>
           <SubInfo>{displayBio}</SubInfo>
+
           <RowContainer>
             <Icon src={icongrid} alt="게시물 아이콘" />
             <Content>총 게시물 :</Content>
@@ -96,9 +101,10 @@ const Profile = () => {
           <EditButton onClick={() => setIsModalOpen(true)}>정보 수정</EditButton>
         </ButtonWrapper>
       </Container>
+
       {isModalOpen && (
         <ProfileEditModal profile={profile} userId={userId} onClose={() => setIsModalOpen(false)} />
-      )}{' '}
+      )}
     </>
   );
 };

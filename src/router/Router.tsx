@@ -1,4 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
+import ProtectedRoute from '@/components/common/ProtectedRoute';
+
 import Home from '@/pages/Home';
 import SignupProfile from '@/pages/SignupProfile';
 import SignupAccount from '@/pages/SignupAccount';
@@ -11,6 +13,7 @@ import Login from '@/pages/Login';
 import MyPage from '@/pages/MyPage';
 import PackWriting from '@/pages/PackWriting';
 import FeedWriting from '@/pages/FeedWriting';
+
 export const Router = () => (
   <Routes>
     <Route element={<Layout />}>
@@ -20,7 +23,14 @@ export const Router = () => (
       <Route path="/login" element={<Login />} />
       <Route path="/starterpack" element={<StarterListPageSuspense />} />
       <Route path="/starterpack/:id" element={<StarterPackDetailPageSuspense />} />
-      <Route path="/mypage/*" element={<MyPage />} />
+      <Route
+        path="/mypage/*"
+        element={
+          <ProtectedRoute>
+            <MyPage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/feed" element={<FeedPageSuspense />} />
       <Route path="/feed/:id" element={<FeedDetailPageSuspense />} />
       <Route path="/pack-writing" element={<PackWriting />} />
