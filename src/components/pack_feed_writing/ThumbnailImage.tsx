@@ -5,10 +5,10 @@ import { useUploadImages } from '@/hooks/useUploadImages';
 
 type ThumbnailImageProps = {
   onChange: (url: string) => void;
-  dirName?: string;
+  dirName?: 'feed' | 'packs' | 'products';
 };
 
-const ThumbnailImage = ({ onChange, dirName = 'starterpack' }: ThumbnailImageProps) => {
+const ThumbnailImage = ({ onChange, dirName = 'packs' }: ThumbnailImageProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previews, setPreviews] = useState<string[]>([]);
   const { mutateAsync: uploadImages, isPending } = useUploadImages(dirName);
