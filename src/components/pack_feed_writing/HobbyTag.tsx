@@ -7,7 +7,7 @@ import {
 } from '@/components/pack_feed_writing/HobbyTagToggle.style';
 import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.style';
 import { TitleStyle } from '@/components/pack_feed_writing/Title.style';
-import { options } from '@/constants/categories'; 
+import { OPTIONS } from '@/constants/categories';
 
 type HobbyTagProps = {
   onChange: (id: number) => void;
@@ -16,8 +16,6 @@ type HobbyTagProps = {
 const HobbyTag = ({ onChange }: HobbyTagProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState('전체');
-
-
 
   const handleSelect = (option: { id: number; name: string }) => {
     setSelected(option.name);
@@ -33,7 +31,7 @@ const HobbyTag = ({ onChange }: HobbyTagProps) => {
 
         {isOpen && (
           <DropdownMenu>
-            {options.map((option) => (
+            {OPTIONS.map((option) => (
               <DropdownItem key={option.id} onClick={() => handleSelect(option)}>
                 {option.name}
               </DropdownItem>
