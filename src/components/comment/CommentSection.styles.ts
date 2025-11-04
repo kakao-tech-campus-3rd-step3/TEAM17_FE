@@ -3,19 +3,19 @@ import { tokens } from '@/styles/tokens';
 
 export const CommentContainer = styled.div`
   background: ${tokens.colors.background.card};
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
   text-align: left;
 `;
 
 export const CommentHeader = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 `;
 
 export const CommentTitle = styled.h3`
   margin: 0;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
   color: ${tokens.colors.text.black};
   text-align: left;
@@ -23,26 +23,26 @@ export const CommentTitle = styled.h3`
 
 export const CommentInputSection = styled.form`
   display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-  padding: 16px;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
   background: ${tokens.colors.orange.muted};
-  border-radius: 8px;
-  border: 1px solid ${tokens.colors.orange.light};
+  border-radius: 0.5rem;
+  border: 0.0625rem solid ${tokens.colors.orange.light};
 `;
 
 export const CommentInput = styled.input`
   flex: 1;
-  border: 1px solid ${tokens.colors.line.lightGray};
-  border-radius: 20px;
-  padding: 12px 16px;
-  font-size: 14px;
+  border: 0.0625rem solid ${tokens.colors.line.lightGray};
+  border-radius: 1.25rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
   outline: none;
   transition: all 0.2s;
 
   &:focus {
     border-color: ${tokens.colors.orange.primary};
-    box-shadow: 0 0 0 2px ${tokens.colors.orange.muted};
+    box-shadow: 0 0 0 0.125rem ${tokens.colors.orange.muted};
   }
 
   &::placeholder {
@@ -55,13 +55,13 @@ export const CommentSubmitButton = styled.button`
   color: ${tokens.colors.text.white};
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 2.5rem;
+  height: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem;
   transition: all 0.2s;
 
   &:hover {
@@ -73,12 +73,12 @@ export const CommentSubmitButton = styled.button`
 export const CommentList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.25rem;
 `;
 
 export const CommentItem = styled.div`
-  border-bottom: 1px solid ${tokens.colors.line.lightGray};
-  padding-bottom: 16px;
+  border-bottom: 0.0625rem solid ${tokens.colors.line.lightGray};
+  padding-bottom: 1rem;
 
   &:last-child {
     border-bottom: none;
@@ -88,30 +88,30 @@ export const CommentItem = styled.div`
 export const CommentAuthor = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 `;
 
 export const CommentAuthorImage = styled.img`
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
-  margin-right: 8px;
+  margin-right: 0.5rem;
   object-fit: cover;
-  border: 1px solid ${tokens.colors.orange.light};
+  border: 0.0625rem solid ${tokens.colors.orange.light};
 `;
 
 export const CommentAuthorName = styled.span`
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: ${tokens.colors.text.black};
   text-align: left;
 `;
 
 export const CommentContent = styled.div`
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.5;
   color: ${tokens.colors.text.black};
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   white-space: pre-line;
   text-align: left;
 `;
@@ -119,12 +119,12 @@ export const CommentContent = styled.div`
 export const CommentMeta = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
 `;
 
 export const CommentDate = styled.span`
-  font-size: 12px;
+  font-size: 0.75rem;
   color: ${tokens.colors.text.lightGray};
   text-align: left;
 `;
@@ -132,7 +132,7 @@ export const CommentDate = styled.span`
 export const CommentActions = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 `;
 
 export const CommentAction = styled.button`
@@ -152,49 +152,49 @@ export const CommentAction = styled.button`
 `;
 
 export const CommentLikeCount = styled.span`
-  font-size: 12px;
+  font-size: 0.75rem;
   color: ${tokens.colors.text.gray};
-  margin-left: 4px;
+  margin-left: 0.25rem;
 `;
 
 export const ReplySection = styled.div`
-  margin-left: 40px;
-  margin-top: 12px;
+  margin-left: 2.5rem;
+  margin-top: 0.75rem;
 `;
 
 export const ReplyItem = styled.div`
-  margin-bottom: 12px;
-  padding: 12px;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
   background: #f8f9fa;
-  border-radius: 8px;
+  border-radius: 0.5rem;
 `;
 
 export const ReplyAuthor = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 0.375rem;
 `;
 
 export const ReplyAuthorImage = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
-  margin-right: 6px;
+  margin-right: 0.375rem;
   object-fit: cover;
 `;
 
 export const ReplyAuthorName = styled.span`
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #333;
   text-align: left;
 `;
 
 export const ReplyContent = styled.div`
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1.4;
   color: #333;
-  margin-bottom: 6px;
+  margin-bottom: 0.375rem;
   white-space: pre-line;
   text-align: left;
 `;
@@ -202,11 +202,11 @@ export const ReplyContent = styled.div`
 export const ReplyMeta = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 `;
 
 export const ReplyDate = styled.span`
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #999;
   text-align: left;
 `;
@@ -214,7 +214,7 @@ export const ReplyDate = styled.span`
 export const ReplyActions = styled.div`
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
 `;
 
 export const ReplyAction = styled.button`
@@ -234,16 +234,16 @@ export const ReplyAction = styled.button`
 `;
 
 export const ReplyLikeCount = styled.span`
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #666;
-  margin-left: 2px;
+  margin-left: 0.125rem;
 `;
 
 export const ReplyButton = styled.button`
   background: none;
   border: none;
   color: ${tokens.colors.feed.comment};
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -258,7 +258,7 @@ export const ReportButton = styled.button`
   background: none;
   border: none;
   color: ${tokens.colors.text.lightGray};
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -271,26 +271,26 @@ export const ReportButton = styled.button`
 
 export const ReplyInputSection = styled.div`
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
-  padding: 12px;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
   background: ${tokens.colors.orange.muted};
-  border-radius: 8px;
-  border: 1px solid ${tokens.colors.orange.light};
+  border-radius: 0.5rem;
+  border: 0.0625rem solid ${tokens.colors.orange.light};
 `;
 
 export const ReplyInput = styled.input`
   flex: 1;
-  border: 1px solid ${tokens.colors.line.lightGray};
-  border-radius: 16px;
-  padding: 8px 12px;
-  font-size: 13px;
+  border: 0.0625rem solid ${tokens.colors.line.lightGray};
+  border-radius: 1rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
   outline: none;
   transition: all 0.2s;
 
   &:focus {
     border-color: ${tokens.colors.orange.primary};
-    box-shadow: 0 0 0 2px ${tokens.colors.orange.muted};
+    box-shadow: 0 0 0 0.125rem ${tokens.colors.orange.muted};
   }
 
   &::placeholder {
@@ -303,13 +303,13 @@ export const ReplySubmitButton = styled.button`
   color: ${tokens.colors.text.white};
   border: none;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.875rem;
   transition: all 0.2s;
 
   &:hover {
@@ -322,9 +322,9 @@ export const ShowRepliesButton = styled.button`
   background: none;
   border: none;
   color: ${tokens.colors.feed.comment};
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   transition: all 0.2s;
   text-align: left;
 

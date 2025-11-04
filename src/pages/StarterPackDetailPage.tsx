@@ -56,7 +56,7 @@ const StarterPackDetailPage: React.FC = () => {
   const { toggleLike } = useStarterPackLike(packId);
 
   // 데모 모드일 때만 Mock 데이터 사용
-  const mockPack = isDemoMode ? mockStartPacks.find((pack) => pack.packId === packId) : null;
+  const mockPack = isDemoMode ? mockStartPacks.find((pack) => pack.id === packId) : null;
   const displayPack = starterPack || mockPack;
 
   const handleBack = () => {
@@ -171,7 +171,7 @@ const StarterPackDetailPage: React.FC = () => {
         <TopSection>
           <LeftColumn>
             <MediaSection>
-              <MediaImage src={displayPack?.mainImage} alt={displayPack?.name} />
+              <MediaImage src={displayPack?.mainImageUrl} alt={displayPack?.name} />
             </MediaSection>
           </LeftColumn>
 
@@ -236,15 +236,15 @@ const StarterPackDetailPage: React.FC = () => {
           </RightColumn>
         </TopSection>
 
-        {displayPack?.products && displayPack.products.length > 0 && (
+        {displayPack?.items && displayPack.items.length > 0 && (
           <BottomSection>
             <ProductsSection>
               <SectionTitle>포함 상품</SectionTitle>
               <ProductsGrid>
-                {displayPack.products.map((product) => (
-                  <ProductCard key={product.id}>
-                    <ProductImage src={product.src} alt={product.name} />
-                    <ProductName>{product.name}</ProductName>
+                {displayPack.items.map((item, index) => (
+                  <ProductCard key={index}>
+                    <ProductImage src={item.imageUrl} alt={item.name} />
+                    <ProductName>{item.name}</ProductName>
                   </ProductCard>
                 ))}
               </ProductsGrid>

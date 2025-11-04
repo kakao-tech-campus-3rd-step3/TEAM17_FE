@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag, Clock } from 'lucide-react';
+import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { fetchStarterPackById } from '@/api/starterPackApi';
@@ -20,10 +20,7 @@ import {
   MediaSection,
   MediaImage,
   InfoSection,
-  StarterPackHeader,
-  UserInfo,
-  Avatar,
-  Username,
+  TitleWrapper,
   MoreButton,
   StarterPackTitle,
   StarterPackDescription,
@@ -38,6 +35,8 @@ import {
   ProductCard,
   ProductImage,
   ProductName,
+  EmptyStateContainer,
+  ErrorStateContainer,
 } from '../StarterPackDetailPage.styles';
 
 const DECIMAL_RADIX = 10;
@@ -65,9 +64,9 @@ const StarterPackDetailData = () => {
           <BackButton onClick={() => navigate(-1)}>← 뒤로</BackButton>
           <PageTitle>스타터팩 상세</PageTitle>
         </PageHeader>
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <ErrorStateContainer>
           <p>스타터팩을 찾을 수 없습니다.</p>
-        </div>
+        </ErrorStateContainer>
       </StarterPackDetailPageContainer>
     );
   }
@@ -103,22 +102,20 @@ const StarterPackDetailData = () => {
         <TopSection>
           <LeftColumn>
             <MediaSection>
-              <MediaImage src={displayPack.mainImage || defaultAvatar} alt="스타터팩" />
+              <MediaImage
+                src={displayPack.mainImageUrl || defaultAvatar}
+                alt={displayPack.name || '스타터팩'}
+              />
             </MediaSection>
           </LeftColumn>
           <RightColumn>
             <InfoSection>
-              <StarterPackHeader>
-                <UserInfo>
-                  <Avatar src={defaultAvatar} alt="사용자" />
-                  <Username>사용자</Username>
-                </UserInfo>
+              <TitleWrapper>
                 <MoreButton onClick={handleMore}>
                   <MoreHorizontal size={20} />
                 </MoreButton>
-              </StarterPackHeader>
-
-              <StarterPackTitle>{displayPack.name}</StarterPackTitle>
+                <StarterPackTitle>{displayPack.name}</StarterPackTitle>
+              </TitleWrapper>
               <StarterPackDescription>{displayPack.description}</StarterPackDescription>
 
               <CategoryTag>
@@ -136,8 +133,8 @@ const StarterPackDetailData = () => {
                   {displayPack.commentCount || 0}개
                 </StatItem>
                 <StatItem>
-                  <Clock size={16} />
-                  {new Date(displayPack.createdAt).toLocaleDateString()}
+                  <Bookmark size={16} />
+                  {displayPack.bookmarkCount || 0}개
                 </StatItem>
               </StatsSection>
 
@@ -163,17 +160,20 @@ const StarterPackDetailData = () => {
           <ProductsSection>
             <SectionTitle>포함된 제품들</SectionTitle>
             <ProductsGrid>
-              {displayPack.products?.map(
-                (product: { name: string; imageUrl?: string }, index: number) => (
-                  <ProductCard key={index}>
-                    <ProductImage src={product.imageUrl || defaultAvatar} alt={product.name} />
-                    <ProductName>{product.name}</ProductName>
-                  </ProductCard>
-                )
-              ) || (
-                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
+              {displayPack.items && displayPack.items.length > 0 ? (
+                displayPack.items.map((item) => {
+                  const itemKey = `${item.name}-${item.linkUrl}`;
+                  return (
+                    <ProductCard key={itemKey}>
+                      <ProductImage src={item.imageUrl || defaultAvatar} alt={item.name} />
+                      <ProductName>{item.name}</ProductName>
+                    </ProductCard>
+                  );
+                })
+              ) : (
+                <EmptyStateContainer>
                   <p>포함된 제품이 없습니다.</p>
-                </div>
+                </EmptyStateContainer>
               )}
             </ProductsGrid>
           </ProductsSection>

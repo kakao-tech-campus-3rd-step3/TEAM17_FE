@@ -9,9 +9,7 @@ export const useUploadImages = (dirName: 'feed' | 'packs' | 'products' = 'feed')
       const presignedList = await getPresignedUrls(dirName, files);
 
       await Promise.all(
-        presignedList.map((item, idx) =>
-          uploadToS3(item.presignedUrl, files[idx])
-        )
+        presignedList.map((item, idx) => uploadToS3(item.presignedUrl, files[idx]))
       );
 
       return presignedList.map((item) => item.fileUrl);
