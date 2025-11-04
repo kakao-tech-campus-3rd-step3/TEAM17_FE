@@ -1,13 +1,25 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag, Clock } from 'lucide-react';
+import {
+  Heart,
+  MessageSquare,
+  Share,
+  MoreHorizontal,
+  Bookmark,
+  Tag,
+  Clock,
+  Edit,
+  Trash2,
+} from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
 import {
   useStarterPackById,
   useStarterPackLike,
   usePackComments,
   usePackCommentActions,
+  useStarterPackActions,
 } from '@/hooks/useStarterPacks';
+import { useUser } from '@/hooks/useAuth';
 import CommentSection from '@/components/comment/CommentSection';
 import type { CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import { mockStartPacks } from '@/mocks/mock';
@@ -33,7 +45,12 @@ import {
   UserInfo,
   Avatar,
   Username,
+  MoreButtonWrapper,
   MoreButton,
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuItemIcon,
+  DropdownMenuDeleteItem,
   StarterPackTitle,
   StarterPackDescription,
   CategoryTag,
@@ -41,6 +58,7 @@ import {
   StatItem,
   ActionButtons,
   ActionButton,
+  ActionButtonRight,
   ProductsSection,
   SectionTitle,
   ProductsGrid,
@@ -48,6 +66,7 @@ import {
   ProductImage,
   ProductName,
   TimeStamp,
+  DemoModeBanner,
 } from './StarterPackDetailPage.styles';
 
 const StarterPackDetailPage: React.FC = () => {
@@ -63,16 +82,72 @@ const StarterPackDetailPage: React.FC = () => {
   const { toggleLike } = useStarterPackLike(packId);
   const { comments, refresh: refreshComments } = usePackComments(packId);
   const { addComment: addCommentApi } = usePackCommentActions(packId);
+  const { remove: deletePack, loading: isActionLoading } = useStarterPackActions();
+  const { data: currentUser } = useUser();
   const [localComments, setLocalComments] = useState(comments);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // 데모 모드일 때만 Mock 데이터 사용
   const mockPack = isDemoMode ? mockStartPacks.find((pack) => pack.id === packId) : null;
   const displayPack = starterPack || mockPack;
 
+  // 작성자 확인: 현재 사용자와 스타터팩 작성자 비교
+  const isAuthor = currentUser?.userId === displayPack?.memberId;
+
   // 댓글 상태 동기화
   useEffect(() => {
     setLocalComments(comments);
   }, [comments]);
+
+  // 드롭다운 메뉴 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
+  // 드롭다운 메뉴 토글
+  const handleToggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  // 수정 핸들러
+  const handleEdit = () => {
+    setIsDropdownOpen(false);
+    navigate(`/packwriting?edit=${packId}`);
+  };
+
+  // 삭제 핸들러
+  const handleDelete = async () => {
+    setIsDropdownOpen(false);
+
+    if (!packId) return;
+
+    const confirmed = window.confirm(
+      '정말로 이 스타터팩을 삭제하시겠습니까?\n삭제된 스타터팩은 복구할 수 없습니다.'
+    );
+    if (!confirmed) return;
+
+    try {
+      await deletePack(packId);
+      alert('스타터팩이 삭제되었습니다.');
+      navigate('/starterpack');
+    } catch (error) {
+      console.error('Failed to delete pack:', error);
+      alert('스타터팩 삭제에 실패했습니다.');
+    }
+  };
 
   const handleBack = () => {
     navigate(-1);
@@ -218,20 +293,7 @@ const StarterPackDetailPage: React.FC = () => {
         <PageTitle>스타터팩 상세보기</PageTitle>
       </PageHeader>
 
-      {isDemoMode && (
-        <div
-          style={{
-            textAlign: 'center',
-            padding: '0.5rem',
-            backgroundColor: '#fef3c7',
-            color: '#92400e',
-            fontSize: '0.875rem',
-            borderBottom: '1px solid #f3e8ff',
-          }}
-        >
-          📝 데모 모드
-        </div>
-      )}
+      {isDemoMode && <DemoModeBanner>📝 데모 모드</DemoModeBanner>}
 
       <ContentContainer>
         <TopSection>
@@ -248,9 +310,31 @@ const StarterPackDetailPage: React.FC = () => {
                   <Avatar src={defaultAvatar} alt="스타터팩" />
                   <Username>@{displayPack?.categoryName}_master</Username>
                 </UserInfo>
-                <MoreButton>
-                  <MoreHorizontal size={20} />
-                </MoreButton>
+                {isAuthor && (
+                  <MoreButtonWrapper ref={dropdownRef}>
+                    <MoreButton
+                      onClick={handleToggleDropdown}
+                      type="button"
+                      aria-label="더보기 메뉴"
+                    >
+                      <MoreHorizontal size={20} />
+                    </MoreButton>
+                    <DropdownMenu $isOpen={isDropdownOpen}>
+                      <DropdownMenuItem onClick={handleEdit} disabled={isActionLoading}>
+                        <DropdownMenuItemIcon>
+                          <Edit size={16} />
+                        </DropdownMenuItemIcon>
+                        수정하기
+                      </DropdownMenuItem>
+                      <DropdownMenuDeleteItem onClick={handleDelete} disabled={isActionLoading}>
+                        <DropdownMenuItemIcon>
+                          <Trash2 size={16} />
+                        </DropdownMenuItemIcon>
+                        삭제하기
+                      </DropdownMenuDeleteItem>
+                    </DropdownMenu>
+                  </MoreButtonWrapper>
+                )}
               </StarterPackHeader>
 
               <StarterPackTitle>{displayPack?.name}</StarterPackTitle>
@@ -289,9 +373,9 @@ const StarterPackDetailPage: React.FC = () => {
                 <ActionButton type="button" aria-label="공유하기">
                   <Share size={24} />
                 </ActionButton>
-                <ActionButton type="button" aria-label="저장" style={{ marginLeft: 'auto' }}>
+                <ActionButtonRight type="button" aria-label="저장">
                   <Bookmark size={24} />
-                </ActionButton>
+                </ActionButtonRight>
               </ActionButtons>
 
               <TimeStamp>
