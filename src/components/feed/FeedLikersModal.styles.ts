@@ -9,18 +9,18 @@ export const Backdrop = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  backdrop-filter: blur(4px);
+  padding: 1rem;
+  backdrop-filter: blur(0.25rem);
 `;
 
 export const ModalShell = styled.div`
   background: ${tokens.colors.background.default};
-  border-radius: 16px;
+  border-radius: 1rem;
   width: 100%;
-  max-width: 480px;
+  max-width: 30rem;
   max-height: 80vh;
   overflow: hidden;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.18);
   display: flex;
   flex-direction: column;
 `;
@@ -29,12 +29,12 @@ export const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
-  border-bottom: 1px solid ${tokens.colors.line.gray};
+  padding: 1.25rem 1.5rem;
+  border-bottom: 0.0625rem solid ${tokens.colors.line.gray};
 `;
 
 export const ModalTitle = styled.h2`
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
   color: ${tokens.colors.text.black};
@@ -44,7 +44,7 @@ export const CloseButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: 0.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,14 +59,14 @@ export const CloseButton = styled.button`
 export const UserList = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 8px 0;
+  padding: 0.5rem 0;
 `;
 
 export const UserItem = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 24px;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
   transition: background-color 0.2s;
 
   &:hover {
@@ -75,8 +75,8 @@ export const UserItem = styled.div`
 `;
 
 export const UserAvatar = styled.img`
-  width: 40px;
-  height: 40px;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 50%;
   object-fit: cover;
 `;
@@ -85,31 +85,31 @@ export const UserInfo = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0.25rem;
 `;
 
 export const UserName = styled.span`
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: ${tokens.colors.text.black};
 `;
 
 export const EmptyState = styled.div`
-  padding: 48px 24px;
+  padding: 3rem 1.5rem;
   text-align: center;
   color: ${tokens.colors.text.lightGray};
-  font-size: 14px;
+  font-size: 0.875rem;
 `;
 
 export const LoadMoreButton = styled.button`
   width: 100%;
-  padding: 12px 24px;
+  padding: 0.75rem 1.5rem;
   background: none;
   border: none;
-  border-top: 1px solid ${tokens.colors.line.gray};
+  border-top: 0.0625rem solid ${tokens.colors.line.gray};
   cursor: pointer;
   color: ${tokens.colors.blue};
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   transition: background-color 0.2s;
 
@@ -124,8 +124,8 @@ export const LoadMoreButton = styled.button`
 `;
 
 export const LoadingContainer = styled.div`
-  padding: 24px;
+  padding: 1.5rem;
   text-align: center;
   color: ${tokens.colors.text.lightGray};
-  font-size: 14px;
+  font-size: 0.875rem;
 `;
