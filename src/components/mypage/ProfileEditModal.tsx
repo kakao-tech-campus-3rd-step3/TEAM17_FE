@@ -16,30 +16,32 @@ import defaultProfile from '@/assets/defaultProfile.png';
 import type { UserProfile } from '@/types/User';
 
 type Props = {
-  profile: Partial<UserProfile>; 
+  profile: Partial<UserProfile> & { userId: number };
   onClose: () => void;
 };
 
 const ProfileEditModal = ({ profile, onClose }: Props) => {
-  const { mutate } = useUpdateUserProfile();
+  const { mutate } = useUpdateUserProfile(profile.userId);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [formData, setFormData] = useState({
     nickname: profile.nickname ?? '',
     hobby: profile.hobby ?? '',
-    introduction: profile.introduction ?? '',
-    profileImage: null as File | null,
+    bio: profile.bio ?? '',
+    profileImageFile: null as File | null,
   });
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(
-    profile.profileImage || null
+    profile.profileImageUrl ?? null
   );
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      setFormData((prev) => ({ ...prev, profileImage: file }));
+      if (previewUrl && previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      setFormData((prev) => ({ ...prev, profileImageFile: file }));
       setPreviewUrl(URL.createObjectURL(file));
     }
   };
@@ -55,20 +57,21 @@ const ProfileEditModal = ({ profile, onClose }: Props) => {
 
   const handleSubmit = async () => {
     try {
-      let uploadedImageUrl = profile.profileImage || null;
 
-      if (formData.profileImage) {
-        const presignedData = await getPresignedUrls('profiles', [formData.profileImage]);
+      let uploadedImageUrl: string | undefined = profile.profileImageUrl ?? undefined;
+
+      if (formData.profileImageFile) {
+        const presignedData = await getPresignedUrls('profiles', [formData.profileImageFile]);
         const { presignedUrl, fileUrl } = presignedData[0];
-        await uploadToS3(presignedUrl, formData.profileImage);
+        await uploadToS3(presignedUrl, formData.profileImageFile);
         uploadedImageUrl = fileUrl;
       }
 
       mutate({
         nickname: formData.nickname,
         hobby: formData.hobby,
-        introduction: formData.introduction,
-        profileImage: uploadedImageUrl,
+        bio: formData.bio,
+        profileImageUrl: uploadedImageUrl,
       });
 
       onClose();
@@ -96,15 +99,30 @@ const ProfileEditModal = ({ profile, onClose }: Props) => {
         <h3>프로필 수정</h3>
 
         <ImageUploadBox onClick={handleBoxClick}>
-          <FileInput ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} />
+          <FileInput
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
           <PreviewImage src={previewUrl || defaultProfile} alt="프로필 미리보기" />
         </ImageUploadBox>
 
-        <Input name="nickname" value={formData.nickname} onChange={handleChange} placeholder="닉네임" />
-        <Input name="hobby" value={formData.hobby} onChange={handleChange} placeholder="취미" />
+        <Input
+          name="nickname"
+          value={formData.nickname}
+          onChange={handleChange}
+          placeholder="닉네임"
+        />
+        <Input
+          name="hobby"
+          value={formData.hobby}
+          onChange={handleChange}
+          placeholder="취미"
+        />
         <Textarea
-          name="introduction"
-          value={formData.introduction}
+          name="bio"
+          value={formData.bio}
           onChange={handleChange}
           placeholder="소개"
         />
