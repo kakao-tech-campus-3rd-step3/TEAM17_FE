@@ -1,8 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchUserProfile, updateUserProfile } from '@/api/userApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
-import type { UserProfile } from '@/types/User';
+import type { UserProfile, SessionUser } from '@/types/User';
 import { USER_CONSTANTS } from '@/constants/User';
+
+type UpdateProfileVariables = {
+  data: Partial<UserProfile>;
+  currentMember: SessionUser;
+};
 
 export const useUserProfile = (userId?: number) => {
   return useQuery<UserProfile>({
@@ -17,7 +22,9 @@ export const useUpdateUserProfile = (userId: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: Partial<UserProfile>) => updateUserProfile(userId, data),
+    mutationFn: ({ data, currentMember }: UpdateProfileVariables) =>
+      updateUserProfile(userId, data, currentMember), 
+
     onSuccess: (updatedProfile) => {
       queryClient.setQueryData(QUERY_KEYS.user.profile(userId), updatedProfile);
       alert('프로필이 성공적으로 수정되었습니다!');

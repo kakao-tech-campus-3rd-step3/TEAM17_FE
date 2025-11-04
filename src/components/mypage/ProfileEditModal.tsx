@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react'; 
 import { useUpdateUserProfile } from '@/hooks/useUser';
 import { getPresignedUrls, uploadToS3 } from '@/api/s3Api';
 import {
@@ -13,17 +13,19 @@ import {
   FileInput,
 } from '@/components/mypage/ProfileEditModal.styles';
 import defaultProfile from '@/assets/defaultProfile.png';
-import type { UserProfile } from '@/types/User';
-
+import type { UserProfile, SessionUser } from '@/types/User'; 
+import { useAuth } from '@/hooks/useAuth'; 
 type Props = {
   profile: Partial<UserProfile>;
-  userId: number;
+  userId: number; 
   onClose: () => void;
 };
 
 const ProfileEditModal = ({ profile, userId, onClose }: Props) => {
   const { mutate } = useUpdateUserProfile(userId);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { user } = useAuth();
+  const currentMember = user as SessionUser | null; 
 
   const [formData, setFormData] = useState({
     nickname: profile.nickname ?? '',
@@ -55,6 +57,12 @@ const ProfileEditModal = ({ profile, userId, onClose }: Props) => {
   };
 
   const handleSubmit = async () => {
+    if (!currentMember) {
+      alert('사용자 정보가 없습니다. 다시 로그인해주세요.');
+      console.error('handleSubmit: currentMember is null. (비로그인 상태)');
+      return;
+    }
+
     try {
       let uploadedImageUrl: string | undefined = profile.profileImageUrl ?? undefined;
 
@@ -66,10 +74,13 @@ const ProfileEditModal = ({ profile, userId, onClose }: Props) => {
       }
 
       mutate({
-        nickname: formData.nickname,
-        hobby: formData.hobby,
-        bio: formData.bio,
-        profileImageUrl: uploadedImageUrl,
+        data: {
+          nickname: formData.nickname,
+          hobby: formData.hobby,
+          bio: formData.bio,
+          profileImageUrl: uploadedImageUrl,
+        },
+        currentMember: currentMember,
       });
 
       onClose();
@@ -93,12 +104,10 @@ const ProfileEditModal = ({ profile, userId, onClose }: Props) => {
     <ModalBackdrop>
       <ModalBox>
         <h3>프로필 수정</h3>
-
         <ImageUploadBox onClick={handleBoxClick}>
           <FileInput ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} />
           <PreviewImage src={previewUrl || defaultProfile} alt="프로필 미리보기" />
         </ImageUploadBox>
-
         <Input
           name="nickname"
           value={formData.nickname}
@@ -107,7 +116,6 @@ const ProfileEditModal = ({ profile, userId, onClose }: Props) => {
         />
         <Input name="hobby" value={formData.hobby} onChange={handleChange} placeholder="취미" />
         <Textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="소개" />
-
         <ButtonRow>
           <ActionButton onClick={handleSubmit}>저장</ActionButton>
           <ActionButton $secondary onClick={onClose}>
