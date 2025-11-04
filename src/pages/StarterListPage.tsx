@@ -27,14 +27,14 @@ const matchCategory = (pack: StarterPack, active: CategoryKey) => {
 
 const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
   const navigate = useNavigate();
-  const { starterPack } = useStarterPackById(pack.packId);
-  const { toggleLike } = useStarterPackLike(pack.packId);
+  const { starterPack } = useStarterPackById(pack.id);
+  const { toggleLike } = useStarterPackLike(pack.id);
 
   const packWithLike = starterPack as StarterPack & { isLiked?: boolean };
   const isLiked = packWithLike?.isLiked ?? false;
 
   const handleOpenDetail = () => {
-    navigate(`/starterpack/${pack.packId}`);
+    navigate(`/starterpack/${pack.id}`);
   };
 
   return (
@@ -158,7 +158,7 @@ const StarterListPage = () => {
 
       <StarterPackGrid>
         {filtered.map((pack: StarterPack) => (
-          <StarterPackCardWrapper key={pack.packId} pack={pack} />
+          <StarterPackCardWrapper key={pack.id} pack={pack} />
         ))}
       </StarterPackGrid>
     </StarterPackContainer>

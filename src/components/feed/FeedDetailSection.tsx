@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { Heart, MessageCircle, Bookmark } from 'lucide-react';
 import type { FeedDetail } from '@/types/Feed';
-import { FEED_CONSTANTS } from '@/constants/feed';
+import { tokens } from '@/styles/tokens';
 import {
   FeedDetailContainer,
   UserProfile,
@@ -21,14 +22,6 @@ import {
   EngagementCount,
   HashtagSection,
   Hashtag,
-  ProductSection,
-  ProductTitle,
-  ProductItem,
-  ProductInfo,
-  ProductName,
-  ProductDescription,
-  ProductLink,
-  MoreProductsButton,
 } from './FeedDetailSection.styles';
 
 interface FeedDetailSectionProps {
@@ -39,7 +32,6 @@ interface FeedDetailSectionProps {
 
 const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onBookmark }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [showAllProducts, setShowAllProducts] = useState(false);
 
   // 이미지가 여러 개인 경우를 위한 배열 (실제로는 feed.imageUrl이 배열이어야 함)
   const images = Array.isArray(feed.imageUrl) ? feed.imageUrl : [feed.imageUrl];
@@ -64,19 +56,14 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
     );
   };
 
-  const products = feed.products || [];
-  const displayedProducts = showAllProducts
-    ? products
-    : products.slice(0, FEED_CONSTANTS.INITIAL_PRODUCT_DISPLAY_COUNT);
-
   return (
     <FeedDetailContainer>
       {/* 유저 프로필 섹션 */}
       <UserProfile>
         <ProfileImage src={feed.author.profileImageUrl} alt={feed.author.name} />
         <UserInfo>
-          <UserName>{feed.author.name}</UserName>
-          <UserBio>INFP 감성 빵 제조기입니당~</UserBio>
+          <UserName>{feed.author.nickname || feed.author.name}</UserName>
+          {feed.author.bio && <UserBio>{feed.author.bio}</UserBio>}
         </UserInfo>
       </UserProfile>
 
@@ -88,7 +75,14 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
       {images.length > 0 && (
         <ImageCarousel>
           <ImageContainer>
-            <img src={images[currentImageIndex]} alt="피드 이미지" />
+            <img
+              src={images[currentImageIndex]}
+              alt="피드 이미지"
+              onError={(e) => {
+                // 이미지 로드 실패 시 숨김 (blob URL이 만료된 경우 등)
+                e.currentTarget.style.display = 'none';
+              }}
+            />
             {images.length > 1 && (
               <>
                 <ImageNavigation>
@@ -111,15 +105,31 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
       {/* 좋아요, 댓글, 북마크 */}
       <EngagementSection>
         <EngagementItem onClick={handleLike}>
-          <EngagementIcon>❤️</EngagementIcon>
+          <EngagementIcon>
+            <Heart
+              size={18}
+              strokeWidth={2}
+              fill={feed.isLiked ? tokens.colors.orange.primary : 'none'}
+              color={tokens.colors.orange.primary}
+            />
+          </EngagementIcon>
           <EngagementCount>{feed.likeCount}</EngagementCount>
         </EngagementItem>
         <EngagementItem>
-          <EngagementIcon>💬</EngagementIcon>
+          <EngagementIcon>
+            <MessageCircle size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
+          </EngagementIcon>
           <EngagementCount>{feed.commentCount}</EngagementCount>
         </EngagementItem>
         <EngagementItem onClick={handleBookmark}>
-          <EngagementIcon>🔖</EngagementIcon>
+          <EngagementIcon>
+            <Bookmark
+              size={18}
+              strokeWidth={2}
+              fill={feed.isBookmarked ? tokens.colors.orange.primary : 'none'}
+              color={tokens.colors.orange.primary}
+            />
+          </EngagementIcon>
           <EngagementCount>{feed.bookmarkCount}</EngagementCount>
         </EngagementItem>
       </EngagementSection>
@@ -146,12 +156,7 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
               <ProductLink>링크로 이동</ProductLink>
             </ProductItem>
           ))}
-          {products.length > FEED_CONSTANTS.INITIAL_PRODUCT_DISPLAY_COUNT && !showAllProducts && (
-            <MoreProductsButton onClick={() => setShowAllProducts(true)}>
-              취미 팩 더보기 ↓
-            </MoreProductsButton>
-          )}
-        </ProductSection>
+        </HashtagSection>
       )}
     </FeedDetailContainer>
   );

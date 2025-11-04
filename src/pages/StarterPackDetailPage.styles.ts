@@ -175,7 +175,14 @@ export const Username = styled.span`
   color: #262626;
 `;
 
+export const TitleWrapper = styled.div`
+  position: relative;
+`;
+
 export const MoreButton = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
   background: none;
   border: none;
   cursor: pointer;
@@ -300,6 +307,17 @@ export const ProductName = styled.h4`
   font-weight: 500;
   color: #262626;
   margin: 0;
+  text-align: center;
+`;
+
+export const EmptyStateContainer = styled.div`
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+`;
+
+export const ErrorStateContainer = styled.div`
+  padding: 2rem;
   text-align: center;
 `;
 

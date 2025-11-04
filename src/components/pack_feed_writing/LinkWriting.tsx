@@ -15,7 +15,6 @@ import type { WriteProduct } from '@/types/Product';
 type LinkWritingProps = {
   onChange: (items: WriteProduct[]) => void;
 };
-
 const LinkWriting = ({ onChange }: LinkWritingProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -30,23 +29,32 @@ const LinkWriting = ({ onChange }: LinkWritingProps) => {
   const handleSubmit = (data: ProductForm) => {
     setFormData(data);
 
-    const productsWithUrl: WriteProduct[] = data.products.map((p) => ({
-      name: p.name,
-      linkUrl: p.linkUrl,
-      description: p.description ?? '',
-      imageUrl: p.imageUrl ?? '',
-    }));
+    const productsWithPreview: WriteProduct[] = data.products.map((p) => {
+      const newImageUrl = p.imageFile ? URL.createObjectURL(p.imageFile) : (p.imageUrl ?? '');
+      return {
+        name: p.name,
+        linkUrl: p.linkUrl,
+        description: p.description ?? '',
+        imageUrl: newImageUrl,
+      };
+    });
 
-    setSubmittedProducts(productsWithUrl);
-    onChange(productsWithUrl);
+    setSubmittedProducts(productsWithPreview);
+    onChange(productsWithPreview);
     setIsOpen(false);
   };
 
   useEffect(() => {
     return () => {
       submittedProducts.forEach((p) => {
+        // blob URL인 경우에만 revokeObjectURL 호출
         if (p.imageUrl && p.imageUrl.startsWith('blob:')) {
-          URL.revokeObjectURL(p.imageUrl);
+          try {
+            URL.revokeObjectURL(p.imageUrl);
+          } catch (error) {
+            // 이미 revoke된 URL이거나 유효하지 않은 경우 무시
+            console.warn('Failed to revoke blob URL:', error);
+          }
         }
       });
     };

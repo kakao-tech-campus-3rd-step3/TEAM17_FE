@@ -5,10 +5,10 @@ import { useUploadImages } from '@/hooks/useUploadImages';
 
 type ThumbnailImageProps = {
   onChange: (url: string) => void;
-  dirName?: 'feed' | 'packs';
+  dirName?: 'feed' | 'packs' | 'products';
 };
 
-const ThumbnailImage = ({ onChange, dirName = 'feed' }: ThumbnailImageProps) => {
+const ThumbnailImage = ({ onChange, dirName = 'packs' }: ThumbnailImageProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previews, setPreviews] = useState<string[]>([]);
   const { mutateAsync: uploadImages, isPending } = useUploadImages(dirName);
@@ -32,11 +32,23 @@ const ThumbnailImage = ({ onChange, dirName = 'feed' }: ThumbnailImageProps) => 
       console.error('이미지 업로드 실패:', err);
     }
 
-    if (e.currentTarget) e.currentTarget.value = '';
+    e.currentTarget.value = '';
   };
 
   useEffect(() => {
-    return () => previews.forEach((url) => URL.revokeObjectURL(url));
+    return () => {
+      previews.forEach((url) => {
+        // blob URL인 경우에만 revokeObjectURL 호출
+        if (url && url.startsWith('blob:')) {
+          try {
+            URL.revokeObjectURL(url);
+          } catch (error) {
+            // 이미 revoke된 URL이거나 유효하지 않은 경우 무시
+            console.warn('Failed to revoke blob URL:', error);
+          }
+        }
+      });
+    };
   }, [previews]);
 
   return (

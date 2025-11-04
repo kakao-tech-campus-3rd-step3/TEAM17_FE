@@ -14,40 +14,6 @@ const mockCategories = [
   { categoryId: 5, categoryName: '푸드' },
 ];
 
-// Mock 제품 데이터
-const mockProducts = [
-  {
-    productId: 1,
-    name: '데님 재킷',
-    imageUrl: 'https://picsum.photos/200/200?random=product1',
-    description: '클래식한 데님 재킷',
-  },
-  {
-    productId: 2,
-    name: '화이트 스니커즈',
-    imageUrl: 'https://picsum.photos/200/200?random=product2',
-    description: '깔끔한 화이트 스니커즈',
-  },
-  {
-    productId: 3,
-    name: '가죽 백팩',
-    imageUrl: 'https://picsum.photos/200/200?random=product3',
-    description: '고급스러운 가죽 백팩',
-  },
-  {
-    productId: 4,
-    name: '실버 목걸이',
-    imageUrl: 'https://picsum.photos/200/200?random=product4',
-    description: '세련된 실버 목걸이',
-  },
-  {
-    productId: 5,
-    name: '니트 스웨터',
-    imageUrl: 'https://picsum.photos/200/200?random=product5',
-    description: '따뜻한 니트 스웨터',
-  },
-];
-
 // Mock 사용자 데이터
 const mockUsers = [
   {
@@ -98,8 +64,6 @@ export const generateMockFeedPosts = (count: number = 20): FeedPost[] => {
     const feedType = feedTypes[(i - 1) % feedTypes.length];
     const description = descriptions[(i - 1) % descriptions.length];
 
-    const selectedProducts = mockProducts.slice(0, 2);
-
     posts.push({
       feedId: i,
       author: user,
@@ -110,7 +74,6 @@ export const generateMockFeedPosts = (count: number = 20): FeedPost[] => {
       likeCount: 100 + i * 50,
       isLiked: i % 3 === 0,
       createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-      products: selectedProducts,
     });
   }
 
@@ -183,9 +146,19 @@ export const MOCK_FEED_DETAIL: FeedDetail = {
   feedId: 1,
   author: {
     userId: 1,
+    email: 'bread@example.com',
     name: '빵수니',
+    nickname: '빵수니',
+    provider: 'EMAIL',
     profileImageUrl:
       'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=48&h=48&fit=crop&crop=face',
+    role: 'USER',
+    birthDate: '1995-01-01',
+    gender: 'FEMALE',
+    hobby: '베이킹',
+    bio: 'INFP 감성 빵 제조기입니당~',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   description: `곧 다가오는 크리스마스를 맞이하여 크리스마스 쿠키를 만들어 보았어요~~
 크리스마스 느낌으로 꾸며보았는데 어떤가요??
@@ -207,20 +180,6 @@ export const MOCK_FEED_DETAIL: FeedDetail = {
   likeCount: 111,
   isLiked: false,
   createdAt: '2025.12.01',
-  products: [
-    {
-      productId: 1,
-      name: '스프링클 슈가스트랜드칼라 25g',
-      imageUrl: '/api/placeholder/60/60',
-      description: '스프링클을 사용하면 더 이쁘게 만들어집니다~',
-    },
-    {
-      productId: 2,
-      name: '초코펜다크(데코펜)',
-      imageUrl: '/api/placeholder/60/60',
-      description: '쿠키 장식에 필수 아이템',
-    },
-  ],
   comments: [
     {
       commentId: 1,
