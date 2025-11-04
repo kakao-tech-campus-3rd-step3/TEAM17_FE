@@ -1,4 +1,5 @@
 export type UserProfile = {
+  userId: number;
   nickname: string;
   hobby: string;
   profileImageUrl: string;
