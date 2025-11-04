@@ -119,20 +119,15 @@ export interface CommentResponse {
 export interface Member {
   userId: number;
   email: string;
-  password: string;
   name: string;
   nickname: string;
   provider: 'EMAIL' | 'GOOGLE' | 'KAKAO' | 'NAVER';
-  providerId: string;
   profileImageUrl: string;
   role: 'USER' | 'ADMIN';
   birthDate: string;
   gender: 'MALE' | 'FEMALE' | 'OTHER';
-  phoneNumber: string;
   hobby: string;
   bio: string;
-  refreshToken: string;
-  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
