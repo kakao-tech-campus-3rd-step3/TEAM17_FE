@@ -90,15 +90,15 @@ const Profile = () => {
             <Content>Feed :</Content>
             <Content>{displayFeedCount}</Content>
           </RowContainer>
-
         </InfoContainer>
 
         <ButtonWrapper>
           <EditButton onClick={() => setIsModalOpen(true)}>정보 수정</EditButton>
         </ButtonWrapper>
       </Container>
-
-      {isModalOpen && <ProfileEditModal profile={profile} onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && (
+        <ProfileEditModal profile={profile} userId={userId} onClose={() => setIsModalOpen(false)} />
+      )}{' '}
     </>
   );
 };
