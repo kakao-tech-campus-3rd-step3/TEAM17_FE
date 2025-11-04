@@ -21,7 +21,7 @@ export type UserProfile = {
 };
 
 
-export type User = {
+export type SessionUser = {
   userId: number;
   email: string;
   nickname: string;
