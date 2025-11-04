@@ -2,10 +2,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchUserProfile, updateUserProfile } from '@/api/userApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
 import type { UserProfile } from '@/types/User';
+import { USER_CONSTANTS } from '@/constants/User';
 
 export const useUserProfile = (userId?: number) => {
   return useQuery<UserProfile>({
-    queryKey: ['userProfile', userId],
+    queryKey: QUERY_KEYS.user.profile(userId ?? USER_CONSTANTS.INVALID_USER_ID),
     queryFn: () => fetchUserProfile(userId!),
     enabled: !!userId,
     retry: false,
