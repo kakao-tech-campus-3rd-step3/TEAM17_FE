@@ -17,7 +17,7 @@ import {
   SubmitButton,
   ErrorText,
   ExistingImage,
-} from '@/components/pack_feed_writing/LinkModal.style';
+} from '@/components/pack_feed_writing/LinkModal.styles';
 import { useUploadImages } from '@/hooks/useUploadImages';
 import type { ProductForm } from '@/types/LinkWriteForm';
 

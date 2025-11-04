@@ -21,7 +21,7 @@ import {
   Line,
   ToggleButton,
   InputWrapper,
-} from '@/components/login/Login.style';
+} from '@/components/login/Login.styles';
 import KakaoLoginButton from '@/components/login/KakaoLoginButton';
 
 import EyeOn from '@/assets/icon-eye.svg';

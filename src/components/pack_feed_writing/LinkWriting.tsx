@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.style';
-import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
+import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.styles';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.styles';
 import {
   LinkUploadBox,
   ProductWrapper,
   Product,
   ProductImage,
-} from '@/components/pack_feed_writing/LinkWriting.style';
+} from '@/components/pack_feed_writing/LinkWriting.styles';
 
 import LinkModal from '@/components/pack_feed_writing/LinkModal';
 import type { ProductForm } from '@/types/LinkWriteForm';
@@ -47,12 +47,10 @@ const LinkWriting = ({ onChange }: LinkWritingProps) => {
   useEffect(() => {
     return () => {
       submittedProducts.forEach((p) => {
-        // blob URL인 경우에만 revokeObjectURL 호출
         if (p.imageUrl && p.imageUrl.startsWith('blob:')) {
           try {
             URL.revokeObjectURL(p.imageUrl);
           } catch (error) {
-            // 이미 revoke된 URL이거나 유효하지 않은 경우 무시
             console.warn('Failed to revoke blob URL:', error);
           }
         }

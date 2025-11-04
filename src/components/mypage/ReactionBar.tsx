@@ -1,4 +1,4 @@
-import { ReactionBarContainer, Icon, Number, Wrapper } from '@/components/mypage/ReactionBar.style';
+import { ReactionBarContainer, Icon, Number, Wrapper } from '@/components/mypage/ReactionBar.styles';
 
 import heartIcon from '@/assets/icon-heart.svg';
 import commentIcon from '@/assets/icon-message-circle.svg';

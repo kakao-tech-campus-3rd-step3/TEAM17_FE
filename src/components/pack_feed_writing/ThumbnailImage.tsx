@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
-import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
-import { ImageUploadBox, ScrollContainer } from '@/components/pack_feed_writing/UploadBox.style';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.styles';
+import { ImageUploadBox, ScrollContainer } from '@/components/pack_feed_writing/UploadBox.styles';
 import { useUploadImages } from '@/hooks/useUploadImages';
 
 type ThumbnailImageProps = {
@@ -31,19 +31,18 @@ const ThumbnailImage = ({ onChange, dirName = 'packs' }: ThumbnailImageProps) =>
     } catch (err) {
       console.error('이미지 업로드 실패:', err);
     }
-
-    e.currentTarget.value = '';
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   useEffect(() => {
     return () => {
       previews.forEach((url) => {
-        // blob URL인 경우에만 revokeObjectURL 호출
         if (url && url.startsWith('blob:')) {
           try {
             URL.revokeObjectURL(url);
           } catch (error) {
-            // 이미 revoke된 URL이거나 유효하지 않은 경우 무시
             console.warn('Failed to revoke blob URL:', error);
           }
         }

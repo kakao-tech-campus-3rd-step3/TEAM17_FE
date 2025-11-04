@@ -5,12 +5,13 @@ import {
   TagWrapper,
   SubmitButton,
   WarningText,
-} from '@/components/pack_feed_writing/Layout.style';
+} from '@/components/pack_feed_writing/Layout.styles';
 import ThumbnailImage from '@/components/pack_feed_writing/ThumbnailImage';
 import FeedContentWriting from '@/components/pack_feed_writing/FeedContentWriting';
 import HobbyTag from '@/components/pack_feed_writing/HobbyTag';
 import HashTag from '@/components/pack_feed_writing/HashTag';
 import { useUploadFeed } from '@/hooks/useUploadFeed';
+
 const FeedWriting = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [description, setDescription] = useState('');
@@ -21,10 +22,25 @@ const FeedWriting = () => {
   const { mutate: uploadFeed } = useUploadFeed();
 
   const handleSubmit = () => {
-    if (!imageUrl) return setError('이미지를 업로드해주세요.');
-    if (!description.trim()) return setError('내용을 작성해주세요.');
-    if (!categoryId) return setError('카테고리를 선택해주세요.');
-    if (tags.length === 0) return setError('해시태그를 입력해주세요.');
+    if (!imageUrl) {
+      setError('이미지를 업로드해주세요.');
+      return;
+    }
+
+    if (!description.trim()) {
+      setError('내용을 작성해주세요.');
+      return;
+    }
+
+    if (!categoryId) {
+      setError('카테고리를 선택해주세요.');
+      return;
+    }
+
+    if (tags.length === 0) {
+      setError('해시태그를 입력해주세요.');
+      return;
+    }
 
     setError('');
 
