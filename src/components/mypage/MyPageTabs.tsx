@@ -1,5 +1,5 @@
-import { useMyPage } from '@/hooks/useMypage';
-import { TabContainer,TabButton } from '@/components/mypage/MyPageTabs.styles';
+import { useMyPage } from '@/hooks/useMyPageContext';
+import { TabContainer, TabButton } from '@/components/mypage/MyPageTabs.styles';
 import { TABS as tabs } from '@/constants/myPageTabs';
 
 const MyPageTabs = () => {

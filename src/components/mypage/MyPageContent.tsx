@@ -1,4 +1,4 @@
-import { useMyPage } from '@/hooks/useMypage';
+import { useMyPage } from '@/hooks/useMyPageContext';
 import MyPageSection from '@/components/mypage/MyPageSection';
 
 const MyPageContent = () => {
@@ -11,16 +11,8 @@ const MyPageContent = () => {
     <>
       {activeTab === 'all' && (
         <>
-          <MyPageSection
-            title="Feed"
-            items={profile.feeds?.slice(0, 6) ?? []}
-            type="feed"
-          />
-          <MyPageSection
-            title="Pack"
-            items={profile.packs?.slice(0, 6) ?? []}
-            type="pack"
-          />
+          <MyPageSection title="Feed" items={profile.feeds?.slice(0, 6) ?? []} type="feed" />
+          <MyPageSection title="Pack" items={profile.packs?.slice(0, 6) ?? []} type="pack" />
         </>
       )}
 
@@ -33,13 +25,8 @@ const MyPageContent = () => {
       )}
 
       {activeTab === 'scrap' && isOwner && (
-        <MyPageSection
-          title="스크랩북"
-          items={profile.bookmarkedFeeds ?? []}
-          type="feed"
-        />
+        <MyPageSection title="스크랩북" items={profile.bookmarkedFeeds ?? []} type="feed" />
       )}
-
     </>
   );
 };
