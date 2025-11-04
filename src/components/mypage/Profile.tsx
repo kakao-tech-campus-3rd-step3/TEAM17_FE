@@ -65,10 +65,7 @@ const Profile = () => {
       </Container>
 
       {isModalOpen && (
-        <ProfileEditModal
-          profile={safeProfile}
-          onClose={() => setIsModalOpen(false)}
-        />
+        <ProfileEditModal profile={safeProfile} onClose={() => setIsModalOpen(false)} />
       )}
     </>
   );

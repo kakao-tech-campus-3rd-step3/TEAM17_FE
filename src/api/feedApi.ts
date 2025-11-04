@@ -118,14 +118,13 @@ export const fetchFeedLikers = async (
   options?: { sort?: string[] }
 ): Promise<PageFeedLikerResponse> => {
   try {
-    const params: Record<string, string | number | string[]> = {
-      page,
-      size,
-    };
+    const params = new URLSearchParams();
+    params.append('page', page.toString());
+    params.append('size', size.toString());
 
-    if (options?.sort && options.sort.length > 0) {
-      params.sort = options.sort;
-    }
+    options?.sort?.forEach((sortValue) => {
+      params.append('sort', sortValue);
+    });
 
     const response = await axiosInstance.get<PageFeedLikerResponse>(`/api/feeds/${feedId}/likes`, {
       params,
