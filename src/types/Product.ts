@@ -19,7 +19,12 @@ export interface Product {
   src?: string;
   packs?: Pack[];
 }
-
+export interface WriteProduct {
+  name: string;
+  linkUrl: string;
+  description?: string;
+  imageUrl: string;
+}
 export interface ProductResponse {
   [key: string]: Product[]; // 카테고리별로 그룹화된 제품들
 }

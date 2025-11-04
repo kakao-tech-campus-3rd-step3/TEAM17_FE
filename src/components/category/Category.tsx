@@ -1,22 +1,25 @@
 import React from 'react';
-import { MapPin, ShoppingCart, Camera, QrCode, Users } from 'lucide-react';
-import { Wrap, Item, IconBox, Label } from './Category.styles';
+import { Wrap, Item, IconBox, Icon, Label } from './Category.styles';
+
+import ShoppingCartIcon from '@/assets/icon-shopping-cart.svg';
+import CameraIcon from '@/assets/icon-camera.svg';
+import UsersIcon from '@/assets/icon-users.svg';
+import SmileIcon from '@/assets/icon-smile.svg';
 
 const NAV = [
-  { to: '/nearby', label: '내 주변 장소', Icon: MapPin },
-  { to: '/starterpack', label: '스타터팩 보러가기', Icon: ShoppingCart },
-  { to: '/feed', label: '취미 꾸미기', Icon: Camera },
-  { to: '/board', label: '게시판', Icon: QrCode },
-  { to: '/party', label: '파티원 모집', Icon: Users },
+  { to: '/starterpack', label: '취미팩 보러가기', icon: ShoppingCartIcon },
+  { to: '/feed', label: '피드', icon: CameraIcon },
+  { to: '/party', label: '파티원 모집', icon: UsersIcon },
+  { to: '/mypage', label: '마이페이지', icon: SmileIcon },
 ] as const;
 
 const Category: React.FC = () => {
   return (
     <Wrap aria-label="빠른 이동">
-      {NAV.map(({ to, label, Icon }) => (
+      {NAV.map(({ to, label, icon }) => (
         <Item key={to} to={to} aria-label={label} end>
           <IconBox>
-            <Icon size={20} color="#f97316" />
+            <Icon src={icon} alt={label} />
           </IconBox>
           <Label>{label}</Label>
         </Item>

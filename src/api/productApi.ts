@@ -1,10 +1,5 @@
 import axiosInstance from './axiosInstance';
-import type {
-  Product,
-  ProductResponse,
-  ProductRequest,
-  LikeProductResponse,
-} from '@/types/Product';
+import type { Product, ProductResponse, ProductRequest } from '@/types/Product';
 
 // 모든 제품 목록 조회
 export const fetchProducts = async (): Promise<ProductResponse> => {
@@ -59,17 +54,6 @@ export const deleteProduct = async (id: number): Promise<void> => {
     await axiosInstance.delete(`/api/products/${id}`);
   } catch (error) {
     console.error(`Failed to delete product ${id}:`, error);
-    throw error;
-  }
-};
-
-// 제품 좋아요 토글
-export const toggleProductLike = async (id: number): Promise<LikeProductResponse> => {
-  try {
-    const response = await axiosInstance.post<LikeProductResponse>(`/api/products/${id}/like`);
-    return response.data;
-  } catch (error) {
-    console.error(`Failed to toggle like for product ${id}:`, error);
     throw error;
   }
 };

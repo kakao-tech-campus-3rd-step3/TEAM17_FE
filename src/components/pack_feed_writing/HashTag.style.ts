@@ -3,7 +3,7 @@ import { tokens } from '@/styles/tokens';
 
 export const HashTagBox = styled.div`
   display: flex;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
@@ -43,9 +43,10 @@ export const InputTag = styled.input`
   border: none;
   outline: none;
   font-size: 1rem;
+  text-align: center;
   min-width: 8rem;
   flex-grow: 1;
-  margin-left: 0.2rem; 
+  margin-left: 0.2rem;
 `;
 
 export const WarningText = styled.p`

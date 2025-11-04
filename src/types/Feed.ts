@@ -131,3 +131,29 @@ export interface FeedDetail extends Omit<FeedPost, 'imageUrl'> {
   isBookmarked: boolean;
   hashtags: string[];
 }
+
+// 피드 좋아요 사용자 정보
+export interface FeedLikerResponse {
+  userId: number;
+  name: string;
+  profileImageUrl: string;
+}
+
+// 피드 좋아요 목록 응답
+export interface PageFeedLikerResponse {
+  totalElements: number;
+  totalPages: number;
+  pageable: PageableResponse;
+  numberOfElements: number;
+  size: number;
+  content: FeedLikerResponse[];
+  number: number;
+  sort: {
+    sorted: boolean;
+    unsorted: boolean;
+    empty: boolean;
+  };
+  first: boolean;
+  last: boolean;
+  empty: boolean;
+}

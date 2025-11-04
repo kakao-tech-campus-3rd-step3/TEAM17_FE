@@ -5,6 +5,11 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
+function getCookieValue(name: string): string | null {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
 axiosInstance.interceptors.request.use(
   (config) => {
     const xsrfToken = getCookieValue('XSRF-TOKEN');
@@ -18,9 +23,14 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const tokenFromHeader = response.headers['x-xsrf-token'];
+    if (tokenFromHeader) {
+      axiosInstance.defaults.headers.common['X-XSRF-TOKEN'] = tokenFromHeader;
+    }
+    return response;
+  },
   (error) => {
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
@@ -38,10 +48,5 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-function getCookieValue(name: string): string | null {
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  return match ? decodeURIComponent(match[2]) : null;
-}
 
 export default axiosInstance;

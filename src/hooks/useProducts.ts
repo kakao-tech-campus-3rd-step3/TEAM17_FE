@@ -5,16 +5,10 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
-  toggleProductLike,
 } from '@/api/productApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
 import { parseAxiosError, createUserFriendlyMessage } from '@/utils/errorHandling';
-import type {
-  Product,
-  ProductResponse,
-  ProductRequest,
-  LikeProductResponse,
-} from '@/types/Product';
+import type { ProductResponse, ProductRequest } from '@/types/Product';
 
 // 상수 관리
 const MIN_VALID_ID = 1;
@@ -171,103 +165,5 @@ export const useProductActions = () => {
     loading,
     error,
     clearError,
-  };
-};
-
-// ==================== Product 좋아요 관리 ====================
-
-// 제품 좋아요 관리
-export const useProductLike = (id: number) => {
-  const queryClient = useQueryClient();
-
-  const toggleLikeMutation = useMutation({
-    mutationFn: () => toggleProductLike(id),
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.products.detail(id) });
-
-      const previousProduct = queryClient.getQueryData(QUERY_KEYS.products.detail(id));
-
-      queryClient.setQueryData(QUERY_KEYS.products.detail(id), (old: Product | undefined) => {
-        if (!old) return old;
-        const currentIsLiked = (old as Product & { isLiked?: boolean }).isLiked ?? false;
-        return {
-          ...old,
-          isLiked: !currentIsLiked,
-          likeCount: currentIsLiked ? Math.max(0, old.likeCount - 1) : old.likeCount + 1,
-        };
-      });
-
-      queryClient.setQueryData(QUERY_KEYS.products.list, (old: ProductResponse | undefined) => {
-        if (!old) return old;
-
-        const updateProduct = (product: Product) => {
-          const currentIsLiked = (product as Product & { isLiked?: boolean }).isLiked ?? false;
-          return product.id === id
-            ? {
-                ...product,
-                isLiked: !currentIsLiked,
-                likeCount: currentIsLiked
-                  ? Math.max(0, product.likeCount - 1)
-                  : product.likeCount + 1,
-              }
-            : product;
-        };
-
-        const updated: ProductResponse = {};
-        for (const key in old) {
-          updated[key] = old[key].map(updateProduct);
-        }
-        return updated;
-      });
-
-      return { previousProduct };
-    },
-    onSuccess: (result: LikeProductResponse) => {
-      queryClient.setQueryData(QUERY_KEYS.products.detail(id), (old: Product | undefined) => {
-        if (!old) return old;
-        return {
-          ...old,
-          likeCount: result.likeCount,
-          isLiked: result.isLiked,
-        };
-      });
-
-      queryClient.setQueryData(QUERY_KEYS.products.list, (old: ProductResponse | undefined) => {
-        if (!old) return old;
-
-        const updateProduct = (product: Product) =>
-          product.id === id
-            ? { ...product, likeCount: result.likeCount, isLiked: result.isLiked }
-            : product;
-
-        const updated: ProductResponse = {};
-        for (const key in old) {
-          updated[key] = old[key].map(updateProduct);
-        }
-        return updated;
-      });
-    },
-    onError: (_, __, context) => {
-      if (context?.previousProduct) {
-        queryClient.setQueryData(QUERY_KEYS.products.detail(id), context.previousProduct);
-      }
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products.list });
-    },
-  });
-
-  const handleToggleLike = () => {
-    if (toggleLikeMutation.isPending) return;
-    toggleLikeMutation.mutate();
-  };
-
-  return {
-    toggleLike: handleToggleLike,
-    loading: toggleLikeMutation.isPending,
-    error: toggleLikeMutation.error
-      ? createUserFriendlyMessage(
-          parseAxiosError(toggleLikeMutation.error),
-          '좋아요 처리에 실패했습니다.'
-        )
-      : null,
   };
 };

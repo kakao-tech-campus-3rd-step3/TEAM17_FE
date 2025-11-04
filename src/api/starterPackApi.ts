@@ -5,13 +5,43 @@ import type {
   StarterPackRequest,
   LikeStarterPackResponse,
   BookmarkStarterPackResponse,
+  PagePackLikerResponse,
+  PagePackCommentResponse,
+  PackCommentResponse,
 } from '@/types/StarterPack';
+
+// API 응답의 id를 packId로 변환
+const normalizeStarterPack = (
+  pack: StarterPack | (Omit<StarterPack, 'packId'> & { id: number })
+): StarterPack => {
+  if ('id' in pack && !('packId' in pack)) {
+    const { id, ...rest } = pack as Omit<StarterPack, 'packId'> & { id: number };
+    return { ...rest, packId: id };
+  }
+  return pack as StarterPack;
+};
 
 // 모든 스타터팩 목록 조회
 export const fetchStarterPack = async (): Promise<StarterPackResponse> => {
   try {
-    const response = await axiosInstance.get<StarterPackResponse>('/api/starterPack/packs');
-    return response.data;
+    const response = await axiosInstance.get<
+      | StarterPackResponse
+      | Record<string, (StarterPack | (Omit<StarterPack, 'packId'> & { id: number }))[]>
+    >('/api/starterPack/packs');
+    const data = response.data;
+
+    // 응답이 카테고리별 객체인 경우 각 아이템을 정규화
+    if (data && typeof data === 'object') {
+      const normalized: StarterPackResponse = {};
+      for (const [category, packs] of Object.entries(data)) {
+        if (Array.isArray(packs)) {
+          normalized[category] = packs.map(normalizeStarterPack);
+        }
+      }
+      return normalized;
+    }
+
+    return data as StarterPackResponse;
   } catch (error) {
     console.error('Failed to fetch starter packs:', error);
     throw error;
@@ -21,8 +51,10 @@ export const fetchStarterPack = async (): Promise<StarterPackResponse> => {
 // 특정 스타터팩 조회
 export const fetchStarterPackById = async (id: number): Promise<StarterPack> => {
   try {
-    const response = await axiosInstance.get<StarterPack>(`/api/starterPack/packs/${id}`);
-    return response.data;
+    const response = await axiosInstance.get<
+      StarterPack | (Omit<StarterPack, 'packId'> & { id: number })
+    >(`/api/starterPack/packs/${id}`);
+    return normalizeStarterPack(response.data);
   } catch (error) {
     console.error(`Failed to fetch starter pack ${id}:`, error);
     throw error;
@@ -97,5 +129,111 @@ export const toggleStarterPackBookmark = async (
   } catch (error) {
     console.error(`Failed to toggle bookmark for starter pack ${id}:`, error);
     throw new Error('북마크 처리에 실패했습니다.');
+  }
+};
+
+// 팩 좋아요 목록 조회
+export const fetchPackLikers = async (id: number): Promise<PagePackLikerResponse> => {
+  try {
+    const response = await axiosInstance.get<PagePackLikerResponse>(
+      `/api/starterPack/packs/${id}/likes`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch pack likers for pack ${id}:`, error);
+    throw error;
+  }
+};
+
+// 카테고리별 스타터팩 조회
+export const fetchStarterPackByCategory = async (
+  categoryId: number
+): Promise<StarterPackResponse> => {
+  try {
+    const response = await axiosInstance.get<StarterPackResponse>(
+      `/api/starterPack/categories/${categoryId}/packs`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch starter packs by category ${categoryId}:`, error);
+    throw error;
+  }
+};
+
+// ==================== 댓글 관련 API ====================
+
+// 스타터팩 댓글 목록 조회 (페이지네이션)
+export const fetchPackComments = async (
+  packId: number,
+  page: number = 0,
+  size: number = 10,
+  options?: { sort?: string }
+): Promise<PagePackCommentResponse> => {
+  try {
+    const params: Record<string, string | number> = {
+      page,
+      size,
+    };
+
+    if (options?.sort) {
+      params.sort = options.sort;
+    }
+
+    const response = await axiosInstance.get<PagePackCommentResponse>(
+      `/api/starterPack/${packId}/comments`,
+      { params }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch comments for pack ${packId}:`, error);
+    throw error;
+  }
+};
+
+// 스타터팩 댓글 작성
+export const createPackComment = async (
+  packId: number,
+  content: string
+): Promise<PackCommentResponse> => {
+  try {
+    const response = await axiosInstance.post<PackCommentResponse>(
+      `/api/starterPack/${packId}/comments`,
+      {
+        content,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to create comment for pack ${packId}:`, error);
+    throw error;
+  }
+};
+
+// 스타터팩 댓글 수정
+export const updatePackComment = async (
+  commentId: number,
+  content: string
+): Promise<PackCommentResponse> => {
+  try {
+    const response = await axiosInstance.put<PackCommentResponse>(
+      `/api/starterPack/comments/${commentId}`,
+      {
+        content,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to update comment ${commentId}:`, error);
+    throw error;
+  }
+};
+
+// 스타터팩 댓글 삭제
+export const deletePackComment = async (commentId: number): Promise<void> => {
+  try {
+    await axiosInstance.delete(`/api/starterPack/comments/${commentId}`);
+  } catch (error) {
+    console.error(`Failed to delete comment ${commentId}:`, error);
+    throw error;
   }
 };

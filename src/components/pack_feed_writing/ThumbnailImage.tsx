@@ -1,49 +1,58 @@
 import { useRef, useState, useEffect } from 'react';
-import { Desc, TitleStyle } from '@/components/feedwriting/Title.style';
-import { ImageUploadBox, ScrollContainer } from '@/components/feedwriting/UploadBox.style';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
+import { ImageUploadBox, ScrollContainer } from '@/components/pack_feed_writing/UploadBox.style';
+import { useUploadImages } from '@/hooks/useUploadImages';
 
-const ThumbnailImage = () => {
+type ThumbnailImageProps = {
+  onChange: (url: string) => void;
+  dirName?: 'feed' | 'packs';
+};
+
+const ThumbnailImage = ({ onChange, dirName = 'feed' }: ThumbnailImageProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previews, setPreviews] = useState<string[]>([]);
+  const { mutateAsync: uploadImages, isPending } = useUploadImages(dirName);
 
   const handleBoxClick = () => {
-    fileInputRef.current?.click();
+    if (!isPending) fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
     const fileArray = Array.from(files);
-
     const urls = fileArray.map((file) => URL.createObjectURL(file));
     setPreviews(urls);
 
-    e.currentTarget.value = '';
+    try {
+      const uploadedUrls = await uploadImages(fileArray);
+      if (uploadedUrls.length > 0) onChange(uploadedUrls[0]);
+    } catch (err) {
+      console.error('이미지 업로드 실패:', err);
+    }
+
+    if (e.currentTarget) e.currentTarget.value = '';
   };
 
   useEffect(() => {
-    return () => {
-      previews.forEach((url) => URL.revokeObjectURL(url));
-    };
+    return () => previews.forEach((url) => URL.revokeObjectURL(url));
   }, [previews]);
 
   return (
     <>
       <TitleStyle>대표 이미지 업로드</TitleStyle>
       <ImageUploadBox onClick={handleBoxClick}>
-        {previews.length > 0 ? (
+        {isPending ? (
+          <Desc>이미지를 업로드 중입니다...</Desc>
+        ) : previews.length > 0 ? (
           <ScrollContainer>
             {previews.map((src, idx) => (
               <div key={idx} style={{ flex: '0 0 80%' }}>
                 <img
                   src={src}
                   alt={idx === 0 ? '대표 이미지' : `첨부 이미지 ${idx}`}
-                  style={{
-                    width: '90%',
-                    height: '90%',
-                    objectFit: 'contain',
-                  }}
+                  style={{ width: '90%', height: '90%', objectFit: 'contain' }}
                 />
               </div>
             ))}

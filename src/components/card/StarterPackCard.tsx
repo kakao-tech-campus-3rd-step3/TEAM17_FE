@@ -75,7 +75,7 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
         </ActionButton>
       </PostActions>
 
-      <LikesCount>{pack.likeCount.toLocaleString()}개 좋아요</LikesCount>
+      <LikesCount>{(pack.likeCount ?? 0).toLocaleString()}개 좋아요</LikesCount>
 
       <Caption>
         <Username>@{pack.categoryName}_master</Username> {pack.description}

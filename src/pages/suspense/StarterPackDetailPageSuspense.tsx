@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag, Clock } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
-import { useSuspenseQuery } from '@/hooks/useSuspenseQuery';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { fetchStarterPackById } from '@/api/starterPackApi';
 import type { StarterPack } from '@/types/StarterPack';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
@@ -40,18 +40,23 @@ import {
   ProductName,
 } from '../StarterPackDetailPage.styles';
 
+const DECIMAL_RADIX = 10;
+
 const StarterPackDetailData = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const packId = id ? parseInt(id, 10) : 0;
 
-  const { data: displayPack } = useSuspenseQuery<StarterPack>(
-    ['starterPack', packId],
-    () => fetchStarterPackById(packId),
-    {
-      staleTime: 5 * 60 * 1000,
-    }
-  ) as { data: StarterPack };
+  if (!id || isNaN(parseInt(id, DECIMAL_RADIX))) {
+    throw new Error('유효하지 않은 스타터팩 ID입니다.');
+  }
+
+  const packId = parseInt(id, DECIMAL_RADIX);
+
+  const { data: displayPack } = useSuspenseQuery<StarterPack>({
+    queryKey: ['starterPack', packId],
+    queryFn: () => fetchStarterPackById(packId),
+    staleTime: 5 * 60 * 1000,
+  });
 
   if (!displayPack) {
     return (
@@ -124,11 +129,11 @@ const StarterPackDetailData = () => {
               <StatsSection>
                 <StatItem>
                   <Heart size={16} />
-                  {displayPack.likeCount || 0}개
+                  {displayPack.likeCount}개
                 </StatItem>
                 <StatItem>
                   <MessageSquare size={16} />
-                  0개
+                  {displayPack.commentCount || 0}개
                 </StatItem>
                 <StatItem>
                   <Clock size={16} />

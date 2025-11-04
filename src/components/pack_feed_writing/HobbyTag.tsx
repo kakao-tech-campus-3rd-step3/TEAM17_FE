@@ -4,33 +4,38 @@ import {
   ToggleButton,
   DropdownMenu,
   DropdownItem,
-} from '@/components/feedwriting/HobbyTagToggle.style';
-import { ColumnWrapper } from '@/components/feedwriting/Layout.style';
-import { TitleStyle } from '@/components/feedwriting/Title.style';
+} from '@/components/pack_feed_writing/HobbyTagToggle.style';
+import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.style';
+import { TitleStyle } from '@/components/pack_feed_writing/Title.style';
+import { options } from '@/constants/categories'; 
 
-const HobbyTag = () => {
+type HobbyTagProps = {
+  onChange: (id: number) => void;
+};
+
+const HobbyTag = ({ onChange }: HobbyTagProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState('전체');
 
-  const options = ['전체', '베이킹', '캠핑', '독서', '헬스', '요리', '러닝'];
 
-  const handleSelect = (option: string) => {
-    setSelected(option);
+
+  const handleSelect = (option: { id: number; name: string }) => {
+    setSelected(option.name);
     setIsOpen(false);
+    onChange(option.id);
   };
 
   return (
     <ColumnWrapper>
       <TitleStyle>취미 태그</TitleStyle>
-
       <DropdownWrapper>
         <ToggleButton onClick={() => setIsOpen((prev) => !prev)}>{selected} ▼</ToggleButton>
 
         {isOpen && (
           <DropdownMenu>
             {options.map((option) => (
-              <DropdownItem key={option} onClick={() => handleSelect(option)}>
-                {option}
+              <DropdownItem key={option.id} onClick={() => handleSelect(option)}>
+                {option.name}
               </DropdownItem>
             ))}
           </DropdownMenu>

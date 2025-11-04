@@ -199,7 +199,7 @@ const StarterPackDetailPage: React.FC = () => {
               <StatsSection>
                 <StatItem>
                   <Heart size={16} />
-                  {displayPack?.likeCount.toLocaleString()}개 좋아요
+                  {(displayPack?.likeCount ?? 0).toLocaleString()}개 좋아요
                 </StatItem>
               </StatsSection>
 

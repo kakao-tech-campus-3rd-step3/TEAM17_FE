@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import FeedMediaSection from '@/components/feed/FeedMediaSection';
 import FeedInfoSection from '@/components/feed/FeedInfoSection';
 import CommentSection from '@/components/comment/CommentSection';
-import { useSuspenseQuery } from '@/hooks/useSuspenseQuery';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useCommentActions } from '@/hooks/useFeeds';
 import { fetchFeedById } from '@/api/feedApi';
 import type { FeedDetail, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
@@ -27,17 +27,20 @@ const FeedDetailData = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const feedId = id ? parseInt(id, 10) : 0;
 
-  const { data: feed } = useSuspenseQuery<FeedDetail>(
-    QUERY_KEYS.feeds.detail(feedId),
-    () => fetchFeedById(feedId),
-    {
-      staleTime: 5 * 60 * 1000,
-    }
-  ) as { data: FeedDetail };
+  if (!id || isNaN(parseInt(id, 10))) {
+    throw new Error('유효하지 않은 피드 ID입니다.');
+  }
 
-  const { addComment, addReply } = useCommentActions(feedId);
+  const feedId = parseInt(id, 10);
+
+  const { data: feed } = useSuspenseQuery<FeedDetail>({
+    queryKey: QUERY_KEYS.feeds.detail(feedId),
+    queryFn: () => fetchFeedById(feedId),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { addComment } = useCommentActions(feedId);
 
   const [localFeed, setLocalFeed] = useState<FeedDetail>(feed);
 
@@ -79,7 +82,14 @@ const FeedDetailData = () => {
 
   const handleAddReply = async (reply: CreateReplyRequest) => {
     try {
-      await addReply(reply);
+      // 답글은 댓글 작성 API에 parentId를 포함하여 호출
+      await addComment({
+        feedId: reply.feedId,
+        content: reply.content,
+        parentId: reply.commentId,
+      });
+      // 답글 작성 성공 후 피드 상세 정보 새로고침
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.detail(feedId) });
       alert('답글이 추가되었습니다!');
     } catch (error) {
       console.error('답글 작성 실패:', error);
