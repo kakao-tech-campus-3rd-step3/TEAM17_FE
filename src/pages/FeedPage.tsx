@@ -54,7 +54,7 @@ const FeedPage = () => {
           FEED_CONSTANTS.INITIAL_PAGE_SIZE
         );
 
-        setPosts(response?.content || []);
+        setPosts(response?.content ?? []);
         setCurrentPage(response?.number ?? FEED_CONSTANTS.INITIAL_PAGE);
         setIsLastPage(response?.last ?? false);
       } catch (err) {
@@ -77,7 +77,7 @@ const FeedPage = () => {
           FEED_CONSTANTS.LOAD_MORE_PAGE_SIZE
         );
 
-        setPosts((prev) => [...prev, ...(response?.content || [])]);
+        setPosts((prev) => [...prev, ...(response?.content ?? [])]);
         setCurrentPage(response?.number ?? currentPage + 1);
         setIsLastPage(response?.last ?? false);
       } catch (err) {

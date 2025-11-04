@@ -22,6 +22,13 @@ import {
   EngagementCount,
   HashtagSection,
   Hashtag,
+  ProductSection,
+  ProductTitle,
+  ProductItem,
+  ProductInfo,
+  ProductName,
+  ProductDescription,
+  ProductLink,
 } from './FeedDetailSection.styles';
 
 interface FeedDetailSectionProps {
@@ -35,6 +42,9 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
 
   // 이미지가 여러 개인 경우를 위한 배열 (실제로는 feed.imageUrl이 배열이어야 함)
   const images = Array.isArray(feed.imageUrl) ? feed.imageUrl : [feed.imageUrl];
+
+  // products에서 displayedProducts 계산 (필요시 slice, filter, map 등으로 처리)
+  const displayedProducts = feed.products || [];
 
   const handlePreviousImage = () => {
     setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -141,6 +151,24 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
             <Hashtag key={tag}>{tag}</Hashtag>
           ))}
         </HashtagSection>
+      )}
+
+      {/* 취미팩 상품링크 */}
+      {displayedProducts.length > 0 && (
+        <ProductSection>
+          <ProductTitle>취미팩 상품링크</ProductTitle>
+          {displayedProducts.map((product) => (
+            <ProductItem key={product.productId || product.id || product.name}>
+              <ProductInfo>
+                <ProductName>{product.name}</ProductName>
+                {product.description && (
+                  <ProductDescription>{product.description}</ProductDescription>
+                )}
+              </ProductInfo>
+              <ProductLink>링크로 이동</ProductLink>
+            </ProductItem>
+          ))}
+        </ProductSection>
       )}
     </FeedDetailContainer>
   );
