@@ -31,20 +31,41 @@ const PackWriting = () => {
   const { mutate: uploadPack } = useUploadPack();
 
   const handleSubmit = () => {
-    if (!mainImageUrl) return setError('대표 이미지를 업로드해주세요.');
-    if (!name.trim()) return setError('스타터팩 이름을 입력해주세요.');
-    if (!description.trim()) return setError('설명을 작성해주세요.');
-    if (!categoryId) return setError('카테고리를 선택해주세요.');
-    if (tags.length === 0) return setError('해시태그를 입력해주세요.');
-    if (!price) return setError('가격을 입력해주세요.');
-    if (items.length === 0) return setError('상품을 최소 1개 추가해주세요.');
+    if (!mainImageUrl) {
+      setError('대표 이미지를 업로드해주세요.');
+      return;
+    }
+    if (!name.trim()) {
+      setError('스타터팩 이름을 입력해주세요.');
+      return;
+    }
+    if (!description.trim()) {
+      setError('설명을 작성해주세요.');
+      return;
+    }
+    if (!categoryId) {
+      setError('카테고리를 선택해주세요.');
+      return;
+    }
+    if (tags.length === 0) {
+      setError('해시태그를 입력해주세요.');
+      return;
+    }
+    if (!price) {
+      setError('가격을 입력해주세요.');
+      return; 
+    }
+    if (items.length === 0) {
+      setError('상품을 최소 1개 추가해주세요.');
+      return;
+    }
 
     setError('');
 
     uploadPack({
-      categoryId,
+      categoryId, 
       name,
-      price,
+      price, 
       mainImageUrl,
       description,
       items,
@@ -57,7 +78,7 @@ const PackWriting = () => {
       <LayoutLine>
         <TitleStyle>제목작성</TitleStyle>
         <InputField type="text" value={name} onChange={(e) => setName(e.target.value)} />
-        <ThumbnailImage onChange={setMainImageUrl}  dirName="packs" />
+        <ThumbnailImage onChange={setMainImageUrl} dirName="packs" />
 
         <ContentLinkWrapper>
           <ContentWriting onChange={setDescription} />
