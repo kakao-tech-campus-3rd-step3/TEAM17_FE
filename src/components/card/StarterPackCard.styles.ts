@@ -54,6 +54,7 @@ export const PostImage = styled.img`
   max-height: 38.375rem;
   object-fit: cover;
   display: block;
+  cursor: pointer;
 `;
 
 export const PostActions = styled.div`
@@ -63,13 +64,14 @@ export const PostActions = styled.div`
   gap: 1rem;
 `;
 
-export const ActionButton = styled.button`
+export const ActionButton = styled.button<{ $alignRight?: boolean }>`
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.5rem;
   color: #262626;
   transition: color 0.2s ease;
+  ${(props) => props.$alignRight && 'margin-left: auto;'}
 
   &:hover {
     color: #8e8e8e;
@@ -148,6 +150,18 @@ export const ProductName = styled.span`
   font-size: 0.75rem;
   color: #262626;
   font-weight: 500;
+`;
+
+export const HashtagContainer = styled.div`
+  padding: 0.5rem 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+`;
+
+export const HashtagSpan = styled.span`
+  margin-right: 0.5rem;
+  color: #0095f6;
+  font-size: 0.875rem;
 `;
 
 export const TimeStamp = styled.div`

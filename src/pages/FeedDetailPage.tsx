@@ -40,7 +40,7 @@ const FeedDetailPage: React.FC = () => {
   };
 
   const handleAddComment = async (comment: CreateCommentRequest) => {
-    if (!feedId) return;
+    if (feedId === undefined) return;
 
     try {
       await addCommentApi(comment);
@@ -53,7 +53,7 @@ const FeedDetailPage: React.FC = () => {
   };
 
   const handleAddReply = async (reply: CreateReplyRequest) => {
-    if (!feedId) return;
+    if (feedId === undefined) return;
 
     try {
       // 답글은 댓글 작성 API에 parentId를 포함하여 호출

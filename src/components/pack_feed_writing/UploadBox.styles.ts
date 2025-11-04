@@ -39,7 +39,7 @@ export const ScrollContainer = styled.div`
   }
 `;
 
-export const ContentBox = styled.div`
+export const PackContentBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,12 +52,12 @@ export const ContentBox = styled.div`
   margin-bottom: 1rem;
 `;
 
-export const ContentBox2 = styled.div`
+export const FeedContentBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  
+
   width: 50%;
   height: 20rem;
   border: 2px solid ${({ theme }) => theme.colors.line.blue};

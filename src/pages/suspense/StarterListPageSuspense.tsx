@@ -15,7 +15,6 @@ import {
   CategoryBtn,
   StarterPackGrid,
   EmptyState,
-  DemoButton,
 } from '../StarterListPage.styles';
 
 const matchCategory = (pack: StarterPack, active: CategoryKey) => {
@@ -28,7 +27,7 @@ const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
   const navigate = useNavigate();
 
   const handleOpenDetail = () => {
-    navigate(`/starterpack/${pack.packId}`);
+    navigate(`/starterpack/${pack.id}`);
   };
 
   return (
@@ -42,7 +41,6 @@ const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
 };
 
 const StarterPackData = () => {
-  const navigate = useNavigate();
   const [active, setActive] = useState<CategoryKey>('전체');
 
   const { data: starterPackResponse } = useSuspenseQuery({
@@ -51,20 +49,20 @@ const StarterPackData = () => {
     staleTime: 5 * 60 * 1000,
   });
 
-  const filteredPacks = useMemo(() => {
-    return starterPackResponse.content.filter((pack: StarterPack) => matchCategory(pack, active));
-  }, [starterPackResponse.content, active]);
+  const allStarterPacks = useMemo(() => {
+    if (!starterPackResponse) return [];
+    return Object.values(starterPackResponse).flat();
+  }, [starterPackResponse]);
 
-  const handleDemoClick = () => {
-    navigate('/starterpack/demo');
-  };
+  const filteredPacks = useMemo(() => {
+    return allStarterPacks.filter((pack: StarterPack) => matchCategory(pack, active));
+  }, [allStarterPacks, active]);
 
   if (filteredPacks.length === 0) {
     return (
       <StarterPackContainer>
         <StarterPackHeader>
           <StarterPackTitle>스타터팩</StarterPackTitle>
-          <DemoButton onClick={handleDemoClick}>데모</DemoButton>
         </StarterPackHeader>
         <EmptyState>
           <p>아직 스타터팩이 없습니다.</p>
@@ -77,7 +75,6 @@ const StarterPackData = () => {
     <StarterPackContainer>
       <StarterPackHeader>
         <StarterPackTitle>스타터팩</StarterPackTitle>
-        <DemoButton onClick={handleDemoClick}>데모</DemoButton>
       </StarterPackHeader>
 
       <CategoryTabs>
@@ -94,7 +91,7 @@ const StarterPackData = () => {
 
       <StarterPackGrid>
         {filteredPacks.map((pack: StarterPack) => (
-          <StarterPackCardWrapper key={pack.packId} pack={pack} />
+          <StarterPackCardWrapper key={pack.id} pack={pack} />
         ))}
       </StarterPackGrid>
     </StarterPackContainer>

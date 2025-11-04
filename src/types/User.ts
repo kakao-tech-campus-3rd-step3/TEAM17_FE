@@ -1,8 +1,29 @@
 export type UserProfile = {
   userId: number;
   nickname: string;
-  hobby: string | null;
-  introduction: string | null;
-  profileImage: string | null;
-  postCount: number;
+  hobby: string;
+  profileImageUrl: string;
+  bio: string;
+  totalPostCount: number;
+  packCount: number;
+  feedCount: number;
+  packs?: {
+    packId: number;
+    name: string;
+    mainImageUrl: string;
+  }[];
+  feeds?: {
+    feedId: number;
+    description: string;
+    imageUrl: string;
+  }[];
+  isMe?: boolean;
+};
+
+
+export type SessionUser = {
+  userId: number;
+  email: string;
+  nickname: string;
+  profileImageUrl: string | null;
 };

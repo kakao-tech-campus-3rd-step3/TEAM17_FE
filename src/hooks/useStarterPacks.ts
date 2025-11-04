@@ -109,7 +109,7 @@ export const useStarterPackActions = () => {
 
           const updated: StarterPackResponse = {};
           for (const key in old) {
-            updated[key] = old[key].map((pack) => (pack.packId === id ? updatedPack : pack));
+            updated[key] = old[key].map((pack) => (pack.id === id ? updatedPack : pack));
           }
           return updated;
         }
@@ -226,7 +226,7 @@ export const useStarterPackLike = (id: number) => {
 
           const updatePack = (pack: StarterPack) => {
             const currentIsLiked = (pack as StarterPack & { isLiked?: boolean }).isLiked ?? false;
-            return pack.packId === id
+            return pack.id === id
               ? {
                   ...pack,
                   isLiked: !currentIsLiked,
@@ -264,7 +264,7 @@ export const useStarterPackLike = (id: number) => {
           if (!old) return old;
 
           const updatePack = (pack: StarterPack) =>
-            pack.packId === id
+            pack.id === id
               ? { ...pack, likeCount: result.likeCount, isLiked: result.isLiked }
               : pack;
 

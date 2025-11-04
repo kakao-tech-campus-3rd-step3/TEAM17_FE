@@ -1,11 +1,11 @@
-export interface Product {
+export interface ProductFormData {
   name: string;
   linkUrl: string;
   description?: string;
-  imageFile?: File; 
-  imageUrl?: string; 
+  imageFile?: File;
+  imageUrl?: string;
 }
 
 export interface ProductForm {
-  products: Product[];
+  products: ProductFormData[];
 }
