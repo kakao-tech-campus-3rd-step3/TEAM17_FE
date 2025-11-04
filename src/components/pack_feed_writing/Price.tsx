@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
-import { PriceContainer, PriceBox, Priceinput } from '@/components/pack_feed_writing/Price.style';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.styles';
+import { PriceContainer, PriceBox, Priceinput } from '@/components/pack_feed_writing/Price.styles';
 import { formatNumberInput, parseNumberInput } from '@/utils/price';
 
 type PriceProps = {

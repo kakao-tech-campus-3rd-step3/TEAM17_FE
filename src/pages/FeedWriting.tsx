@@ -5,7 +5,7 @@ import {
   TagWrapper,
   SubmitButton,
   WarningText,
-} from '@/components/pack_feed_writing/Layout.style';
+} from '@/components/pack_feed_writing/Layout.styles';
 import ThumbnailImage from '@/components/pack_feed_writing/ThumbnailImage';
 import FeedContentWriting from '@/components/pack_feed_writing/FeedContentWriting';
 import HobbyTag from '@/components/pack_feed_writing/HobbyTag';
@@ -21,8 +21,7 @@ const FeedWriting = () => {
 
   const { mutate: uploadFeed } = useUploadFeed();
 
-const handleSubmit = () => {
-
+  const handleSubmit = () => {
     if (!imageUrl) {
       setError('이미지를 업로드해주세요.');
       return;
@@ -35,7 +34,7 @@ const handleSubmit = () => {
 
     if (!categoryId) {
       setError('카테고리를 선택해주세요.');
-      return; 
+      return;
     }
 
     if (tags.length === 0) {
@@ -43,13 +42,12 @@ const handleSubmit = () => {
       return;
     }
 
-
     setError('');
 
     uploadFeed({
       description,
       imageUrl,
-      categoryId, 
+      categoryId,
       hashtagNames: tags,
     });
   };

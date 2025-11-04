@@ -11,7 +11,7 @@ import {
   ImageUploadBox,
   PreviewImage,
   FileInput,
-} from '@/components/mypage/ProfileEditModal.style';
+} from '@/components/mypage/ProfileEditModal.styles';
 import defaultProfile from '@/assets/defaultProfile.png';
 import type { UserProfile } from '@/types/User';
 

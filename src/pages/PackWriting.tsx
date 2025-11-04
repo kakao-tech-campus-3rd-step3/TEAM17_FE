@@ -7,8 +7,8 @@ import {
   SubmitButton,
   WarningText,
   InputField,
-} from '@/components/pack_feed_writing/Layout.style';
-import { TitleStyle } from '@/components/pack_feed_writing/Title.style';
+} from '@/components/pack_feed_writing/Layout.styles';
+import { TitleStyle } from '@/components/pack_feed_writing/Title.styles';
 import ThumbnailImage from '@/components/pack_feed_writing/ThumbnailImage';
 import ContentWriting from '@/components/pack_feed_writing/ContentWriting';
 import LinkWriting from '@/components/pack_feed_writing/LinkWriting';
@@ -53,7 +53,7 @@ const PackWriting = () => {
     }
     if (!price) {
       setError('가격을 입력해주세요.');
-      return; 
+      return;
     }
     if (items.length === 0) {
       setError('상품을 최소 1개 추가해주세요.');
@@ -63,9 +63,9 @@ const PackWriting = () => {
     setError('');
 
     uploadPack({
-      categoryId, 
+      categoryId,
       name,
-      price, 
+      price,
       mainImageUrl,
       description,
       items,

@@ -4,9 +4,9 @@ import {
   ToggleButton,
   DropdownMenu,
   DropdownItem,
-} from '@/components/pack_feed_writing/HobbyTagToggle.style';
-import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.style';
-import { TitleStyle } from '@/components/pack_feed_writing/Title.style';
+} from '@/components/pack_feed_writing/HobbyTagToggle.styles';
+import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.styles';
+import { TitleStyle } from '@/components/pack_feed_writing/Title.styles';
 import { OPTIONS } from '@/constants/categories';
 
 type HobbyTagProps = {

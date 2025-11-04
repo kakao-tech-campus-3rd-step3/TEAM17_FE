@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.style';
-import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
-import { PackContentBox, TextArea, Counter } from '@/components/pack_feed_writing/UploadBox.style';
+import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.styles';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.styles';
+import { PackContentBox, TextArea, Counter } from '@/components/pack_feed_writing/UploadBox.styles';
 
 type ContentWritingProps = {
   onChange: (value: string) => void;

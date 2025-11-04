@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.style';
-import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
-import { FeedContentBox, TextArea, Counter } from '@/components/pack_feed_writing/UploadBox.style';
+import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.styles';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.styles';
+import { FeedContentBox, TextArea, Counter } from '@/components/pack_feed_writing/UploadBox.styles';
 
 type FeedContentWritingProps = {
   onChange: (value: string) => void;

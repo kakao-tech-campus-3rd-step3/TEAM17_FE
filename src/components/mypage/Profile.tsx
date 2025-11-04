@@ -20,7 +20,7 @@ import {
   SubInfo,
   EditButton,
   ButtonWrapper,
-} from '@/components/mypage/Profile.style';
+} from '@/components/mypage/Profile.styles';
 import ProfileEditModal from '@/components/mypage/ProfileEditModal';
 
 const Profile = () => {

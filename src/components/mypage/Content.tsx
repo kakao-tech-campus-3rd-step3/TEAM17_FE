@@ -1,4 +1,4 @@
-import { ContentBox, Text } from '@/components/mypage/Content.style';
+import { ContentBox, Text } from '@/components/mypage/Content.styles';
 const Content = () => {
   return (
     <>

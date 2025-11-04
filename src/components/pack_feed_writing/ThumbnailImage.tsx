@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
-import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
-import { ImageUploadBox, ScrollContainer } from '@/components/pack_feed_writing/UploadBox.style';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.styles';
+import { ImageUploadBox, ScrollContainer } from '@/components/pack_feed_writing/UploadBox.styles';
 import { useUploadImages } from '@/hooks/useUploadImages';
 
 type ThumbnailImageProps = {
