@@ -31,3 +31,32 @@ export interface PackItem {
   name: string;
   mainImageUrl: string;
 }
+
+export interface BookmarkedFeedItem {
+  feedId: number;
+  description: string;
+  imageUrl: string;
+  author: {
+    userId: number;
+    name: string;
+    profileImageUrl: string;
+  };
+  category: {
+    categoryId: number;
+    categoryName: string;
+  };
+  hashtags: {
+    id: number;
+    hashtagName: string;
+  }[];
+  stats: {
+    likeCount: number;
+    bookmarkCount: number;
+    commentCount: number;
+  };
+  interactionStatus: {
+    isLiked: boolean;
+    isBookmarked: boolean;
+  };
+  createdAt: string;
+}
