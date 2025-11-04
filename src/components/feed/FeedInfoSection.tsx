@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { FeedDetail } from '@/types/Feed';
-import { FEED_CONSTANTS } from '@/constants/feed';
 import {
   InfoContainer,
   UserProfile,
@@ -10,14 +9,6 @@ import {
   UserBio,
   PostContent,
   PostDate,
-  ProductSection,
-  ProductTitle,
-  ProductItem,
-  ProductInfo,
-  ProductName,
-  ProductDescription,
-  ProductLink,
-  MoreProductsButton,
 } from './FeedInfoSection.styles';
 
 interface FeedInfoSectionProps {
@@ -25,48 +16,20 @@ interface FeedInfoSectionProps {
 }
 
 const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({ feed }) => {
-  const [showAllProducts, setShowAllProducts] = useState(false);
-
-  const products = feed.products || [];
-  const displayedProducts = showAllProducts
-    ? products
-    : products.slice(0, FEED_CONSTANTS.INITIAL_PRODUCT_DISPLAY_COUNT);
-
   return (
     <InfoContainer>
       {/* 유저 프로필 섹션 */}
       <UserProfile>
         <ProfileImage src={feed.author.profileImageUrl} alt={feed.author.name} />
         <UserInfo>
-          <UserName>{feed.author.name}</UserName>
-          <UserBio>INFP 감성 빵 제조기입니당~</UserBio>
+          <UserName>{feed.author.nickname || feed.author.name}</UserName>
+          {feed.author.bio && <UserBio>{feed.author.bio}</UserBio>}
         </UserInfo>
       </UserProfile>
 
       {/* 본문 내용 */}
       <PostContent>{feed.description}</PostContent>
       <PostDate>{feed.createdAt}</PostDate>
-
-      {/* 취미팩 상품링크 */}
-      {products.length > 0 && (
-        <ProductSection>
-          <ProductTitle>취미팩 상품링크</ProductTitle>
-          {displayedProducts.map((product) => (
-            <ProductItem key={product.productId}>
-              <ProductInfo>
-                <ProductName>{product.name}</ProductName>
-                <ProductDescription>{product.description}</ProductDescription>
-              </ProductInfo>
-              <ProductLink>링크로 이동</ProductLink>
-            </ProductItem>
-          ))}
-          {products.length > FEED_CONSTANTS.INITIAL_PRODUCT_DISPLAY_COUNT && !showAllProducts && (
-            <MoreProductsButton onClick={() => setShowAllProducts(true)}>
-              취미 팩 더보기 ↓
-            </MoreProductsButton>
-          )}
-        </ProductSection>
-      )}
     </InfoContainer>
   );
 };

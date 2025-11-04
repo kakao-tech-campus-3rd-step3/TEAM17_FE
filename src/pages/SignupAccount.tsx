@@ -18,8 +18,8 @@ import {
   Comment,
   CommentLink,
   ErrorMessage,
-} from '@/components/signup/SignupStep.style';
-import { ToggleButton, InputWrapper } from '@/components/login/Login.style';
+} from '@/components/signup/SignupStep.styles';
+import { ToggleButton, InputWrapper } from '@/components/login/Login.styles';
 
 import EyeOn from '@/assets/icon-eye.svg';
 import EyeOff from '@/assets/icon-eye-off.svg';

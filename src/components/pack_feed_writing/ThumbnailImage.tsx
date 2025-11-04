@@ -1,14 +1,14 @@
 import { useRef, useState, useEffect } from 'react';
-import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
-import { ImageUploadBox, ScrollContainer } from '@/components/pack_feed_writing/UploadBox.style';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.styles';
+import { ImageUploadBox, ScrollContainer } from '@/components/pack_feed_writing/UploadBox.styles';
 import { useUploadImages } from '@/hooks/useUploadImages';
 
 type ThumbnailImageProps = {
   onChange: (url: string) => void;
-  dirName?: 'feed' | 'packs';
+  dirName?: 'feed' | 'packs' | 'products';
 };
 
-const ThumbnailImage = ({ onChange, dirName = 'feed' }: ThumbnailImageProps) => {
+const ThumbnailImage = ({ onChange, dirName = 'packs' }: ThumbnailImageProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previews, setPreviews] = useState<string[]>([]);
   const { mutateAsync: uploadImages, isPending } = useUploadImages(dirName);
@@ -31,12 +31,23 @@ const ThumbnailImage = ({ onChange, dirName = 'feed' }: ThumbnailImageProps) => 
     } catch (err) {
       console.error('이미지 업로드 실패:', err);
     }
-
-    if (e.currentTarget) e.currentTarget.value = '';
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   useEffect(() => {
-    return () => previews.forEach((url) => URL.revokeObjectURL(url));
+    return () => {
+      previews.forEach((url) => {
+        if (url && url.startsWith('blob:')) {
+          try {
+            URL.revokeObjectURL(url);
+          } catch (error) {
+            console.warn('Failed to revoke blob URL:', error);
+          }
+        }
+      });
+    };
   }, [previews]);
 
   return (

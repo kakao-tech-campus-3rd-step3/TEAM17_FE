@@ -4,9 +4,18 @@ export const Wrap = styled.div`
   background-color: #ffffff;
   border-radius: 0.5rem;
   padding: 1.5rem;
+  margin-top: 1.5rem;
   box-shadow:
     0 1px 3px 0 rgba(0, 0, 0, 0.1),
     0 1px 2px 0 rgba(0, 0, 0, 0.06);
+
+  @media (max-width: 768px) {
+    margin-top: 1.25rem;
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 1rem;
+  }
 `;
 
 export const Header = styled.div`

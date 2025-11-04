@@ -9,7 +9,7 @@ import {
   SubInfo,
   Line,
   Image,
-} from '@/components/mypage/MyFeed.style';
+} from '@/components/mypage/MyFeed.styles';
 import ReactionBar from '@/components/mypage/ReactionBar';
 import Content from '@/components/mypage/Content';
 import homeBaking from '@/assets/homeBaking.jpg';

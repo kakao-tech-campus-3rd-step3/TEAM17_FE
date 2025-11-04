@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.style';
-import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
-import { ContentBox, TextArea, Counter } from '@/components/pack_feed_writing/UploadBox.style';
+import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.styles';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.styles';
+import { PackContentBox, TextArea, Counter } from '@/components/pack_feed_writing/UploadBox.styles';
 
 type ContentWritingProps = {
   onChange: (value: string) => void;
@@ -26,7 +26,7 @@ const ContentWriting = ({ onChange }: ContentWritingProps) => {
   return (
     <ColumnWrapper>
       <TitleStyle>설명 글 작성하기(본문내용)</TitleStyle>
-      <ContentBox onClick={() => setIsActive(true)}>
+      <PackContentBox onClick={() => setIsActive(true)}>
         {isActive ? (
           <TextArea
             value={content}
@@ -38,7 +38,7 @@ const ContentWriting = ({ onChange }: ContentWritingProps) => {
         ) : (
           <Desc>게시물에 대한 이야기를 적어주세요.</Desc>
         )}
-      </ContentBox>
+      </PackContentBox>
       {isActive && (
         <Counter>
           {content.length} / {maxLength} 글자

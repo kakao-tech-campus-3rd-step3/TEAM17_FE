@@ -21,7 +21,7 @@ import {
   Line,
   ToggleButton,
   InputWrapper,
-} from '@/components/login/Login.style';
+} from '@/components/login/Login.styles';
 import KakaoLoginButton from '@/components/login/KakaoLoginButton';
 
 import EyeOn from '@/assets/icon-eye.svg';
@@ -46,8 +46,9 @@ export default function LoginForm() {
 
   const onSubmit = (data: LoginValues) => {
     loginMutate(data, {
-      onSuccess: () => {
-        login();
+      onSuccess: (userData) => {
+        login(userData);
+
         alert('로그인 성공!');
         navigate('/');
       },
@@ -109,7 +110,7 @@ export default function LoginForm() {
         </SocialButton>
 
         <Comment>
-          이미 계정이 있으신가요? <CommentLink to="/signup/step1">회원가입</CommentLink>
+          이미 계정이 있으신가요? <CommentLink to="/signup/profile">회원가입</CommentLink>
         </Comment>
       </LoginContainer>
     </>

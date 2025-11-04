@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.style';
-import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.style';
+import { ColumnWrapper } from '@/components/pack_feed_writing/Layout.styles';
+import { Desc, TitleStyle } from '@/components/pack_feed_writing/Title.styles';
 import {
   LinkUploadBox,
   ProductWrapper,
   Product,
   ProductImage,
-} from '@/components/pack_feed_writing/LinkWriting.style';
+} from '@/components/pack_feed_writing/LinkWriting.styles';
 
 import LinkModal from '@/components/pack_feed_writing/LinkModal';
 import type { ProductForm } from '@/types/LinkWriteForm';
@@ -15,7 +15,6 @@ import type { WriteProduct } from '@/types/Product';
 type LinkWritingProps = {
   onChange: (items: WriteProduct[]) => void;
 };
-
 const LinkWriting = ({ onChange }: LinkWritingProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -30,15 +29,18 @@ const LinkWriting = ({ onChange }: LinkWritingProps) => {
   const handleSubmit = (data: ProductForm) => {
     setFormData(data);
 
-    const productsWithUrl: WriteProduct[] = data.products.map((p) => ({
-      name: p.name,
-      linkUrl: p.linkUrl,
-      description: p.description ?? '',
-      imageUrl: p.imageUrl ?? '',
-    }));
+    const productsWithPreview: WriteProduct[] = data.products.map((p) => {
+      const newImageUrl = p.imageFile ? URL.createObjectURL(p.imageFile) : (p.imageUrl ?? '');
+      return {
+        name: p.name,
+        linkUrl: p.linkUrl,
+        description: p.description ?? '',
+        imageUrl: newImageUrl,
+      };
+    });
 
-    setSubmittedProducts(productsWithUrl);
-    onChange(productsWithUrl);
+    setSubmittedProducts(productsWithPreview);
+    onChange(productsWithPreview);
     setIsOpen(false);
   };
 
@@ -46,7 +48,11 @@ const LinkWriting = ({ onChange }: LinkWritingProps) => {
     return () => {
       submittedProducts.forEach((p) => {
         if (p.imageUrl && p.imageUrl.startsWith('blob:')) {
-          URL.revokeObjectURL(p.imageUrl);
+          try {
+            URL.revokeObjectURL(p.imageUrl);
+          } catch (error) {
+            console.warn('Failed to revoke blob URL:', error);
+          }
         }
       });
     };

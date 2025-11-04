@@ -1,10 +1,10 @@
 import axiosInstance from '@/api/axiosInstance';
 import type { UserProfile } from '@/types/User';
+import { ensureCsrfToken } from '@/utils/csrf';
 
-// ✅ 내 프로필 조회
-export const fetchUserProfile = async (): Promise<UserProfile> => {
+export const fetchUserProfile = async (userId: number): Promise<UserProfile> => {
   try {
-    const response = await axiosInstance.get<UserProfile>('/api/user/profile');
+    const response = await axiosInstance.get(`/api/members/${userId}/mypage`);
     return response.data;
   } catch (error) {
     console.error('Failed to fetch user profile:', error);
@@ -12,17 +12,15 @@ export const fetchUserProfile = async (): Promise<UserProfile> => {
   }
 };
 
-// ✅ 프로필 수정
-export const updateUserProfile = async (data: Partial<UserProfile>): Promise<UserProfile> => {
+export const updateUserProfile = async (
+  userId: number,
+  data: Partial<UserProfile>
+): Promise<UserProfile> => {
   try {
-    return {
-      userId: 1,
-      nickname: data.nickname ?? '정보 없음',
-      hobby: data.hobby ?? '정보 없음',
-      introduction: data.introduction ?? '정보 없음',
-      profileImage: null,
-      postCount: 10,
-    };
+    await ensureCsrfToken();
+
+    const response = await axiosInstance.patch(`/api/members/${userId}/mypage`, data);
+    return response.data;
   } catch (error) {
     console.error('Failed to update user profile:', error);
     throw error;
