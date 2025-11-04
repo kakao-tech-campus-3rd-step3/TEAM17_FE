@@ -12,18 +12,46 @@ export const StarterPackHeader = styled.div`
   background-color: #ffffff;
   border-bottom: 1px solid #dbdbdb;
   padding: 1rem 1.25rem;
-  margin: -1.25rem -1.25rem 1.25rem -1.25rem;
+  margin: -1.25rem -1.25rem 2rem -1.25rem;
   position: sticky;
   top: 0;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `;
 
 export const StarterPackTitle = styled.h1`
   font-size: 1.5rem;
   font-weight: 600;
   color: #262626;
-  margin: 0 0 1rem 0;
+  margin: 0;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+`;
+
+export const HeaderWriteButton = styled.button`
+  background-color: #ff6b35;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #ff5722;
+  }
+
+  &:active {
+    background-color: #e64a19;
+  }
 `;
 
 export const CategoryTabs = styled.div`
@@ -62,6 +90,7 @@ export const StarterPackGrid = styled.div`
   gap: 1.25rem;
   max-width: 75rem;
   margin: 0 auto;
+  margin-top: 1.5rem;
 
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);

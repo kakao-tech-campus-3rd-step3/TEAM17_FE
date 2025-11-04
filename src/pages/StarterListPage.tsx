@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StarterPackCard from '@/components/card/StarterPackCard';
+import { useAuth } from '@/hooks/useAuth';
 import { useStarterPack, useStarterPackLike, useStarterPackById } from '@/hooks/useStarterPacks';
 import type { StarterPack } from '@/types/StarterPack';
 import { STARTER_PACK_CONSTANTS, type CategoryKey } from '@/constants/starterPack';
@@ -8,6 +9,7 @@ import {
   StarterPackContainer,
   StarterPackHeader,
   StarterPackTitle,
+  HeaderWriteButton,
   CategoryTabs,
   CategoryBtn,
   StarterPackGrid,
@@ -49,9 +51,19 @@ const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
 
 const StarterListPage = () => {
   const navigate = useNavigate();
+  const { isLogin } = useAuth();
   const [active, setActive] = useState<CategoryKey>(STARTER_PACK_CONSTANTS.DEFAULT_CATEGORY);
 
   const { starterPack, loading, error } = useStarterPack();
+
+  const handleWriteClick = () => {
+    if (!isLogin) {
+      alert('로그인이 필요한 서비스입니다.\n로그인 페이지로 이동합니다.');
+      navigate('/login');
+      return;
+    }
+    navigate('/packwriting');
+  };
 
   const allStarterPacks = useMemo(() => {
     if (!starterPack) return [];
@@ -85,6 +97,7 @@ const StarterListPage = () => {
       <StarterPackContainer>
         <StarterPackHeader>
           <StarterPackTitle>취미팩</StarterPackTitle>
+          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
         </StarterPackHeader>
         <LoadingContainer>
           <LoadingSpinner />
@@ -99,6 +112,7 @@ const StarterListPage = () => {
       <StarterPackContainer>
         <StarterPackHeader>
           <StarterPackTitle>취미팩</StarterPackTitle>
+          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
         </StarterPackHeader>
         <ErrorContainer>
           <ErrorMessage>{error}</ErrorMessage>
@@ -116,6 +130,7 @@ const StarterListPage = () => {
       <StarterPackContainer>
         <StarterPackHeader>
           <StarterPackTitle>취미팩</StarterPackTitle>
+          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
           <CategoryTabs role="tablist" aria-label="스타터팩 카테고리">
             {availableCategories.map((category) => (
               <CategoryBtn
@@ -141,6 +156,7 @@ const StarterListPage = () => {
     <StarterPackContainer>
       <StarterPackHeader>
         <StarterPackTitle>취미팩</StarterPackTitle>
+        <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
         <CategoryTabs role="tablist" aria-label="스타터팩 카테고리">
           {availableCategories.map((category) => (
             <CategoryBtn
