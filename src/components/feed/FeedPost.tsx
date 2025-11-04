@@ -24,7 +24,7 @@ import {
 
 interface FeedPostProps {
   post: FeedPostType;
-  onLike?: (feedId: number, isLiked: boolean, likeCount: number) => void;
+  onLike?: (feedId: number, isLiked: boolean, likeCount: number) => void | Promise<void>;
 }
 
 const FeedPost = ({ post, onLike }: FeedPostProps) => {
@@ -32,14 +32,24 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
 
-  const handleLike = useCallback(() => {
+  const handleLike = useCallback(async () => {
+    const oldIsLiked = isLiked;
+    const oldLikeCount = likeCount;
     const newIsLiked = !isLiked;
     const newLikeCount = newIsLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
 
     setIsLiked(newIsLiked);
     setLikeCount(newLikeCount);
 
-    onLike?.(post.feedId, newIsLiked, newLikeCount);
+    if (onLike) {
+      try {
+        await onLike(post.feedId, newIsLiked, newLikeCount);
+      } catch (error) {
+        setIsLiked(oldIsLiked);
+        setLikeCount(oldLikeCount);
+        console.error('Failed to toggle like:', error);
+      }
+    }
   }, [isLiked, likeCount, post.feedId, onLike]);
 
   const handlePostClick = useCallback(() => {
