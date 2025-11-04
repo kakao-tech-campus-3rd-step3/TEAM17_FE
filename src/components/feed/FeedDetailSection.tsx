@@ -75,7 +75,14 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
       {images.length > 0 && (
         <ImageCarousel>
           <ImageContainer>
-            <img src={images[currentImageIndex]} alt="피드 이미지" />
+            <img
+              src={images[currentImageIndex]}
+              alt="피드 이미지"
+              onError={(e) => {
+                // 이미지 로드 실패 시 숨김 (blob URL이 만료된 경우 등)
+                e.currentTarget.style.display = 'none';
+              }}
+            />
             {images.length > 1 && (
               <>
                 <ImageNavigation>

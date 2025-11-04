@@ -100,10 +100,19 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
             {pack.items.slice(0, MAX_DISPLAY_ITEMS).map((item) => {
               // name과 linkUrl 조합으로 고유한 key 생성
               const itemKey = `${item.name}-${item.linkUrl}`;
+              const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+                e.currentTarget.style.display = 'none';
+              };
               return (
                 <li key={itemKey}>
                   <ProductItem>
-                    <ProductImage src={item.imageUrl} alt={item.name} />
+                    {item.imageUrl && (
+                      <ProductImage
+                        src={item.imageUrl}
+                        alt={item.name}
+                        onError={handleImageError}
+                      />
+                    )}
                     <ProductName>{item.name}</ProductName>
                   </ProductItem>
                 </li>

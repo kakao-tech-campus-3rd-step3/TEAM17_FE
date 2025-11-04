@@ -30,7 +30,7 @@ const LinkWriting = ({ onChange }: LinkWritingProps) => {
     setFormData(data);
 
     const productsWithPreview: WriteProduct[] = data.products.map((p) => {
-      const newImageUrl = p.imageFile ? URL.createObjectURL(p.imageFile) : (p.imageUrl ?? ''); 
+      const newImageUrl = p.imageFile ? URL.createObjectURL(p.imageFile) : (p.imageUrl ?? '');
       return {
         name: p.name,
         linkUrl: p.linkUrl,
@@ -47,7 +47,15 @@ const LinkWriting = ({ onChange }: LinkWritingProps) => {
   useEffect(() => {
     return () => {
       submittedProducts.forEach((p) => {
-        if (p.imageUrl) URL.revokeObjectURL(p.imageUrl);
+        // blob URL인 경우에만 revokeObjectURL 호출
+        if (p.imageUrl && p.imageUrl.startsWith('blob:')) {
+          try {
+            URL.revokeObjectURL(p.imageUrl);
+          } catch (error) {
+            // 이미 revoke된 URL이거나 유효하지 않은 경우 무시
+            console.warn('Failed to revoke blob URL:', error);
+          }
+        }
       });
     };
   }, [submittedProducts]);

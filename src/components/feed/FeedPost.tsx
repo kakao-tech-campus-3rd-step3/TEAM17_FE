@@ -97,6 +97,9 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
         src={post.imageUrl}
         alt={`Post by ${post.author.name}`}
         onClick={handlePostClick}
+        onError={(e) => {
+          e.currentTarget.style.display = 'none';
+        }}
       />
 
       <PostActions>
