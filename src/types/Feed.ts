@@ -15,12 +15,6 @@ export interface FeedPost {
   likeCount: number;
   isLiked: boolean;
   createdAt: string;
-  products: {
-    productId: number;
-    name: string;
-    imageUrl: string;
-    description: string;
-  }[];
 }
 
 export interface PageableResponse {
@@ -122,14 +116,40 @@ export interface CommentResponse {
   empty: boolean;
 }
 
+export interface Member {
+  userId: number;
+  email: string;
+  name: string;
+  nickname: string;
+  provider: 'EMAIL' | 'GOOGLE' | 'KAKAO' | 'NAVER';
+  profileImageUrl: string;
+  role: 'USER' | 'ADMIN';
+  birthDate: string;
+  gender: 'MALE' | 'FEMALE' | 'OTHER';
+  hobby: string;
+  bio: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // 피드 상세보기용 확장 타입
-export interface FeedDetail extends Omit<FeedPost, 'imageUrl'> {
+export interface FeedProduct {
+  productId?: number;
+  id?: number;
+  name: string;
+  description?: string;
+  linkUrl?: string;
+}
+
+export interface FeedDetail extends Omit<FeedPost, 'imageUrl' | 'author'> {
   imageUrl: string[];
+  author: Member;
   comments: Comment[];
   commentCount: number;
   bookmarkCount: number;
   isBookmarked: boolean;
   hashtags: string[];
+  products?: FeedProduct[];
 }
 
 // 피드 좋아요 사용자 정보

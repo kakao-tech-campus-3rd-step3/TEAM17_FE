@@ -1,23 +1,30 @@
-import type { Product } from './Product';
+export interface StarterPackItem {
+  name: string;
+  linkUrl: string;
+  description: string;
+  imageUrl: string;
+}
+
+export interface StarterPackHashtag {
+  id: number;
+  hashtagName: string;
+}
 
 export interface StarterPack {
-  packId: number;
+  id: number;
   name: string;
   description: string;
   categoryId: number;
   categoryName: string;
-  productIds: number[];
+  price: number;
+  mainImageUrl: string;
+  items: StarterPackItem[];
+  hashtags: StarterPackHashtag[];
   likeCount: number;
-  isLiked: boolean;
-  createdAt: string;
-
-  products?: Product[];
-  mainImage?: string;
-  originalPrice?: number;
-  salePrice?: number;
-  discountRate?: number;
-  reviewCount?: number;
-  commentCount?: number;
+  bookmarkCount: number;
+  commentCount: number;
+  authorNickname: string;
+  memberId: number;
 }
 
 export interface StarterPackResponse {
@@ -28,7 +35,10 @@ export interface StarterPackRequest {
   name: string;
   description?: string;
   categoryId: number;
-  productIds: number[];
+  price: number;
+  mainImageUrl: string;
+  items: StarterPackItem[];
+  hashtags: number[]; // hashtag ID 배열
 }
 
 // API 응답 타입

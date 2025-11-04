@@ -36,7 +36,7 @@ const StarterPreview = () => {
 
   const handlePackClick = useCallback(
     (pack: StarterPack) => {
-      navigate(`/starterpack/${pack.packId}`);
+      navigate(`/starterpack/${pack.id}`);
     },
     [navigate]
   );
@@ -104,12 +104,12 @@ const StarterPreview = () => {
       <Grid>
         {popularPacks.map((pack) => (
           <GridItem
-            key={pack.packId}
+            key={pack.id}
             onClick={() => handlePackClick(pack)}
             style={{ cursor: 'pointer' }}
           >
-            {pack.mainImage ? (
-              <PackImage src={pack.mainImage} alt={pack.name} loading="lazy" decoding="async" />
+            {pack.mainImageUrl ? (
+              <PackImage src={pack.mainImageUrl} alt={pack.name} loading="lazy" decoding="async" />
             ) : (
               <ImagePlaceholder>{pack.name}</ImagePlaceholder>
             )}

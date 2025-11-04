@@ -13,6 +13,8 @@ import Login from '@/pages/Login';
 import MyPage from '@/pages/MyPage';
 import PackWriting from '@/pages/PackWriting';
 import FeedWriting from '@/pages/FeedWriting';
+// TODO: 디자인 확인 후 삭제 가능한 임시 Mock 페이지
+import FeedMockPage from '@/pages/mock/FeedMockPage';
 
 export const Router = () => (
   <Routes>
@@ -35,6 +37,8 @@ export const Router = () => (
       <Route path="/feed/:id" element={<FeedDetailPageSuspense />} />
       <Route path="/pack-writing" element={<PackWriting />} />
       <Route path="/feed-writing" element={<FeedWriting />} />
+      {/* TODO: 디자인 확인 후 삭제 가능 - Mock 페이지 */}
+      <Route path="/mock/feed" element={<FeedMockPage />} />
     </Route>
   </Routes>
 );

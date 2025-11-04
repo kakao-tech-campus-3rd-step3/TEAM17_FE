@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { tokens } from '@/styles/tokens';
 
 export const FeedDetailContainer = styled.div`
   background: white;
@@ -122,7 +123,7 @@ export const ImageCounter = styled.div`
 
 export const EngagementSection = styled.div`
   display: flex;
-  gap: 1.5rem;
+  gap: 1.25rem;
   margin-bottom: 1rem;
   padding: 0.75rem 0;
   border-bottom: 1px solid #eee;
@@ -141,13 +142,19 @@ export const EngagementItem = styled.div`
 `;
 
 export const EngagementIcon = styled.span`
-  font-size: 1.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${tokens.colors.orange.primary};
+  cursor: pointer;
 `;
 
 export const EngagementCount = styled.span`
   font-size: 0.875rem;
-  color: #666;
-  font-weight: 500;
+  color: ${tokens.colors.text.black};
+  font-weight: 400;
+  cursor: pointer;
+  user-select: none;
 `;
 
 export const HashtagSection = styled.div`

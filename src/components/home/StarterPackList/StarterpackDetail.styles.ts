@@ -9,39 +9,39 @@ export const Backdrop = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  backdrop-filter: blur(4px);
+  padding: 1rem;
+  backdrop-filter: blur(0.25rem);
 `;
 
 export const Shell = styled.div`
   background: #fff;
-  border-radius: 16px;
+  border-radius: 1rem;
   width: 100%;
-  max-width: 960px;
+  max-width: 60rem;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.18);
 `;
 
 export const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 1.5rem;
+  border-bottom: 0.0625rem solid #e5e7eb;
   .left {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 1rem;
   }
   img {
-    width: 64px;
-    height: 64px;
-    border-radius: 12px;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 0.75rem;
     object-fit: cover;
   }
   h2 {
-    font-size: 22px;
+    font-size: 1.375rem;
     font-weight: 800;
     color: #111827;
     margin: 0;
@@ -55,8 +55,8 @@ export const ModalHeader = styled.div`
 export const CloseBtn = styled.button`
   border: none;
   background: transparent;
-  padding: 8px;
-  border-radius: 8px;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
   cursor: pointer;
   &:hover {
     background: #f3f4f6;
@@ -64,50 +64,50 @@ export const CloseBtn = styled.button`
 `;
 
 export const CloseIcon = styled(X)`
-  width: 24px;
-  height: 24px;
+  width: 1.5rem;
+  height: 1.5rem;
 `;
 
 export const Body = styled.div`
-  padding: 24px;
+  padding: 1.5rem;
 `;
 
 export const PriceBox = styled.div`
   background: linear-gradient(90deg, #eff6ff, #eef2ff);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 24px;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 1rem;
 
   .left {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0.5rem;
   }
   .row {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 1rem;
   }
 
   .badge {
     background: #ef4444;
     color: #fff;
-    padding: 6px 10px;
+    padding: 0.375rem 0.625rem;
     border-radius: 9999px;
-    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: 700;
   }
   .original {
     color: #6b7280;
     text-decoration: line-through;
-    font-size: 16px;
+    font-size: 1rem;
   }
   .sale {
-    font-size: 28px;
+    font-size: 1.75rem;
     font-weight: 800;
     color: #111827;
   }
@@ -117,62 +117,62 @@ export const PriceBox = styled.div`
   .save {
     color: #16a34a;
     font-weight: 700;
-    margin-left: 8px;
+    margin-left: 0.5rem;
   }
   .rating {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 0.375rem;
     justify-content: flex-end;
   }
   .review {
     color: #6b7280;
-    font-size: 14px;
+    font-size: 0.875rem;
   }
 `;
 
 export const RatingStar = styled(Star)`
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   color: #f59e0b;
   fill: #f59e0b;
 `;
 
 export const RatingValue = styled.span`
   font-weight: 700;
-  font-size: 18px;
+  font-size: 1.125rem;
 `;
 
 export const Products = styled.div`
   h3 {
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 800;
     color: #111827;
-    margin: 0 0 12px;
+    margin: 0 0 0.75rem;
   }
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 0.75rem;
 
-  @media (min-width: 768px) {
+  @media (min-width: 48rem) {
     grid-template-columns: 1fr 1fr;
   }
 
   .item {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 16px;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
+    gap: 1rem;
+    padding: 1rem;
+    border: 0.0625rem solid #e5e7eb;
+    border-radius: 0.75rem;
     transition: background 0.2s ease;
     &:hover {
       background: #f9fafb;
     }
     img {
-      width: 80px;
-      height: 80px;
-      border-radius: 10px;
+      width: 5rem;
+      height: 5rem;
+      border-radius: 0.625rem;
       object-fit: cover;
     }
     h4 {
@@ -192,14 +192,14 @@ export const Products = styled.div`
 
 export const Actions = styled.div`
   display: flex;
-  gap: 12px;
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid #e5e7eb;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 0.0625rem solid #e5e7eb;
   button {
     flex: 1;
-    padding: 16px 24px;
-    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
     font-weight: 800;
     cursor: pointer;
   }
@@ -222,7 +222,7 @@ export const Actions = styled.div`
 `;
 
 export const CartIcon = styled(ShoppingCart)`
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
 `;

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { tokens } from '@/styles/tokens';
 
 export const PostContainer = styled.article`
   background-color: #ffffff;
@@ -54,13 +55,64 @@ export const PostImage = styled.img`
   max-height: 38.375rem;
   object-fit: cover;
   display: block;
+  cursor: pointer;
 `;
 
 export const PostActions = styled.div`
   display: flex;
   align-items: center;
   padding: 0.375rem 1rem 0.5rem;
-  gap: 1rem;
+  gap: 1.25rem;
+  border-bottom: 1px solid ${tokens.colors.line.lightGray};
+`;
+
+export const EngagementItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+export const EngagementIcon = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${tokens.colors.orange.primary};
+  cursor: pointer;
+`;
+
+export const EngagementCount = styled.span`
+  font-size: 0.875rem;
+  color: ${tokens.colors.text.black};
+  font-weight: 400;
+  cursor: pointer;
+  user-select: none;
+`;
+
+export const BookmarkButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: ${tokens.colors.orange.primary};
+  margin-left: auto;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 export const ActionButton = styled.button`

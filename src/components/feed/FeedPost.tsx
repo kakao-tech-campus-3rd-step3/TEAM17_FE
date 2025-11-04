@@ -1,8 +1,8 @@
-import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
+import { Heart, MessageSquare, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
 import { useState, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { FeedPost as FeedPostType } from '@/types/Feed';
-import { likePost } from '@/mocks/feedData';
+import { tokens } from '@/styles/tokens';
 import {
   PostContainer,
   PostHeader,
@@ -12,63 +12,45 @@ import {
   MoreButton,
   PostImage,
   PostActions,
-  ActionButton,
-  LikesCount,
+  EngagementItem,
+  EngagementIcon,
+  EngagementCount,
+  BookmarkButton,
   Caption,
   TimeStamp,
   CategoryTag,
   FeedTypeTag,
-  ProductsSection,
-  ProductItem,
-  ProductImage,
-  ProductName,
 } from './FeedPost.styles';
 
 interface FeedPostProps {
   post: FeedPostType;
-  onLike?: (feedId: number, isLiked: boolean, likeCount: number) => void;
+  onLike?: (feedId: number, isLiked: boolean, likeCount: number) => void | Promise<void>;
 }
 
 const FeedPost = ({ post, onLike }: FeedPostProps) => {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleLike = useCallback(async () => {
-    if (isLoading) return;
-
-    // 낙관적 업데이트: 즉시 UI 업데이트
+    const oldIsLiked = isLiked;
+    const oldLikeCount = likeCount;
     const newIsLiked = !isLiked;
     const newLikeCount = newIsLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
 
-    // 이전 상태 저장 (롤백용)
-    const previousIsLiked = isLiked;
-    const previousLikeCount = likeCount;
-
     setIsLiked(newIsLiked);
     setLikeCount(newLikeCount);
-    setIsLoading(true);
 
-    onLike?.(post.feedId, newIsLiked, newLikeCount);
-
-    try {
-      const response = await likePost(post.feedId, newIsLiked);
-
-      setIsLiked(response.isLiked);
-      setLikeCount(response.likeCount);
-      onLike?.(post.feedId, response.isLiked, response.likeCount);
-    } catch (error) {
-      // 실패 시 롤백
-      console.error('Failed to like post:', error);
-      setIsLiked(previousIsLiked);
-      setLikeCount(previousLikeCount);
-
-      onLike?.(post.feedId, previousIsLiked, previousLikeCount);
-    } finally {
-      setIsLoading(false);
+    if (onLike) {
+      try {
+        await onLike(post.feedId, newIsLiked, newLikeCount);
+      } catch (error) {
+        setIsLiked(oldIsLiked);
+        setLikeCount(oldLikeCount);
+        console.error('Failed to toggle like:', error);
+      }
     }
-  }, [isLiked, likeCount, isLoading, post.feedId, onLike]);
+  }, [isLiked, likeCount, post.feedId, onLike]);
 
   const handlePostClick = useCallback(() => {
     navigate(`/feed/${post.feedId}`);
@@ -115,35 +97,38 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
         src={post.imageUrl}
         alt={`Post by ${post.author.name}`}
         onClick={handlePostClick}
-        style={{ cursor: 'pointer' }}
+        onError={(e) => {
+          e.currentTarget.style.display = 'none';
+        }}
       />
 
       <PostActions>
-        <ActionButton
-          onClick={handleLike}
-          disabled={isLoading}
-          type="button"
-          aria-label={isLiked ? '좋아요 취소' : '좋아요'}
-          aria-pressed={isLiked}
-        >
-          <Heart
-            size={24}
-            fill={isLiked ? '#ef4444' : 'none'}
-            color={isLiked ? '#ef4444' : '#000'}
-          />
-        </ActionButton>
-        <ActionButton type="button" aria-label="댓글 달기" onClick={handlePostClick}>
-          <MessageSquare size={24} />
-        </ActionButton>
-        <ActionButton type="button" aria-label="공유하기">
-          <Share size={24} />
-        </ActionButton>
-        <ActionButton type="button" aria-label="저장" style={{ marginLeft: 'auto' }}>
-          <Bookmark size={24} />
-        </ActionButton>
+        <EngagementItem>
+          <EngagementIcon
+            onClick={handleLike}
+            role="button"
+            aria-label={isLiked ? '좋아요 취소' : '좋아요'}
+            aria-pressed={isLiked}
+          >
+            <Heart
+              size={18}
+              strokeWidth={2}
+              fill={isLiked ? tokens.colors.orange.primary : 'none'}
+              color={tokens.colors.orange.primary}
+            />
+          </EngagementIcon>
+          <EngagementCount>{likeCount}</EngagementCount>
+        </EngagementItem>
+        <EngagementItem onClick={handlePostClick}>
+          <EngagementIcon role="button" aria-label="댓글 달기">
+            <MessageSquare size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
+          </EngagementIcon>
+          <EngagementCount>0</EngagementCount>
+        </EngagementItem>
+        <BookmarkButton type="button" aria-label="저장">
+          <Bookmark size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
+        </BookmarkButton>
       </PostActions>
-
-      <LikesCount>{(likeCount ?? 0).toLocaleString()}개 좋아요</LikesCount>
 
       <Caption>
         <Username>@{post.author.name}</Username> {post.description}
@@ -155,22 +140,6 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
       </CategoryTag>
 
       <FeedTypeTag $feedType={post.feedType}>{post.feedType}</FeedTypeTag>
-
-      {post.products.length > 0 && (
-        <ProductsSection>
-          <h4>관련 제품</h4>
-          <ul role="list" aria-label="관련 제품 목록">
-            {post.products.map((product) => (
-              <li key={product.productId}>
-                <ProductItem>
-                  <ProductImage src={product.imageUrl} alt={product.name} />
-                  <ProductName>{product.name}</ProductName>
-                </ProductItem>
-              </li>
-            ))}
-          </ul>
-        </ProductsSection>
-      )}
 
       <TimeStamp>{formatTimeAgo(post.createdAt)}</TimeStamp>
     </PostContainer>

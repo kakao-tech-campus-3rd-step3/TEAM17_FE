@@ -401,8 +401,8 @@ export const useFeedBookmark = (id: number) => {
 // 피드의 댓글 목록 조회 (페이지네이션 지원)
 export const useComments = (
   feedId: number,
-  page: number = 0,
-  size: number = 10,
+  page: number = FEED_API_CONSTANTS.DEFAULT_PAGE,
+  size: number = FEED_API_CONSTANTS.DEFAULT_PAGE_SIZE,
   options?: { sort?: string }
 ) => {
   const {
