@@ -8,7 +8,7 @@ export const Container = styled.div`
 export const ProfileImage = styled.img`
   width: 13rem;
   border-radius: 70px;
-  margin: 3rem 4rem auto 4rem;
+  margin: 3rem 4rem auto 0rem;
 `;
 
 export const InfoContainer = styled.div`

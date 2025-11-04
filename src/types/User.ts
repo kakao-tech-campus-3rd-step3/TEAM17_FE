@@ -1,4 +1,4 @@
-export type UserProfile = {
+export interface UserProfile {
   userId: number;
   nickname: string;
   hobby: string;
@@ -7,19 +7,11 @@ export type UserProfile = {
   totalPostCount: number;
   packCount: number;
   feedCount: number;
-  packs?: {
-    packId: number;
-    name: string;
-    mainImageUrl: string;
-  }[];
-  feeds?: {
-    feedId: number;
-    description: string;
-    imageUrl: string;
-  }[];
-  isMe?: boolean;
-};
-
+  packs: PackItem[];
+  feeds: FeedItem[];
+  bookmarkedFeeds?: FeedItem[];
+  isMe: boolean;
+}
 
 export type SessionUser = {
   userId: number;
@@ -27,3 +19,15 @@ export type SessionUser = {
   nickname: string;
   profileImageUrl: string | null;
 };
+
+export interface FeedItem {
+  feedId: number;
+  description: string;
+  imageUrl: string;
+}
+
+export interface PackItem {
+  packId: number;
+  name: string;
+  mainImageUrl: string;
+}
