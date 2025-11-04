@@ -133,6 +133,14 @@ export interface Member {
 }
 
 // 피드 상세보기용 확장 타입
+export interface FeedProduct {
+  productId?: number;
+  id?: number;
+  name: string;
+  description?: string;
+  linkUrl?: string;
+}
+
 export interface FeedDetail extends Omit<FeedPost, 'imageUrl' | 'author'> {
   imageUrl: string[];
   author: Member;
@@ -141,6 +149,7 @@ export interface FeedDetail extends Omit<FeedPost, 'imageUrl' | 'author'> {
   bookmarkCount: number;
   isBookmarked: boolean;
   hashtags: string[];
+  products?: FeedProduct[];
 }
 
 // 피드 좋아요 사용자 정보
