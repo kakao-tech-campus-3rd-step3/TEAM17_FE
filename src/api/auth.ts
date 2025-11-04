@@ -6,7 +6,7 @@ const ensureCsrfToken = async () => {
 
   const token = res.headers['x-xsrf-token'];
   if (token) {
-     axiosInstance.defaults.headers.common['X-XSRF-TOKEN'] = token;
+    axiosInstance.defaults.headers.common['X-XSRF-TOKEN'] = token;
   }
 };
 
@@ -16,17 +16,18 @@ export const signup = async (data: SignupRequest): Promise<User> => {
   return res.data;
 };
 
-export const login = async (data: LoginRequest): Promise<void> => {
+export const login = async (data: LoginRequest): Promise<User> => {
   await ensureCsrfToken();
   await axiosInstance.post('/api/auth/login', data);
+  
+  const res = await axiosInstance.get<User>('/api/auth/me');
+  return res.data;
 };
-
 
 export const logout = async (): Promise<void> => {
   await ensureCsrfToken();
   await axiosInstance.post('/api/auth/logout');
 };
-
 
 export const refresh = async (): Promise<RefreshResponse> => {
   await ensureCsrfToken();

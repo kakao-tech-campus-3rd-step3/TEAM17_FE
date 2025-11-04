@@ -32,6 +32,6 @@ export const QUERY_KEYS = {
 
   user: {
     all: ['user'] as const,
-    profile: () => [...QUERY_KEYS.user.all, 'profile'] as const,
+    profile: (userId: number | string) => [...QUERY_KEYS.user.all, 'profile', userId] as const,
   },
 } as const;
