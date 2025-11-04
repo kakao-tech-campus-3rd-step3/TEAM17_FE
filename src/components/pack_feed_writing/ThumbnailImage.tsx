@@ -31,19 +31,18 @@ const ThumbnailImage = ({ onChange, dirName = 'packs' }: ThumbnailImageProps) =>
     } catch (err) {
       console.error('이미지 업로드 실패:', err);
     }
-
-    e.currentTarget.value = '';
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   useEffect(() => {
     return () => {
       previews.forEach((url) => {
-        // blob URL인 경우에만 revokeObjectURL 호출
         if (url && url.startsWith('blob:')) {
           try {
             URL.revokeObjectURL(url);
           } catch (error) {
-            // 이미 revoke된 URL이거나 유효하지 않은 경우 무시
             console.warn('Failed to revoke blob URL:', error);
           }
         }
