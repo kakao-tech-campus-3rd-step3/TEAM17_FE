@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag, Clock } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
-import { useStarterPackById, useStarterPackLike } from '@/hooks/useStarterPacks';
+import {
+  useStarterPackById,
+  useStarterPackLike,
+  usePackComments,
+  usePackCommentActions,
+} from '@/hooks/useStarterPacks';
+import CommentSection from '@/components/comment/CommentSection';
+import type { CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import { mockStartPacks } from '@/mocks/mock';
 import type { StarterPack } from '@/types/StarterPack';
 import {
@@ -54,10 +61,18 @@ const StarterPackDetailPage: React.FC = () => {
 
   const { starterPack, loading, error } = useStarterPackById(packId);
   const { toggleLike } = useStarterPackLike(packId);
+  const { comments, refresh: refreshComments } = usePackComments(packId);
+  const { addComment: addCommentApi } = usePackCommentActions(packId);
+  const [localComments, setLocalComments] = useState(comments);
 
   // 데모 모드일 때만 Mock 데이터 사용
   const mockPack = isDemoMode ? mockStartPacks.find((pack) => pack.id === packId) : null;
   const displayPack = starterPack || mockPack;
+
+  // 댓글 상태 동기화
+  useEffect(() => {
+    setLocalComments(comments);
+  }, [comments]);
 
   const handleBack = () => {
     navigate(-1);
@@ -66,6 +81,57 @@ const StarterPackDetailPage: React.FC = () => {
   const handleLike = () => {
     toggleLike();
   };
+
+  const handleAddComment = async (comment: CreateCommentRequest) => {
+    if (!packId) return;
+
+    try {
+      await addCommentApi(comment.content, comment.parentId);
+      await refreshComments();
+    } catch (error) {
+      console.error('Failed to add comment:', error);
+      alert('댓글 작성에 실패했습니다.');
+    }
+  };
+
+  const handleAddReply = async (reply: CreateReplyRequest) => {
+    if (!packId) return;
+
+    try {
+      // 답글은 parentId를 포함하여 댓글 작성
+      await addCommentApi(reply.content, reply.commentId);
+      await refreshComments();
+    } catch (error) {
+      console.error('Failed to add reply:', error);
+      alert('답글 작성에 실패했습니다.');
+    }
+  };
+
+  const handleLikeComment = useCallback(
+    (commentId: number, isLiked: boolean, likeCount: number) => {
+      setLocalComments((prev) =>
+        prev.map((comment) =>
+          comment.commentId === commentId ? { ...comment, isLiked, likeCount } : comment
+        )
+      );
+    },
+    []
+  );
+
+  const handleLikeReply = useCallback((replyId: number, isLiked: boolean, likeCount: number) => {
+    setLocalComments((prev) =>
+      prev.map((comment) => ({
+        ...comment,
+        replies:
+          comment.replies?.map((reply) => {
+            const replyWithId = reply as typeof reply & { replyId?: number };
+            return (replyWithId.replyId || reply.commentId) === replyId
+              ? { ...reply, isLiked, likeCount }
+              : reply;
+          }) || [],
+      }))
+    );
+  }, []);
 
   // 로딩 상태 처리
   if (loading) {
@@ -251,6 +317,17 @@ const StarterPackDetailPage: React.FC = () => {
             </ProductsSection>
           </BottomSection>
         )}
+
+        <BottomSection>
+          <CommentSection
+            comments={localComments}
+            feedId={packId}
+            onAddComment={handleAddComment}
+            onAddReply={handleAddReply}
+            onLikeComment={handleLikeComment}
+            onLikeReply={handleLikeReply}
+          />
+        </BottomSection>
       </ContentContainer>
     </StarterPackDetailPageContainer>
   );

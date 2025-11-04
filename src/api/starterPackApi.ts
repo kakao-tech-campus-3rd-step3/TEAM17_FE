@@ -161,17 +161,25 @@ export const fetchPackComments = async (
   }
 };
 
-// 스타터팩 댓글 작성
+// 스타터팩 댓글 작성 (댓글/대댓글 작성)
+// parentId가 있으면 대댓글, 없으면 일반 댓글
 export const createPackComment = async (
   packId: number,
-  content: string
+  content: string,
+  parentId?: number | null
 ): Promise<PackCommentResponse> => {
   try {
+    const requestBody: { content: string; parentId?: number | null } = {
+      content,
+    };
+
+    if (parentId !== null && parentId !== undefined) {
+      requestBody.parentId = parentId;
+    }
+
     const response = await axiosInstance.post<PackCommentResponse>(
       `/api/starterPack/${packId}/comments`,
-      {
-        content,
-      }
+      requestBody
     );
     return response.data;
   } catch (error) {

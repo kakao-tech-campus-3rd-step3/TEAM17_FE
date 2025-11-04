@@ -123,6 +123,8 @@ export interface PackCommentResponse {
   updatedAt: string;
   author: AuthorInfo;
   isMine: boolean;
+  likeCount: number;
+  isLiked: boolean;
 }
 
 // 스타터팩 댓글 목록 응답
