@@ -102,7 +102,10 @@ const StarterPackDetailData = () => {
         <TopSection>
           <LeftColumn>
             <MediaSection>
-              <MediaImage src={displayPack.mainImageUrl || defaultAvatar} alt="스타터팩" />
+              <MediaImage
+                src={displayPack.mainImageUrl || defaultAvatar}
+                alt={displayPack.name || '스타터팩'}
+              />
             </MediaSection>
           </LeftColumn>
           <RightColumn>
