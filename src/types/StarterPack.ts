@@ -25,6 +25,7 @@ export interface StarterPack {
   commentCount: number;
   authorNickname: string;
   memberId: number;
+  isBookmarked?: boolean;
 }
 
 export interface StarterPackResponse {

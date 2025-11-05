@@ -33,9 +33,17 @@ type Props = {
   isLiked: boolean;
   onToggleLike: (id: number) => void;
   onOpen: (pack: StarterPack) => void;
+  onToggleBookmark?: (id: number) => void;
 };
 
-const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen }) => {
+const StarterPackCard: React.FC<Props> = ({
+  pack,
+  isLiked,
+  onToggleLike,
+  onOpen,
+  onToggleBookmark,
+}) => {
+  const isBookmarked = pack.isBookmarked ?? false;
   return (
     <PostContainer>
       <PostHeader>
@@ -70,14 +78,36 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
           </EngagementIcon>
           <EngagementCount>{(pack.likeCount ?? 0).toLocaleString()}</EngagementCount>
         </EngagementItem>
-        <EngagementItem type="button" onClick={() => onOpen(pack)} aria-label="댓글 달기">
+        <EngagementItem
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpen(pack);
+          }}
+          aria-label="댓글 달기"
+        >
           <EngagementIcon>
             <MessageSquare size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
           </EngagementIcon>
           <EngagementCount>{(pack.commentCount ?? 0).toLocaleString()}</EngagementCount>
         </EngagementItem>
-        <BookmarkButton type="button" aria-label="저장">
-          <Bookmark size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
+        <BookmarkButton
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onToggleBookmark) {
+              onToggleBookmark(pack.id);
+            }
+          }}
+          aria-label={isBookmarked ? '북마크 취소' : '북마크'}
+          aria-pressed={isBookmarked}
+        >
+          <Bookmark
+            size={18}
+            strokeWidth={2}
+            fill={isBookmarked ? tokens.colors.orange.primary : 'none'}
+            color={tokens.colors.orange.primary}
+          />
         </BookmarkButton>
       </PostActions>
 
