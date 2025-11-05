@@ -21,7 +21,7 @@ import {
 } from '@/hooks/useStarterPacks';
 import { useUser } from '@/hooks/useAuth';
 import CommentSection from '@/components/comment/CommentSection';
-import type { CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
+import type { Comment, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import { mockStartPacks } from '@/mocks/mock';
 import type { StarterPack } from '@/types/StarterPack';
 import {
@@ -84,7 +84,7 @@ const StarterPackDetailPage: React.FC = () => {
   const { addComment: addCommentApi } = usePackCommentActions(packId);
   const { remove: deletePack, loading: isActionLoading } = useStarterPackActions();
   const { data: currentUser } = useUser();
-  const [localComments, setLocalComments] = useState(comments);
+  const [localComments, setLocalComments] = useState<Comment[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
