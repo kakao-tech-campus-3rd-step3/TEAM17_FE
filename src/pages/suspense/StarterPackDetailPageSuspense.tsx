@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
+import { Heart, MessageSquare, Share, Bookmark, Tag } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { fetchStarterPackById } from '@/api/starterPackApi';
@@ -20,8 +20,7 @@ import {
   MediaSection,
   MediaImage,
   InfoSection,
-  TitleWrapper,
-  MoreButton,
+  StarterPackHeader,
   StarterPackTitle,
   StarterPackDescription,
   CategoryTag,
@@ -84,10 +83,6 @@ const StarterPackDetailData = () => {
     console.log('Bookmark toggled');
   };
 
-  const handleMore = () => {
-    console.log('More options clicked');
-  };
-
   return (
     <StarterPackDetailPageContainer>
       <PageHeader>
@@ -107,12 +102,9 @@ const StarterPackDetailData = () => {
           </LeftColumn>
           <RightColumn>
             <InfoSection>
-              <TitleWrapper>
-                <MoreButton onClick={handleMore}>
-                  <MoreHorizontal size={20} />
-                </MoreButton>
+              <StarterPackHeader>
                 <StarterPackTitle>{displayPack.name}</StarterPackTitle>
-              </TitleWrapper>
+              </StarterPackHeader>
               <StarterPackDescription>{displayPack.description}</StarterPackDescription>
 
               <CategoryTag>
