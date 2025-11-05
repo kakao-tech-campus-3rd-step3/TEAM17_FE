@@ -32,7 +32,7 @@ export const StarterPackHeaderTop = styled.div`
 export const StarterPackTitle = styled.h1`
   font-size: 1.5rem;
   font-weight: 600;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
   margin: 0;
   flex: 1;
   text-align: center;
@@ -149,7 +149,7 @@ export const ErrorContainer = styled.div`
 `;
 
 export const ErrorMessage = styled.p`
-  color: #8e8e8e;
+  color: ${tokens.colors.text.secondary};
   font-size: 1rem;
   margin: 0 0 1.5rem 0;
 `;
@@ -162,7 +162,7 @@ export const EmptyState = styled.div`
   text-align: center;
 
   p {
-    color: #8e8e8e;
+    color: ${tokens.colors.text.secondary};
     font-size: 1rem;
     margin: 0;
   }

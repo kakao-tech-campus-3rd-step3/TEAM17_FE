@@ -17,7 +17,9 @@ export const tokens = {
     disabledblue: 'rgba(23, 74, 126, 0.2)',
 
     text: {
-      primary: '#EB6B18',
+      primary: '#262626', // 주요 텍스트 색상 (기본 텍스트)
+      secondary: '#8e8e8e', // 보조 텍스트 색상 (hover 상태, 부가 정보)
+      orange: '#EB6B18', // 주황색 텍스트
       blue: {
         default: '#174A7E',
         disabled: 'rgba(23, 74, 126, 0.5)',

@@ -172,7 +172,7 @@ export const Avatar = styled.img`
 export const Username = styled.span`
   font-weight: 600;
   font-size: 0.875rem;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
 `;
 
 export const TitleWrapper = styled.div`
@@ -188,7 +188,7 @@ export const MoreButton = styled.button`
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
   border-radius: 50%;
   transition: background-color 0.2s;
 
@@ -219,7 +219,7 @@ export const DropdownMenuItem = styled.button`
   border: none;
   text-align: left;
   font-size: 0.875rem;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
   cursor: pointer;
   transition: background-color 0.2s;
   display: flex;
@@ -263,14 +263,14 @@ export const DropdownMenuDeleteItem = styled(DropdownMenuItem)`
 export const StarterPackTitle = styled.h1`
   font-size: 1.25rem;
   font-weight: 600;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
   margin: 0 0 0.5rem 0;
 `;
 
 export const StarterPackDescription = styled.p`
   font-size: 0.875rem;
   line-height: 1.4;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
   margin: 0 0 1rem 0;
 `;
 
@@ -299,7 +299,7 @@ export const StatItem = styled.div`
   align-items: center;
   gap: 0.25rem;
   font-size: 0.875rem;
-  color: #8e8e8e;
+  color: ${tokens.colors.text.secondary};
 `;
 
 export const ActionButtons = styled.div`
@@ -314,11 +314,11 @@ export const ActionButton = styled.button`
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
   transition: color 0.2s ease;
 
   &:hover {
-    color: #8e8e8e;
+    color: ${tokens.colors.text.secondary};
   }
 
   &:disabled {
@@ -340,7 +340,7 @@ export const ProductsSection = styled.div`
 export const SectionTitle = styled.h3`
   font-size: 1rem;
   font-weight: 600;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
   margin: 0 0 1rem 0;
 `;
 
@@ -374,7 +374,7 @@ export const ProductImage = styled.img`
 export const ProductName = styled.h4`
   font-size: 0.875rem;
   font-weight: 500;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
   margin: 0;
   text-align: center;
 `;
@@ -392,7 +392,7 @@ export const ErrorStateContainer = styled.div`
 
 export const TimeStamp = styled.div`
   font-size: 0.625rem;
-  color: #8e8e8e;
+  color: ${tokens.colors.text.secondary};
   text-transform: uppercase;
   letter-spacing: 0.0125rem;
   margin-top: 1rem;

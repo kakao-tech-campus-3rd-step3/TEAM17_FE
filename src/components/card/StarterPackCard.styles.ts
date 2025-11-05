@@ -33,7 +33,7 @@ export const Avatar = styled.img`
 export const Username = styled.span`
   font-weight: 600;
   font-size: 0.875rem;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
 `;
 
 export const MoreButton = styled.button`
@@ -41,7 +41,7 @@ export const MoreButton = styled.button`
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
 
   &:hover {
     background-color: #f5f5f5;
@@ -120,11 +120,11 @@ export const ActionButton = styled.button`
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
   transition: color 0.2s ease;
 
   &:hover {
-    color: #8e8e8e;
+    color: ${tokens.colors.text.secondary};
   }
 
   &:disabled {
@@ -136,7 +136,7 @@ export const ActionButton = styled.button`
 export const LikesCount = styled.div`
   font-weight: 600;
   font-size: 0.875rem;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
   padding: 0 1rem 0.5rem;
   text-align: left;
 `;
@@ -198,7 +198,7 @@ export const ProductImage = styled.img`
 
 export const ProductName = styled.span`
   font-size: 0.75rem;
-  color: #262626;
+  color: ${tokens.colors.text.primary};
   font-weight: 500;
 `;
 
@@ -217,7 +217,7 @@ export const HashtagSpan = styled.span`
 export const TimeStamp = styled.div`
   padding: 0 1rem 0.75rem;
   font-size: 0.625rem;
-  color: #8e8e8e;
+  color: ${tokens.colors.text.secondary};
   text-transform: uppercase;
   letter-spacing: 0.0125rem;
 `;
