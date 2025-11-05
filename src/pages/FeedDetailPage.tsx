@@ -8,7 +8,7 @@ import type { CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import { useFeedDetail } from '@/hooks/useFeedDetail';
 import { useCommentActions } from '@/hooks/useFeeds';
 import { useUser } from '@/hooks/useAuth';
-import { updateFeed, deleteFeed } from '@/api/feedApi';
+import { deleteFeed } from '@/api/feedApi';
 import {
   FeedDetailPageContainer,
   PageHeader,
