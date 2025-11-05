@@ -120,35 +120,6 @@ const StarterPackData = () => {
     return allStarterPacks.filter((pack) => pack.categoryName === category).length;
   };
 
-  if (filteredPacks.length === 0) {
-    return (
-      <StarterPackContainer>
-        <StarterPackHeader>
-          <StarterPackHeaderTop>
-            <StarterPackTitle>취미팩</StarterPackTitle>
-            <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
-          </StarterPackHeaderTop>
-          <CategoryTabs role="tablist" aria-label="스타터팩 카테고리">
-            {STARTER_PACK_CATEGORIES.map((category) => (
-              <CategoryBtn
-                key={category}
-                role="tab"
-                aria-selected={active === category}
-                $active={active === category}
-                onClick={() => setActive(category)}
-              >
-                {category} ({getCategoryCount(category)})
-              </CategoryBtn>
-            ))}
-          </CategoryTabs>
-        </StarterPackHeader>
-        <EmptyState>
-          <p>아직 {active === '전체' ? '스타터팩' : `${active} 카테고리 스타터팩`}이 없습니다.</p>
-        </EmptyState>
-      </StarterPackContainer>
-    );
-  }
-
   return (
     <StarterPackContainer>
       <StarterPackHeader>
@@ -171,11 +142,19 @@ const StarterPackData = () => {
         </CategoryTabs>
       </StarterPackHeader>
 
-      <StarterPackGrid>
-        {filteredPacks.map((pack: StarterPack) => (
-          <StarterPackCardWrapper key={pack.id} pack={pack} />
-        ))}
-      </StarterPackGrid>
+      {filteredPacks.length === 0 && (
+        <EmptyState>
+          <p>아직 {active === '전체' ? '스타터팩' : `${active} 카테고리 스타터팩`}이 없습니다.</p>
+        </EmptyState>
+      )}
+
+      {filteredPacks.length > 0 && (
+        <StarterPackGrid>
+          {filteredPacks.map((pack: StarterPack) => (
+            <StarterPackCardWrapper key={pack.id} pack={pack} />
+          ))}
+        </StarterPackGrid>
+      )}
     </StarterPackContainer>
   );
 };
