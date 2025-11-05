@@ -115,11 +115,6 @@ const StarterPackData = () => {
     return allStarterPacks.filter((pack: StarterPack) => matchCategory(pack, active));
   }, [allStarterPacks, active]);
 
-  const getCategoryCount = (category: CategoryKey) => {
-    if (category === '전체') return allStarterPacks.length;
-    return allStarterPacks.filter((pack) => pack.categoryName === category).length;
-  };
-
   return (
     <StarterPackContainer>
       <StarterPackHeader>
@@ -136,7 +131,7 @@ const StarterPackData = () => {
               $active={active === category}
               onClick={() => setActive(category)}
             >
-              {category} ({getCategoryCount(category)})
+              {category}
             </CategoryBtn>
           ))}
         </CategoryTabs>
