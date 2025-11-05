@@ -7,6 +7,7 @@ import type { StarterPack } from '@/types/StarterPack';
 import {
   STARTER_PACK_CONSTANTS,
   STARTER_PACK_CATEGORIES,
+  CATEGORY_MAPPING,
   type CategoryKey,
 } from '@/constants/starterPack';
 import {
@@ -33,18 +34,7 @@ const matchCategory = (pack: StarterPack, active: CategoryKey) => {
 
   if (cat === activeCategory) return true;
 
-  const categoryMapping: Record<string, CategoryKey> = {
-    헬스: '헬스',
-    요리: '요리',
-    쿠킹: '요리',
-    러닝: '러닝',
-    베이킹: '베이킹',
-    캠핑: '캠핑',
-    독서: '독서',
-  };
-
-  // 매핑된 카테고리 확인
-  const mappedCategory = categoryMapping[cat];
+  const mappedCategory = CATEGORY_MAPPING[cat];
   if (mappedCategory && mappedCategory === activeCategory) return true;
 
   return false;
@@ -103,16 +93,7 @@ const StarterListPage = () => {
       const categoryPacks = (starterPack as Record<string, StarterPack[]>)[categoryKey] || [];
       if (!Array.isArray(categoryPacks)) return;
       categoryPacks.forEach((pack: StarterPack) => {
-        const categoryMapping: Record<string, string> = {
-          헬스: '헬스',
-          요리: '요리',
-          러닝: '러닝',
-          베이킹: '베이킹',
-          캠핑: '캠핑',
-          독서: '독서',
-        };
-
-        const mappedCategoryName = categoryMapping[categoryKey] || categoryKey;
+        const mappedCategoryName = CATEGORY_MAPPING[categoryKey] || categoryKey;
         packs.push({
           ...pack,
           categoryName: pack.categoryName || mappedCategoryName,

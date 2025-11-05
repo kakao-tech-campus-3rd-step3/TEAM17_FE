@@ -4,7 +4,11 @@ import StarterPackCard from '@/components/card/StarterPackCard';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { fetchStarterPack } from '@/api/starterPackApi';
 import type { StarterPack } from '@/types/StarterPack';
-import { STARTER_PACK_CATEGORIES, type CategoryKey } from '@/constants/starterPack';
+import {
+  STARTER_PACK_CATEGORIES,
+  CATEGORY_MAPPING,
+  type CategoryKey,
+} from '@/constants/starterPack';
 import { useAuth } from '@/hooks/useAuth';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
@@ -27,17 +31,7 @@ const matchCategory = (pack: StarterPack, active: CategoryKey) => {
 
   if (cat === activeCategory) return true;
 
-  const categoryMapping: Record<string, CategoryKey> = {
-    헬스: '헬스',
-    요리: '요리',
-    쿠킹: '요리',
-    러닝: '러닝',
-    베이킹: '베이킹',
-    캠핑: '캠핑',
-    독서: '독서',
-  };
-
-  const mappedCategory = categoryMapping[cat];
+  const mappedCategory = CATEGORY_MAPPING[cat];
   if (mappedCategory && mappedCategory === activeCategory) return true;
 
   return false;
@@ -92,16 +86,7 @@ const StarterPackData = () => {
       if (!Array.isArray(categoryPacks)) return;
 
       categoryPacks.forEach((pack) => {
-        const categoryMapping: Record<string, string> = {
-          헬스: '헬스',
-          요리: '요리',
-          러닝: '러닝',
-          베이킹: '베이킹',
-          캠핑: '캠핑',
-          독서: '독서',
-        };
-
-        const mappedCategoryName = categoryMapping[categoryKey] || categoryKey;
+        const mappedCategoryName = CATEGORY_MAPPING[categoryKey] || categoryKey;
         packs.push({
           ...pack,
           categoryName: pack.categoryName || mappedCategoryName,
