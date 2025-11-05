@@ -12,13 +12,14 @@ export const tokens = {
       active: '#B34400', // 활성 상태
     },
 
+    primary: '#EB6B18',
     logo: '#FF6400',
     blue: '#174A7E',
     disabledblue: 'rgba(23, 74, 126, 0.2)',
 
     text: {
-      primary: '#262626', // 주요 텍스트 색상 (기본 텍스트)
-      secondary: '#8e8e8e', // 보조 텍스트 색상 (hover 상태, 부가 정보)
+      darkGray: '#262626', // 주요 텍스트 색상 (기본 텍스트)
+      mediumGray: '#8e8e8e', // 보조 텍스트 색상 (hover 상태, 부가 정보)
       orange: '#EB6B18', // 주황색 텍스트
       blue: {
         default: '#174A7E',

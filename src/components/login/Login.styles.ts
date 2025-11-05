@@ -127,7 +127,7 @@ export const Comment = styled.p`
 `;
 
 export const CommentLink = styled(Link)`
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: ${({ theme }) => theme.colors.text.darkGray};
   font-size: 1.2rem;
   font-weight: 600;
   text-decoration: none;

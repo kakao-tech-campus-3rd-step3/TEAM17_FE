@@ -172,7 +172,7 @@ export const Avatar = styled.img`
 export const Username = styled.span`
   font-weight: 600;
   font-size: 0.875rem;
-  color: ${tokens.colors.text.primary};
+  color: ${tokens.colors.text.darkGray};
 `;
 
 export const TitleWrapper = styled.div`
@@ -182,14 +182,14 @@ export const TitleWrapper = styled.div`
 export const StarterPackTitle = styled.h1`
   font-size: 1.25rem;
   font-weight: 600;
-  color: ${tokens.colors.text.primary};
+  color: ${tokens.colors.text.darkGray};
   margin: 0 0 0.5rem 0;
 `;
 
 export const StarterPackDescription = styled.p`
   font-size: 0.875rem;
   line-height: 1.4;
-  color: ${tokens.colors.text.primary};
+  color: ${tokens.colors.text.darkGray};
   margin: 0 0 1rem 0;
 `;
 
@@ -218,7 +218,7 @@ export const StatItem = styled.div`
   align-items: center;
   gap: 0.25rem;
   font-size: 0.875rem;
-  color: ${tokens.colors.text.secondary};
+  color: ${tokens.colors.text.mediumGray};
 `;
 
 export const ActionButtons = styled.div`
@@ -236,12 +236,12 @@ export const ActionButton = styled.button`
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  color: ${tokens.colors.text.primary};
+  color: ${tokens.colors.text.darkGray};
   font-size: 0.875rem;
   transition: color 0.2s ease;
 
   &:hover:not(:disabled) {
-    color: ${tokens.colors.text.secondary};
+    color: ${tokens.colors.text.mediumGray};
   }
 
   &:disabled {
@@ -277,7 +277,7 @@ export const ProductsSection = styled.div`
 export const SectionTitle = styled.h3`
   font-size: 1rem;
   font-weight: 600;
-  color: ${tokens.colors.text.primary};
+  color: ${tokens.colors.text.darkGray};
   margin: 0 0 1rem 0;
 `;
 
@@ -311,7 +311,7 @@ export const ProductImage = styled.img`
 export const ProductName = styled.h4`
   font-size: 0.875rem;
   font-weight: 500;
-  color: ${tokens.colors.text.primary};
+  color: ${tokens.colors.text.darkGray};
   margin: 0;
   text-align: center;
 `;
@@ -329,7 +329,7 @@ export const ErrorStateContainer = styled.div`
 
 export const TimeStamp = styled.div`
   font-size: 0.625rem;
-  color: ${tokens.colors.text.secondary};
+  color: ${tokens.colors.text.mediumGray};
   text-transform: uppercase;
   letter-spacing: 0.0125rem;
   margin-top: 1rem;
