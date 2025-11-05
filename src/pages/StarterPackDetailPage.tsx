@@ -1,16 +1,6 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import {
-  Heart,
-  MessageSquare,
-  Share,
-  MoreHorizontal,
-  Bookmark,
-  Tag,
-  Clock,
-  Edit,
-  Trash2,
-} from 'lucide-react';
+import { Heart, MessageSquare, Share, Bookmark, Tag, Clock, Edit, Trash2 } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
 import {
   useStarterPackById,
@@ -45,12 +35,6 @@ import {
   UserInfo,
   Avatar,
   Username,
-  MoreButtonWrapper,
-  MoreButton,
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownMenuItemIcon,
-  DropdownMenuDeleteItem,
   StarterPackTitle,
   StarterPackDescription,
   CategoryTag,
@@ -59,6 +43,7 @@ import {
   ActionButtons,
   ActionButton,
   ActionButtonRight,
+  DeleteButton,
   ProductsSection,
   SectionTitle,
   ProductsGrid,
@@ -85,8 +70,6 @@ const StarterPackDetailPage: React.FC = () => {
   const { remove: deletePack, loading: isActionLoading } = useStarterPackActions();
   const { data: currentUser } = useUser();
   const [localComments, setLocalComments] = useState<Comment[]>([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // 데모 모드일 때만 Mock 데이터 사용
   const mockPack = isDemoMode ? mockStartPacks.find((pack) => pack.id === packId) : null;
@@ -100,38 +83,13 @@ const StarterPackDetailPage: React.FC = () => {
     setLocalComments(comments);
   }, [comments]);
 
-  // 드롭다운 메뉴 외부 클릭 시 닫기
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    if (isDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isDropdownOpen]);
-
-  // 드롭다운 메뉴 토글
-  const handleToggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
-  };
-
   // 수정 핸들러
   const handleEdit = () => {
-    setIsDropdownOpen(false);
     navigate(`/pack-writing?edit=${packId}`);
   };
 
   // 삭제 핸들러
   const handleDelete = async () => {
-    setIsDropdownOpen(false);
-
     if (!packId) return;
 
     const confirmed = window.confirm(
@@ -310,31 +268,6 @@ const StarterPackDetailPage: React.FC = () => {
                   <Avatar src={defaultAvatar} alt="스타터팩" />
                   <Username>@{displayPack?.categoryName}_master</Username>
                 </UserInfo>
-                {isAuthor && (
-                  <MoreButtonWrapper ref={dropdownRef}>
-                    <MoreButton
-                      onClick={handleToggleDropdown}
-                      type="button"
-                      aria-label="더보기 메뉴"
-                    >
-                      <MoreHorizontal size={20} />
-                    </MoreButton>
-                    <DropdownMenu $isOpen={isDropdownOpen}>
-                      <DropdownMenuItem onClick={handleEdit} disabled={isActionLoading}>
-                        <DropdownMenuItemIcon>
-                          <Edit size={16} />
-                        </DropdownMenuItemIcon>
-                        수정하기
-                      </DropdownMenuItem>
-                      <DropdownMenuDeleteItem onClick={handleDelete} disabled={isActionLoading}>
-                        <DropdownMenuItemIcon>
-                          <Trash2 size={16} />
-                        </DropdownMenuItemIcon>
-                        삭제하기
-                      </DropdownMenuDeleteItem>
-                    </DropdownMenu>
-                  </MoreButtonWrapper>
-                )}
               </StarterPackHeader>
 
               <StarterPackTitle>{displayPack?.name}</StarterPackTitle>
@@ -377,6 +310,29 @@ const StarterPackDetailPage: React.FC = () => {
                   <Bookmark size={24} />
                 </ActionButtonRight>
               </ActionButtons>
+
+              {isAuthor && (
+                <ActionButtons>
+                  <ActionButton
+                    onClick={handleEdit}
+                    disabled={isActionLoading}
+                    type="button"
+                    aria-label="수정하기"
+                  >
+                    <Edit size={20} />
+                    수정하기
+                  </ActionButton>
+                  <DeleteButton
+                    onClick={handleDelete}
+                    disabled={isActionLoading}
+                    type="button"
+                    aria-label="삭제하기"
+                  >
+                    <Trash2 size={20} />
+                    삭제하기
+                  </DeleteButton>
+                </ActionButtons>
+              )}
 
               <TimeStamp>
                 <Clock size={12} />

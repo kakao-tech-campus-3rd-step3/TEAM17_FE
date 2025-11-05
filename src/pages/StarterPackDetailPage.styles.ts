@@ -179,87 +179,6 @@ export const TitleWrapper = styled.div`
   position: relative;
 `;
 
-export const MoreButtonWrapper = styled.div`
-  position: relative;
-`;
-
-export const MoreButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  color: ${tokens.colors.text.primary};
-  border-radius: 50%;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
-`;
-
-export const DropdownMenu = styled.div<{ $isOpen: boolean }>`
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 0.5rem;
-  background: white;
-  border: 1px solid #dbdbdb;
-  border-radius: 0.5rem;
-  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
-  min-width: 8rem;
-  z-index: 1000;
-  display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
-  overflow: hidden;
-`;
-
-export const DropdownMenuItem = styled.button`
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background: none;
-  border: none;
-  text-align: left;
-  font-size: 0.875rem;
-  color: ${tokens.colors.text.primary};
-  cursor: pointer;
-  transition: background-color 0.2s;
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
-
-  &:first-child {
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
-  }
-
-  &:last-child {
-    border-bottom-left-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;
-  }
-
-  &:not(:last-child) {
-    border-bottom: 1px solid #dbdbdb;
-  }
-`;
-
-export const DropdownMenuItemIcon = styled.span`
-  margin-right: 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  vertical-align: middle;
-`;
-
-export const DropdownMenuDeleteItem = styled(DropdownMenuItem)`
-  color: #ef4444;
-
-  &:hover {
-    background-color: #fee2e2;
-    color: #dc2626;
-  }
-`;
-
 export const StarterPackTitle = styled.h1`
   font-size: 1.25rem;
   font-weight: 600;
@@ -310,14 +229,18 @@ export const ActionButtons = styled.div`
 `;
 
 export const ActionButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.5rem;
   color: ${tokens.colors.text.primary};
+  font-size: 0.875rem;
   transition: color 0.2s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     color: ${tokens.colors.text.secondary};
   }
 
@@ -325,10 +248,24 @@ export const ActionButton = styled.button`
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  &:focus-visible {
+    outline: 2px solid ${tokens.colors.orange.primary};
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
 `;
 
 export const ActionButtonRight = styled(ActionButton)`
   margin-left: auto;
+`;
+
+export const DeleteButton = styled(ActionButton)`
+  color: #ef4444;
+
+  &:hover:not(:disabled) {
+    color: #dc2626;
+  }
 `;
 
 export const ProductsSection = styled.div`
