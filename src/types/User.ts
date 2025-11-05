@@ -9,7 +9,7 @@ export interface UserProfile {
   feedCount: number;
   packs: PackItem[];
   feeds: FeedItem[];
-  bookmarkedFeeds?: FeedItem[];
+  bookmarkedFeeds?: BookmarkedFeedItem[];
   isMe: boolean;
 }
 
