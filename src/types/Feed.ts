@@ -80,6 +80,8 @@ export interface Comment {
   isLiked: boolean;
   parentId?: number | null;
   replies?: Comment[];
+  isMine?: boolean;
+  isDeleted?: boolean;
 }
 
 export interface Reply extends Comment {

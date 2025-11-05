@@ -326,6 +326,8 @@ const convertPackCommentToComment = (packComment: PackCommentResponse): Comment 
     likeCount: packComment.likeCount,
     isLiked: packComment.isLiked,
     parentId: packComment.parentId,
+    isMine: packComment.isMine,
+    isDeleted: packComment.isDeleted,
   };
 };
 
