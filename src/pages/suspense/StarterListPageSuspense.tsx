@@ -77,7 +77,7 @@ const StarterPackData = () => {
       navigate('/login');
       return;
     }
-    navigate('/packwriting');
+    navigate('/pack-writing');
   };
 
   const allStarterPacks = useMemo(() => {

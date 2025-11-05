@@ -40,7 +40,7 @@ const FeedPage = () => {
       navigate('/login');
       return;
     }
-    navigate('/feedwriting');
+    navigate('/feed-writing');
   };
 
   useEffect(() => {

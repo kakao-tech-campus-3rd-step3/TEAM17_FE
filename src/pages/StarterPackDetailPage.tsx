@@ -125,7 +125,7 @@ const StarterPackDetailPage: React.FC = () => {
   // 수정 핸들러
   const handleEdit = () => {
     setIsDropdownOpen(false);
-    navigate(`/packwriting?edit=${packId}`);
+    navigate(`/pack-writing?edit=${packId}`);
   };
 
   // 삭제 핸들러

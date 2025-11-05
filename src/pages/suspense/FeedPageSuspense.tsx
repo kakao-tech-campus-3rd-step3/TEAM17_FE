@@ -40,7 +40,7 @@ const FeedData = () => {
       navigate('/login');
       return;
     }
-    navigate('/feedwriting');
+    navigate('/feed-writing');
   };
 
   const handleLike = useCallback(
