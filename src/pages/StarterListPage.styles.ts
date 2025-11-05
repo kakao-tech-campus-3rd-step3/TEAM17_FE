@@ -183,3 +183,27 @@ export const DemoButton = styled.button`
     background-color: ${tokens.colors.orange.active};
   }
 `;
+
+export const LoadMoreButton = styled.button`
+  width: 100%;
+  padding: 0.75rem;
+  background-color: ${tokens.colors.orange.primary};
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1.25rem;
+  transition: background-color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: ${tokens.colors.orange.hover};
+  }
+
+  &:disabled {
+    background-color: ${tokens.colors.orange.muted};
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+`;

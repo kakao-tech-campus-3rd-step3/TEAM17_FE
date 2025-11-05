@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StarterPackCard from '@/components/card/StarterPackCard';
 import { useAuth } from '@/hooks/useAuth';
@@ -23,6 +23,7 @@ import {
   ErrorMessage,
   EmptyState,
   DemoButton,
+  LoadMoreButton,
 } from '@/pages/StarterListPage.styles';
 
 const matchCategory = (pack: StarterPack, active: CategoryKey) => {
@@ -71,10 +72,15 @@ const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
   );
 };
 
+const DISPLAY_ITEMS_PER_PAGE = 12;
+
 const StarterListPage = () => {
   const navigate = useNavigate();
   const { isLogin } = useAuth();
   const [active, setActive] = useState<CategoryKey>(STARTER_PACK_CONSTANTS.DEFAULT_CATEGORY);
+  const [displayedCount, setDisplayedCount] = useState(DISPLAY_ITEMS_PER_PAGE);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const { starterPack, loading, error } = useStarterPack();
 
@@ -94,8 +100,9 @@ const StarterListPage = () => {
     const categoryKeys = Object.keys(starterPack);
 
     categoryKeys.forEach((categoryKey) => {
-      const categoryPacks = starterPack[categoryKey] || [];
-      categoryPacks.forEach((pack) => {
+      const categoryPacks = (starterPack as Record<string, StarterPack[]>)[categoryKey] || [];
+      if (!Array.isArray(categoryPacks)) return;
+      categoryPacks.forEach((pack: StarterPack) => {
         const categoryMapping: Record<string, string> = {
           헬스: '헬스',
           요리: '요리',
@@ -125,6 +132,49 @@ const StarterListPage = () => {
   const filtered = useMemo(() => {
     return allStarterPacks.filter((pack: StarterPack) => matchCategory(pack, active));
   }, [allStarterPacks, active]);
+
+  // 카테고리 변경 시 표시 개수 초기화
+  useEffect(() => {
+    setDisplayedCount(DISPLAY_ITEMS_PER_PAGE);
+  }, [active]);
+
+  // 표시할 아이템들
+  const displayedPacks = useMemo(() => {
+    return filtered.slice(0, displayedCount);
+  }, [filtered, displayedCount]);
+
+  const hasMore = filtered.length > displayedCount;
+
+  // 무한 스크롤을 위한 Intersection Observer 설정
+  useEffect(() => {
+    if (!hasMore || loading) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setDisplayedCount((prev) => prev + DISPLAY_ITEMS_PER_PAGE);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observerRef.current = observer;
+
+    const currentRef = loadMoreRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (observer && currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [hasMore, loading]);
+
+  const handleLoadMore = useCallback(() => {
+    setDisplayedCount((prev) => prev + DISPLAY_ITEMS_PER_PAGE);
+  }, []);
 
   // 로딩 상태 처리
   if (loading) {
@@ -208,10 +258,16 @@ const StarterListPage = () => {
       </StarterPackHeader>
 
       <StarterPackGrid>
-        {filtered.map((pack: StarterPack) => (
+        {displayedPacks.map((pack: StarterPack) => (
           <StarterPackCardWrapper key={pack.id} pack={pack} />
         ))}
       </StarterPackGrid>
+
+      {hasMore && (
+        <div ref={loadMoreRef}>
+          <LoadMoreButton onClick={handleLoadMore}>더 보기</LoadMoreButton>
+        </div>
+      )}
     </StarterPackContainer>
   );
 };

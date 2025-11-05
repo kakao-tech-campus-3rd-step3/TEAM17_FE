@@ -10,10 +10,28 @@ import type {
   PackCommentResponse,
 } from '@/types/StarterPack';
 
-// 모든 스타터팩 목록 조회
-export const fetchStarterPack = async (): Promise<StarterPackResponse> => {
+export const fetchStarterPack = async (
+  page: number = 0,
+  size: number = 12,
+  options?: { sort?: string; category?: string }
+): Promise<StarterPackResponse> => {
   try {
-    const response = await axiosInstance.get<StarterPackResponse>('/api/starterPack/packs');
+    const params: Record<string, string | number> = {
+      page,
+      size,
+    };
+
+    if (options?.sort) {
+      params.sort = options.sort;
+    }
+
+    if (options?.category) {
+      params.category = options.category;
+    }
+
+    const response = await axiosInstance.get<StarterPackResponse>('/api/starterPack/packs', {
+      params,
+    });
     return response.data;
   } catch (error) {
     console.error('Failed to fetch starter packs:', error);
