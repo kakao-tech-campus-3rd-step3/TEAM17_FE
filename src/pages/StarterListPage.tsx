@@ -173,52 +173,16 @@ const StarterListPage = () => {
     };
   }, [hasMore, loading]);
 
-  // 로딩 상태 처리
-  if (loading) {
-    return (
-      <StarterPackContainer>
-        <StarterPackHeader>
-          <StarterPackHeaderTop>
-            <StarterPackTitle>취미팩</StarterPackTitle>
-            <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
-          </StarterPackHeaderTop>
-        </StarterPackHeader>
-        <LoadingContainer>
-          <LoadingSpinner />
-        </LoadingContainer>
-      </StarterPackContainer>
-    );
-  }
+  const showCategories = !loading && !error;
 
-  // 에러 상태 처리
-  if (error) {
-    return (
-      <StarterPackContainer>
-        <StarterPackHeader>
-          <StarterPackHeaderTop>
-            <StarterPackTitle>취미팩</StarterPackTitle>
-            <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
-          </StarterPackHeaderTop>
-        </StarterPackHeader>
-        <ErrorContainer>
-          <ErrorMessage>{error}</ErrorMessage>
-          <DemoButton onClick={() => navigate('/starterpack/1?demo=true')}>
-            🎯 데모 페이지 보기
-          </DemoButton>
-        </ErrorContainer>
-      </StarterPackContainer>
-    );
-  }
-
-  // 빈 상태 처리
-  if (filtered.length === 0) {
-    return (
-      <StarterPackContainer>
-        <StarterPackHeader>
-          <StarterPackHeaderTop>
-            <StarterPackTitle>취미팩</StarterPackTitle>
-            <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
-          </StarterPackHeaderTop>
+  return (
+    <StarterPackContainer>
+      <StarterPackHeader>
+        <StarterPackHeaderTop>
+          <StarterPackTitle>취미팩</StarterPackTitle>
+          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+        </StarterPackHeaderTop>
+        {showCategories && (
           <CategoryTabs role="tablist" aria-label="스타터팩 카테고리">
             {availableCategories.map((category) => (
               <CategoryBtn
@@ -232,43 +196,40 @@ const StarterListPage = () => {
               </CategoryBtn>
             ))}
           </CategoryTabs>
-        </StarterPackHeader>
+        )}
+      </StarterPackHeader>
+
+      {loading && (
+        <LoadingContainer>
+          <LoadingSpinner />
+        </LoadingContainer>
+      )}
+
+      {error && (
+        <ErrorContainer>
+          <ErrorMessage>{error}</ErrorMessage>
+          <DemoButton onClick={() => navigate('/starterpack/1?demo=true')}>
+            🎯 데모 페이지 보기
+          </DemoButton>
+        </ErrorContainer>
+      )}
+
+      {!loading && !error && filtered.length === 0 && (
         <EmptyState>
           <p>아직 {active === '전체' ? '스타터팩' : `${active} 카테고리 스타터팩`}이 없습니다.</p>
         </EmptyState>
-      </StarterPackContainer>
-    );
-  }
+      )}
 
-  return (
-    <StarterPackContainer>
-      <StarterPackHeader>
-        <StarterPackHeaderTop>
-          <StarterPackTitle>취미팩</StarterPackTitle>
-          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
-        </StarterPackHeaderTop>
-        <CategoryTabs role="tablist" aria-label="스타터팩 카테고리">
-          {availableCategories.map((category) => (
-            <CategoryBtn
-              key={category}
-              role="tab"
-              aria-selected={active === category}
-              $active={active === category}
-              onClick={() => setActive(category)}
-            >
-              {category} ({getCategoryCount(category)})
-            </CategoryBtn>
-          ))}
-        </CategoryTabs>
-      </StarterPackHeader>
-
-      <StarterPackGrid>
-        {displayedPacks.map((pack: StarterPack) => (
-          <StarterPackCardWrapper key={pack.id} pack={pack} />
-        ))}
-      </StarterPackGrid>
-
-      {hasMore && <LoadMoreObserver ref={loadMoreRef} />}
+      {!loading && !error && filtered.length > 0 && (
+        <>
+          <StarterPackGrid>
+            {displayedPacks.map((pack: StarterPack) => (
+              <StarterPackCardWrapper key={pack.id} pack={pack} />
+            ))}
+          </StarterPackGrid>
+          {hasMore && <LoadMoreObserver ref={loadMoreRef} />}
+        </>
+      )}
     </StarterPackContainer>
   );
 };
