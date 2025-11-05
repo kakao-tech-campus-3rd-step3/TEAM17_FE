@@ -88,7 +88,7 @@ const StarterListPage = () => {
   };
 
   const allStarterPacks = useMemo(() => {
-    if (!starterPack) return [];
+    if (!starterPack || Object.keys(starterPack).length === 0) return [];
 
     const packs: StarterPack[] = [];
     const categoryKeys = Object.keys(starterPack);

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { tokens } from '@/styles/tokens';
 
 export const PostContainer = styled.article`
   background-color: #ffffff;
@@ -61,17 +62,66 @@ export const PostActions = styled.div`
   display: flex;
   align-items: center;
   padding: 0.375rem 1rem 0.5rem;
-  gap: 1rem;
+  gap: 1.25rem;
+  border-bottom: 1px solid ${tokens.colors.line.lightGray};
 `;
 
-export const ActionButton = styled.button<{ $alignRight?: boolean }>`
+export const EngagementItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+export const EngagementIcon = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${tokens.colors.orange.primary};
+  cursor: pointer;
+`;
+
+export const EngagementCount = styled.span`
+  font-size: 0.875rem;
+  color: ${tokens.colors.text.black};
+  font-weight: 400;
+  cursor: pointer;
+  user-select: none;
+`;
+
+export const BookmarkButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: ${tokens.colors.orange.primary};
+  margin-left: auto;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+export const ActionButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.5rem;
   color: #262626;
   transition: color 0.2s ease;
-  ${(props) => props.$alignRight && 'margin-left: auto;'}
 
   &:hover {
     color: #8e8e8e;
@@ -109,7 +159,7 @@ export const CategoryTag = styled.div`
   gap: 0.25rem;
   padding: 0 1rem 0.5rem;
   font-size: 0.75rem;
-  color: #0095f6;
+  color: ${tokens.colors.orange.primary};
   font-weight: 500;
 `;
 
@@ -160,7 +210,7 @@ export const HashtagContainer = styled.div`
 
 export const HashtagSpan = styled.span`
   margin-right: 0.5rem;
-  color: #0095f6;
+  color: ${tokens.colors.orange.primary};
   font-size: 0.875rem;
 `;
 

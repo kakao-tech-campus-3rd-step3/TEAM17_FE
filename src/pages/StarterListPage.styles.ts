@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { tokens } from '@/styles/tokens';
 
 export const StarterPackContainer = styled.div`
   max-width: 75rem;
@@ -34,8 +35,8 @@ export const StarterPackTitle = styled.h1`
 `;
 
 export const HeaderWriteButton = styled.button`
-  background-color: #ff6b35;
-  color: #ffffff;
+  background-color: ${tokens.colors.orange.primary};
+  color: ${tokens.colors.text.white};
   border: none;
   border-radius: 0.5rem;
   padding: 0.625rem 1.25rem;
@@ -46,11 +47,16 @@ export const HeaderWriteButton = styled.button`
   white-space: nowrap;
 
   &:hover {
-    background-color: #ff5722;
+    background-color: ${tokens.colors.orange.hover};
   }
 
   &:active {
-    background-color: #e64a19;
+    background-color: ${tokens.colors.orange.active};
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
   }
 `;
 
@@ -63,8 +69,8 @@ export const CategoryTabs = styled.div`
 
 export const CategoryBtn = styled.button<{ $active: boolean }>`
   padding: 0.5rem 1rem;
-  border: 1px solid ${(props) => (props.$active ? '#ff6b35' : '#dbdbdb')};
-  background-color: ${(props) => (props.$active ? '#ff6b35' : '#ffffff')};
+  border: 1px solid ${(props) => (props.$active ? tokens.colors.orange.primary : '#dbdbdb')};
+  background-color: ${(props) => (props.$active ? tokens.colors.orange.primary : '#ffffff')};
   color: ${(props) => (props.$active ? '#ffffff' : '#262626')};
   border-radius: 1.25rem;
   font-size: 0.875rem;
@@ -73,9 +79,10 @@ export const CategoryBtn = styled.button<{ $active: boolean }>`
   transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
-    border-color: #ff6b35;
-    background-color: ${(props) => (props.$active ? '#ff6b35' : '#fff5f0')};
-    color: ${(props) => (props.$active ? '#ffffff' : '#ff6b35')};
+    border-color: ${tokens.colors.orange.primary};
+    background-color: ${(props) =>
+      props.$active ? tokens.colors.orange.primary : tokens.colors.orange.muted};
+    color: ${(props) => (props.$active ? '#ffffff' : tokens.colors.orange.primary)};
   }
 
   &:disabled {
@@ -114,7 +121,7 @@ export const LoadingSpinner = styled.div`
   width: 2.5rem;
   height: 2.5rem;
   border: 0.1875rem solid #f3f3f3;
-  border-top: 0.1875rem solid #ff6b35;
+  border-top: 0.1875rem solid ${tokens.colors.orange.primary};
   border-radius: 50%;
   animation: spin 1s linear infinite;
 
@@ -159,7 +166,7 @@ export const EmptyState = styled.div`
 
 export const DemoButton = styled.button`
   padding: 0.75rem 1.5rem;
-  background-color: #ff6b35;
+  background-color: ${tokens.colors.orange.primary};
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -169,10 +176,10 @@ export const DemoButton = styled.button`
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #ff5722;
+    background-color: ${tokens.colors.orange.hover};
   }
 
   &:active {
-    background-color: #e64a19;
+    background-color: ${tokens.colors.orange.active};
   }
 `;
