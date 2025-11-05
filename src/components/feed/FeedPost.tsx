@@ -1,6 +1,7 @@
 import { Heart, MessageSquare, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
 import { useState, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '@/hooks/useAuth';
 import type { FeedPost as FeedPostType } from '@/types/Feed';
 import { tokens } from '@/styles/tokens';
 import {
@@ -29,8 +30,12 @@ interface FeedPostProps {
 
 const FeedPost = ({ post, onLike }: FeedPostProps) => {
   const navigate = useNavigate();
+  const { data: currentUser } = useUser();
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
+
+  // 작성자 확인: 현재 사용자와 피드 작성자 비교
+  const isAuthor = currentUser?.userId === post.author.userId;
 
   const handleLike = useCallback(async () => {
     const oldIsLiked = isLiked;

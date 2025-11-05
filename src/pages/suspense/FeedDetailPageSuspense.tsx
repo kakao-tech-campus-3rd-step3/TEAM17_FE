@@ -8,6 +8,7 @@ import FeedLikersModal from '@/components/feed/FeedLikersModal';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useCommentActions } from '@/hooks/useFeeds';
 import { fetchFeedById } from '@/api/feedApi';
+import { useUser } from '@/hooks/useAuth';
 import type { FeedDetail, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
@@ -28,6 +29,7 @@ const FeedDetailData = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { data: currentUser } = useUser();
 
   const feedId = Number(id);
   if (!id || isNaN(feedId)) {
@@ -41,6 +43,9 @@ const FeedDetailData = () => {
   });
 
   const { addComment } = useCommentActions(feedId);
+
+  // 작성자 확인: 현재 사용자와 피드 작성자 비교
+  const isAuthor = currentUser?.userId === feed?.author.userId;
 
   const [localFeed, setLocalFeed] = useState<FeedDetail>(feed);
   const [isLikersModalOpen, setIsLikersModalOpen] = useState(false);

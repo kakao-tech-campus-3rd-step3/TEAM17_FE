@@ -6,6 +6,7 @@ import CommentSection from '@/components/comment/CommentSection';
 import type { CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import { useFeedDetail } from '@/hooks/useFeedDetail';
 import { useCommentActions } from '@/hooks/useFeeds';
+import { useUser } from '@/hooks/useAuth';
 import {
   FeedDetailPageContainer,
   PageHeader,
@@ -26,10 +27,14 @@ const FeedDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { feed, loading, error, updateFeed, refetch } = useFeedDetail(id);
+  const { data: currentUser } = useUser();
 
   // feedId가 있을 때만 댓글 액션 훅 사용
   const feedId = feed?.feedId;
   const { addComment: addCommentApi } = useCommentActions(feedId || 0);
+
+  // 작성자 확인: 현재 사용자와 피드 작성자 비교
+  const isAuthor = currentUser?.userId === feed?.author.userId;
 
   const handleLike = (isLiked: boolean, likeCount: number) => {
     updateFeed({ isLiked, likeCount });
