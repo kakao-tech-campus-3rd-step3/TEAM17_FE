@@ -143,6 +143,11 @@ export interface FeedProduct {
   linkUrl?: string;
 }
 
+export interface FeedHashtag {
+  id: number;
+  hashtagName: string;
+}
+
 export interface FeedDetail extends Omit<FeedPost, 'imageUrl' | 'author'> {
   imageUrl: string[];
   author: Member;
@@ -150,7 +155,7 @@ export interface FeedDetail extends Omit<FeedPost, 'imageUrl' | 'author'> {
   commentCount: number;
   bookmarkCount: number;
   isBookmarked: boolean;
-  hashtags: string[];
+  hashtags: FeedHashtag[] | string[];
   products?: FeedProduct[];
 }
 
