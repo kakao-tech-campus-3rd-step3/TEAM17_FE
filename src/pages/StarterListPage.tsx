@@ -12,6 +12,7 @@ import {
 import {
   StarterPackContainer,
   StarterPackHeader,
+  StarterPackHeaderTop,
   StarterPackTitle,
   HeaderWriteButton,
   CategoryTabs,
@@ -181,8 +182,10 @@ const StarterListPage = () => {
     return (
       <StarterPackContainer>
         <StarterPackHeader>
-          <StarterPackTitle>취미팩</StarterPackTitle>
-          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          <StarterPackHeaderTop>
+            <StarterPackTitle>취미팩</StarterPackTitle>
+            <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          </StarterPackHeaderTop>
         </StarterPackHeader>
         <LoadingContainer>
           <LoadingSpinner />
@@ -196,8 +199,10 @@ const StarterListPage = () => {
     return (
       <StarterPackContainer>
         <StarterPackHeader>
-          <StarterPackTitle>취미팩</StarterPackTitle>
-          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          <StarterPackHeaderTop>
+            <StarterPackTitle>취미팩</StarterPackTitle>
+            <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          </StarterPackHeaderTop>
         </StarterPackHeader>
         <ErrorContainer>
           <ErrorMessage>{error}</ErrorMessage>
@@ -214,8 +219,10 @@ const StarterListPage = () => {
     return (
       <StarterPackContainer>
         <StarterPackHeader>
-          <StarterPackTitle>취미팩</StarterPackTitle>
-          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          <StarterPackHeaderTop>
+            <StarterPackTitle>취미팩</StarterPackTitle>
+            <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          </StarterPackHeaderTop>
           <CategoryTabs role="tablist" aria-label="스타터팩 카테고리">
             {availableCategories.map((category) => (
               <CategoryBtn
@@ -240,8 +247,10 @@ const StarterListPage = () => {
   return (
     <StarterPackContainer>
       <StarterPackHeader>
-        <StarterPackTitle>취미팩</StarterPackTitle>
-        <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+        <StarterPackHeaderTop>
+          <StarterPackTitle>취미팩</StarterPackTitle>
+          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+        </StarterPackHeaderTop>
         <CategoryTabs role="tablist" aria-label="스타터팩 카테고리">
           {availableCategories.map((category) => (
             <CategoryBtn

@@ -22,16 +22,19 @@ export const StarterPackHeader = styled.div`
   gap: 1rem;
 `;
 
+export const StarterPackHeaderTop = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 export const StarterPackTitle = styled.h1`
   font-size: 1.5rem;
   font-weight: 600;
   color: #262626;
   margin: 0;
+  flex: 1;
   text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
 `;
 
 export const HeaderWriteButton = styled.button`
