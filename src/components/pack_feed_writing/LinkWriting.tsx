@@ -32,9 +32,9 @@ const LinkWriting = ({ onChange }: LinkWritingProps) => {
   const { mutateAsync: uploadImages } = useUploadImages('products');
 
   const handleSubmit = async (data: ProductForm) => {
-    setFormData(data); 
-    setIsUploading(true); 
-    setIsOpen(false); 
+    setFormData(data);
+    setIsUploading(true);
+    setIsOpen(false);
 
     try {
       const productsWithRealUrls: WriteProduct[] = await Promise.all(
@@ -52,18 +52,26 @@ const LinkWriting = ({ onChange }: LinkWritingProps) => {
             name: p.name,
             linkUrl: p.linkUrl,
             description: p.description ?? '',
-            imageUrl: finalImageUrl, 
+            imageUrl: finalImageUrl,
           };
-        }),
+        })
       );
 
       setSubmittedProducts(productsWithRealUrls);
+      setFormData({
+        products: data.products.map((product, idx) => ({
+          ...product,
+          imageFile: undefined, 
+          imageUrl: productsWithRealUrls[idx].imageUrl, 
+        })),
+      });
+
       onChange(productsWithRealUrls);
     } catch (err) {
       console.error('상품 이미지 업로드 실패:', err);
       alert('상품 이미지 업로드 중 오류가 발생했습니다.');
     } finally {
-      setIsUploading(false); 
+      setIsUploading(false);
     }
   };
 
@@ -111,7 +119,6 @@ const LinkWriting = ({ onChange }: LinkWritingProps) => {
         onClose={() => setIsOpen(false)}
         onSubmit={handleSubmit}
         defaultValues={formData}
-
       />
     </ColumnWrapper>
   );
