@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { tokens } from '@/styles/tokens';
 
 export const FeedContainer = styled.div`
   max-width: 75rem;
@@ -17,17 +18,55 @@ export const FeedHeader = styled.div`
   top: 0;
   z-index: 10;
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+export const FeedHeaderTop = styled.div`
+  display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 `;
 
 export const FeedTitle = styled.h1`
   font-size: 1.5rem;
   font-weight: 600;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
   margin: 0;
   flex: 1;
   text-align: center;
+`;
+
+export const CategoryTabs = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+`;
+
+export const CategoryBtn = styled.button<{ $active: boolean }>`
+  padding: 0.5rem 1rem;
+  border: 1px solid ${(props) => (props.$active ? tokens.colors.orange.primary : '#dbdbdb')};
+  background-color: ${(props) => (props.$active ? tokens.colors.orange.primary : '#ffffff')};
+  color: ${(props) => (props.$active ? '#ffffff' : tokens.colors.text.darkGray)};
+  border-radius: 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: ${tokens.colors.orange.primary};
+    background-color: ${(props) =>
+      props.$active ? tokens.colors.orange.hover : tokens.colors.orange.muted};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${tokens.colors.orange.primary};
+    outline-offset: 2px;
+  }
 `;
 
 export const HeaderWriteButton = styled.button`

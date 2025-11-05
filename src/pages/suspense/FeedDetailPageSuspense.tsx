@@ -1,13 +1,14 @@
 import { Suspense, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { Edit, Trash2 } from 'lucide-react';
 import FeedMediaSection from '@/components/feed/FeedMediaSection';
 import FeedInfoSection from '@/components/feed/FeedInfoSection';
 import CommentSection from '@/components/comment/CommentSection';
 import FeedLikersModal from '@/components/feed/FeedLikersModal';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useCommentActions } from '@/hooks/useFeeds';
-import { fetchFeedById } from '@/api/feedApi';
+import { fetchFeedById, deleteFeed } from '@/api/feedApi';
 import { useUser } from '@/hooks/useAuth';
 import type { FeedDetail, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
@@ -23,6 +24,9 @@ import {
   LeftColumn,
   RightColumn,
   BottomSection,
+  ActionButtons,
+  ActionButton,
+  DeleteButton,
 } from '../FeedDetailPage.styles';
 
 const FeedDetailData = () => {
@@ -56,6 +60,30 @@ const FeedDetailData = () => {
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  // 수정 핸들러
+  const handleEdit = () => {
+    navigate(`/feed-writing?edit=${feedId}`);
+  };
+
+  // 삭제 핸들러
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      '정말로 이 피드를 삭제하시겠습니까?\n삭제된 피드는 복구할 수 없습니다.'
+    );
+    if (!confirmed) return;
+
+    try {
+      await deleteFeed(feedId);
+      queryClient.removeQueries({ queryKey: QUERY_KEYS.feeds.detail(feedId) });
+      queryClient.invalidateQueries({ queryKey: ['feeds'] });
+      alert('피드가 삭제되었습니다.');
+      navigate('/feed');
+    } catch (error) {
+      console.error('Failed to delete feed:', error);
+      alert('피드 삭제에 실패했습니다.');
+    }
   };
 
   const handleLike = (isLiked: boolean, likeCount: number) => {
@@ -162,6 +190,18 @@ const FeedDetailData = () => {
 
           <RightColumn>
             <FeedInfoSection feed={localFeed} />
+            {isAuthor && (
+              <ActionButtons>
+                <ActionButton onClick={handleEdit} type="button" aria-label="수정하기">
+                  <Edit size={20} />
+                  수정하기
+                </ActionButton>
+                <DeleteButton onClick={handleDelete} type="button" aria-label="삭제하기">
+                  <Trash2 size={20} />
+                  삭제하기
+                </DeleteButton>
+              </ActionButtons>
+            )}
           </RightColumn>
         </TopSection>
 
