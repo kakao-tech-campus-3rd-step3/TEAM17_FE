@@ -1,5 +1,6 @@
 import { useMyPage } from '@/hooks/useMyPageContext';
 import MyPageSection from '@/components/mypage/MyPageSection';
+import { MY_PAGE_PREVIEW_LIMIT } from '@/constants/myPage';
 
 const MyPageContent = () => {
   const { activeTab, profile, isOwner, isLoading, isError } = useMyPage();
@@ -11,8 +12,16 @@ const MyPageContent = () => {
     <>
       {activeTab === 'all' && (
         <>
-          <MyPageSection title="Feed" items={profile.feeds?.slice(0, 6) ?? []} type="feed" />
-          <MyPageSection title="Pack" items={profile.packs?.slice(0, 6) ?? []} type="pack" />
+          <MyPageSection
+            title="Feed"
+            items={profile.feeds?.slice(0, MY_PAGE_PREVIEW_LIMIT) ?? []}
+            type="feed"
+          />
+          <MyPageSection
+            title="Pack"
+            items={profile.packs?.slice(0, MY_PAGE_PREVIEW_LIMIT) ?? []}
+            type="pack"
+          />{' '}
         </>
       )}
 

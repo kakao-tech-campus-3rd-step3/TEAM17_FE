@@ -6,6 +6,7 @@ import {
   PreviewImage,
 } from '@/components/mypage/MyPageSection.styles';
 import { useMyPage } from '@/hooks/useMyPageContext';
+import { MY_PAGE_PREVIEW_LIMIT } from '@/constants/myPage';
 
 type FeedItem = { feedId: number; imageUrl: string; description: string };
 type PackItem = { packId: number; mainImageUrl: string; name: string };
@@ -27,7 +28,7 @@ const MyPageSection = ({ title, items, type }: Props) => {
     else if (type === 'pack') setActiveTab('packs');
   };
 
-  const visibleItems = activeTab === 'all' ? items.slice(0, 6) : items;
+  const visibleItems = activeTab === 'all' ? items.slice(0, MY_PAGE_PREVIEW_LIMIT) : items;
   const totalCount =
     type === 'feed' ? (profile?.feeds?.length ?? 0) : (profile?.packs?.length ?? 0);
 
