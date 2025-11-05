@@ -13,7 +13,6 @@ import {
   FeedTitle,
   HeaderWriteButton,
   FeedGrid,
-  LoadMoreButton,
   EmptyState,
 } from '../FeedPage.styles';
 
@@ -114,12 +113,6 @@ const FeedData = () => {
           <FeedPost key={post.feedId} post={post} onLike={handleLike} />
         ))}
       </FeedGrid>
-
-      {!feedResponse.last && (
-        <LoadMoreButton onClick={() => {}} disabled={false}>
-          더 보기
-        </LoadMoreButton>
-      )}
     </FeedContainer>
   );
 };
