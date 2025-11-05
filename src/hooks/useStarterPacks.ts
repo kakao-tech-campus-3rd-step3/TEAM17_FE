@@ -34,7 +34,7 @@ export const useStarterPack = () => {
     refetch,
   } = useQuery({
     queryKey: QUERY_KEYS.starterPacks.list,
-    queryFn: fetchStarterPack,
+    queryFn: () => fetchStarterPack(),
     throwOnError: false,
     retry: false,
     refetchOnWindowFocus: false,

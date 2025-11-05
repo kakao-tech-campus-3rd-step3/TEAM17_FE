@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StarterPackCard from '@/components/card/StarterPackCard';
 import { useAuth } from '@/hooks/useAuth';
@@ -24,7 +24,7 @@ import {
   ErrorMessage,
   EmptyState,
   DemoButton,
-  LoadMoreButton,
+  LoadMoreObserver,
 } from '@/pages/StarterListPage.styles';
 
 const matchCategory = (pack: StarterPack, active: CategoryKey) => {
@@ -173,10 +173,6 @@ const StarterListPage = () => {
     };
   }, [hasMore, loading]);
 
-  const handleLoadMore = useCallback(() => {
-    setDisplayedCount((prev) => prev + DISPLAY_ITEMS_PER_PAGE);
-  }, []);
-
   // 로딩 상태 처리
   if (loading) {
     return (
@@ -272,11 +268,7 @@ const StarterListPage = () => {
         ))}
       </StarterPackGrid>
 
-      {hasMore && (
-        <div ref={loadMoreRef}>
-          <LoadMoreButton onClick={handleLoadMore}>더 보기</LoadMoreButton>
-        </div>
-      )}
+      {hasMore && <LoadMoreObserver ref={loadMoreRef} />}
     </StarterPackContainer>
   );
 };

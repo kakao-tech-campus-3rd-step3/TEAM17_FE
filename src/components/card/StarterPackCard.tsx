@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
+import { Heart, MessageSquare, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
 import type { StarterPack } from '@/types/StarterPack';
 import { tokens } from '@/styles/tokens';
 import {
