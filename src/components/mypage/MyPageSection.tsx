@@ -7,9 +7,7 @@ import {
 } from '@/components/mypage/MyPageSection.styles';
 import { useMyPage } from '@/hooks/useMyPageContext';
 import { MY_PAGE_PREVIEW_LIMIT } from '@/constants/myPage';
-
-type FeedItem = { feedId: number; imageUrl: string; description: string };
-type PackItem = { packId: number; mainImageUrl: string; name: string };
+import type { FeedItem, PackItem } from '@/types/User';
 
 type Props = {
   title: string;
