@@ -66,15 +66,24 @@ export const PostActions = styled.div`
   border-bottom: 1px solid ${tokens.colors.line.lightGray};
 `;
 
-export const EngagementItem = styled.div`
+export const EngagementItem = styled.button`
   display: flex;
   align-items: center;
   gap: 0.375rem;
+  background: none;
+  border: none;
+  padding: 0;
   cursor: pointer;
   transition: opacity 0.2s;
 
   &:hover {
     opacity: 0.7;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${tokens.colors.orange.primary};
+    outline-offset: 2px;
+    border-radius: 0.25rem;
   }
 `;
 

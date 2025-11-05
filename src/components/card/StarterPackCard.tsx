@@ -52,11 +52,11 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
 
       <PostActions>
         <EngagementItem
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onToggleLike(pack.id);
           }}
-          role="button"
           aria-label={isLiked ? '좋아요 취소' : '좋아요'}
           aria-pressed={isLiked}
         >
@@ -70,7 +70,7 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
           </EngagementIcon>
           <EngagementCount>{(pack.likeCount ?? 0).toLocaleString()}</EngagementCount>
         </EngagementItem>
-        <EngagementItem onClick={() => onOpen(pack)} role="button" aria-label="댓글 달기">
+        <EngagementItem type="button" onClick={() => onOpen(pack)} aria-label="댓글 달기">
           <EngagementIcon>
             <MessageSquare size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
           </EngagementIcon>
