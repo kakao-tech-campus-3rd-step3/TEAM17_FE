@@ -10,10 +10,28 @@ import type {
   PackCommentResponse,
 } from '@/types/StarterPack';
 
-// 모든 스타터팩 목록 조회
-export const fetchStarterPack = async (): Promise<StarterPackResponse> => {
+export const fetchStarterPack = async (
+  page: number = 0,
+  size: number = 12,
+  options?: { sort?: string; category?: string }
+): Promise<StarterPackResponse> => {
   try {
-    const response = await axiosInstance.get<StarterPackResponse>('/api/starterPack/packs');
+    const params: Record<string, string | number> = {
+      page,
+      size,
+    };
+
+    if (options?.sort) {
+      params.sort = options.sort;
+    }
+
+    if (options?.category) {
+      params.category = options.category;
+    }
+
+    const response = await axiosInstance.get<StarterPackResponse>('/api/starterPack/packs', {
+      params,
+    });
     return response.data;
   } catch (error) {
     console.error('Failed to fetch starter packs:', error);
@@ -161,17 +179,25 @@ export const fetchPackComments = async (
   }
 };
 
-// 스타터팩 댓글 작성
+// 스타터팩 댓글 작성 (댓글/대댓글 작성)
+// parentId가 있으면 대댓글, 없으면 일반 댓글
 export const createPackComment = async (
   packId: number,
-  content: string
+  content: string,
+  parentId?: number | null
 ): Promise<PackCommentResponse> => {
   try {
+    const requestBody: { content: string; parentId?: number | null } = {
+      content,
+    };
+
+    if (parentId !== null && parentId !== undefined) {
+      requestBody.parentId = parentId;
+    }
+
     const response = await axiosInstance.post<PackCommentResponse>(
       `/api/starterPack/${packId}/comments`,
-      {
-        content,
-      }
+      requestBody
     );
     return response.data;
   } catch (error) {

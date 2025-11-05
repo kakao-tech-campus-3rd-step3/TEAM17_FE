@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { tokens } from '@/styles/tokens';
 
 export const PostContainer = styled.article`
   background-color: #ffffff;
@@ -32,7 +33,7 @@ export const Avatar = styled.img`
 export const Username = styled.span`
   font-weight: 600;
   font-size: 0.875rem;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
 `;
 
 export const MoreButton = styled.button`
@@ -40,7 +41,7 @@ export const MoreButton = styled.button`
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
 
   &:hover {
     background-color: #f5f5f5;
@@ -61,20 +62,78 @@ export const PostActions = styled.div`
   display: flex;
   align-items: center;
   padding: 0.375rem 1rem 0.5rem;
-  gap: 1rem;
+  gap: 1.25rem;
+  border-bottom: 1px solid ${tokens.colors.line.lightGray};
 `;
 
-export const ActionButton = styled.button<{ $alignRight?: boolean }>`
+export const EngagementItem = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${tokens.colors.orange.primary};
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+`;
+
+export const EngagementIcon = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${tokens.colors.orange.primary};
+  cursor: pointer;
+`;
+
+export const EngagementCount = styled.span`
+  font-size: 0.875rem;
+  color: ${tokens.colors.text.black};
+  font-weight: 400;
+  cursor: pointer;
+  user-select: none;
+`;
+
+export const BookmarkButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  color: #262626;
-  transition: color 0.2s ease;
-  ${(props) => props.$alignRight && 'margin-left: auto;'}
+  color: ${tokens.colors.orange.primary};
+  margin-left: auto;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
 
   &:hover {
-    color: #8e8e8e;
+    opacity: 0.7;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+export const ActionButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: ${tokens.colors.text.darkGray};
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: ${tokens.colors.text.mediumGray};
   }
 
   &:disabled {
@@ -86,7 +145,7 @@ export const ActionButton = styled.button<{ $alignRight?: boolean }>`
 export const LikesCount = styled.div`
   font-weight: 600;
   font-size: 0.875rem;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
   padding: 0 1rem 0.5rem;
   text-align: left;
 `;
@@ -109,7 +168,7 @@ export const CategoryTag = styled.div`
   gap: 0.25rem;
   padding: 0 1rem 0.5rem;
   font-size: 0.75rem;
-  color: #0095f6;
+  color: ${tokens.colors.orange.primary};
   font-weight: 500;
 `;
 
@@ -148,7 +207,7 @@ export const ProductImage = styled.img`
 
 export const ProductName = styled.span`
   font-size: 0.75rem;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
   font-weight: 500;
 `;
 
@@ -160,14 +219,14 @@ export const HashtagContainer = styled.div`
 
 export const HashtagSpan = styled.span`
   margin-right: 0.5rem;
-  color: #0095f6;
+  color: ${tokens.colors.orange.primary};
   font-size: 0.875rem;
 `;
 
 export const TimeStamp = styled.div`
   padding: 0 1rem 0.75rem;
   font-size: 0.625rem;
-  color: #8e8e8e;
+  color: ${tokens.colors.text.mediumGray};
   text-transform: uppercase;
   letter-spacing: 0.0125rem;
 `;

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
+import { Heart, MessageSquare, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
 import type { StarterPack } from '@/types/StarterPack';
+import { tokens } from '@/styles/tokens';
 import {
   PostContainer,
   PostHeader,
@@ -10,8 +11,10 @@ import {
   MoreButton,
   PostImage,
   PostActions,
-  ActionButton,
-  LikesCount,
+  EngagementItem,
+  EngagementIcon,
+  EngagementCount,
+  BookmarkButton,
   Caption,
   TimeStamp,
   CategoryTag,
@@ -48,33 +51,35 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
       <PostImage src={pack.mainImageUrl} alt={pack.name} onClick={() => onOpen(pack)} />
 
       <PostActions>
-        <ActionButton
+        <EngagementItem
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onToggleLike(pack.id);
           }}
-          type="button"
           aria-label={isLiked ? '좋아요 취소' : '좋아요'}
           aria-pressed={isLiked}
         >
-          <Heart
-            size={24}
-            fill={isLiked ? '#ef4444' : 'none'}
-            color={isLiked ? '#ef4444' : '#000'}
-          />
-        </ActionButton>
-        <ActionButton type="button" aria-label="댓글 달기">
-          <MessageSquare size={24} />
-        </ActionButton>
-        <ActionButton type="button" aria-label="공유하기">
-          <Share size={24} />
-        </ActionButton>
-        <ActionButton type="button" aria-label="저장" $alignRight>
-          <Bookmark size={24} />
-        </ActionButton>
+          <EngagementIcon>
+            <Heart
+              size={18}
+              strokeWidth={2}
+              fill={isLiked ? tokens.colors.orange.primary : 'none'}
+              color={tokens.colors.orange.primary}
+            />
+          </EngagementIcon>
+          <EngagementCount>{(pack.likeCount ?? 0).toLocaleString()}</EngagementCount>
+        </EngagementItem>
+        <EngagementItem type="button" onClick={() => onOpen(pack)} aria-label="댓글 달기">
+          <EngagementIcon>
+            <MessageSquare size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
+          </EngagementIcon>
+          <EngagementCount>{(pack.commentCount ?? 0).toLocaleString()}</EngagementCount>
+        </EngagementItem>
+        <BookmarkButton type="button" aria-label="저장">
+          <Bookmark size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
+        </BookmarkButton>
       </PostActions>
-
-      <LikesCount>{(pack.likeCount ?? 0).toLocaleString()}개 좋아요</LikesCount>
 
       <Caption>
         <Username>@{pack.authorNickname}</Username> {pack.description}
