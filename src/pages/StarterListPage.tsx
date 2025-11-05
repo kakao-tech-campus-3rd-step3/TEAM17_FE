@@ -4,7 +4,11 @@ import StarterPackCard from '@/components/card/StarterPackCard';
 import { useAuth } from '@/hooks/useAuth';
 import { useStarterPack, useStarterPackLike, useStarterPackById } from '@/hooks/useStarterPacks';
 import type { StarterPack } from '@/types/StarterPack';
-import { STARTER_PACK_CONSTANTS, type CategoryKey } from '@/constants/starterPack';
+import {
+  STARTER_PACK_CONSTANTS,
+  STARTER_PACK_CATEGORIES,
+  type CategoryKey,
+} from '@/constants/starterPack';
 import {
   StarterPackContainer,
   StarterPackHeader,
@@ -23,8 +27,26 @@ import {
 
 const matchCategory = (pack: StarterPack, active: CategoryKey) => {
   if (active === '전체') return true;
-  const cat: string = pack.categoryName ?? '';
-  return cat === active;
+  const cat: string = pack.categoryName?.trim() ?? '';
+  const activeCategory: string = active.trim();
+
+  if (cat === activeCategory) return true;
+
+  const categoryMapping: Record<string, CategoryKey> = {
+    헬스: '헬스',
+    요리: '요리',
+    쿠킹: '요리',
+    러닝: '러닝',
+    베이킹: '베이킹',
+    캠핑: '캠핑',
+    독서: '독서',
+  };
+
+  // 매핑된 카테고리 확인
+  const mappedCategory = categoryMapping[cat];
+  if (mappedCategory && mappedCategory === activeCategory) return true;
+
+  return false;
 };
 
 const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
@@ -67,20 +89,33 @@ const StarterListPage = () => {
 
   const allStarterPacks = useMemo(() => {
     if (!starterPack) return [];
-    return Object.values(starterPack).flat();
+
+    const packs: StarterPack[] = [];
+    const categoryKeys = Object.keys(starterPack);
+
+    categoryKeys.forEach((categoryKey) => {
+      const categoryPacks = starterPack[categoryKey] || [];
+      categoryPacks.forEach((pack) => {
+        const categoryMapping: Record<string, string> = {
+          헬스: '헬스',
+          요리: '요리',
+          러닝: '러닝',
+          베이킹: '베이킹',
+          캠핑: '캠핑',
+          독서: '독서',
+        };
+
+        const mappedCategoryName = categoryMapping[categoryKey] || categoryKey;
+        packs.push({
+          ...pack,
+          categoryName: pack.categoryName || mappedCategoryName,
+        });
+      });
+    });
+    return packs;
   }, [starterPack]);
 
-  const availableCategories = useMemo(() => {
-    const categories = new Set<string>();
-    allStarterPacks.forEach((pack) => {
-      if (pack.categoryName) {
-        categories.add(pack.categoryName);
-      }
-    });
-
-    const sortedCategories = Array.from(categories).sort();
-    return ['전체', ...sortedCategories] as CategoryKey[];
-  }, [allStarterPacks]);
+  const availableCategories = STARTER_PACK_CATEGORIES;
 
   const getCategoryCount = (category: CategoryKey) => {
     if (category === '전체') return allStarterPacks.length;
