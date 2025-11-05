@@ -336,12 +336,3 @@ export const TimeStamp = styled.div`
   padding-top: 1rem;
   border-top: 1px solid #dbdbdb;
 `;
-
-export const DemoModeBanner = styled.div`
-  text-align: center;
-  padding: 0.5rem;
-  background-color: #fef3c7;
-  color: #92400e;
-  font-size: 0.875rem;
-  border-bottom: 1px solid #f3e8ff;
-`;

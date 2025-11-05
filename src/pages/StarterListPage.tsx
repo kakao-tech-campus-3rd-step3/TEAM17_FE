@@ -23,7 +23,6 @@ import {
   ErrorContainer,
   ErrorMessage,
   EmptyState,
-  DemoButton,
   LoadMoreObserver,
 } from '@/pages/StarterListPage.styles';
 
@@ -208,9 +207,6 @@ const StarterListPage = () => {
       {error && (
         <ErrorContainer>
           <ErrorMessage>{error}</ErrorMessage>
-          <DemoButton onClick={() => navigate('/starterpack/1?demo=true')}>
-            🎯 데모 페이지 보기
-          </DemoButton>
         </ErrorContainer>
       )}
 

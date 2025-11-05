@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share, Bookmark, Tag, Clock, Edit, Trash2 } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
 import {
@@ -12,7 +12,6 @@ import {
 import { useUser } from '@/hooks/useAuth';
 import CommentSection from '@/components/comment/CommentSection';
 import type { Comment, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
-import { mockStartPacks } from '@/mocks/mock';
 import type { StarterPack } from '@/types/StarterPack';
 import {
   StarterPackDetailPageContainer,
@@ -51,17 +50,12 @@ import {
   ProductImage,
   ProductName,
   TimeStamp,
-  DemoModeBanner,
 } from './StarterPackDetailPage.styles';
 
 const StarterPackDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const packId = id ? parseInt(id, 10) : 0;
-
-  // 데모 확인 (URL에 ?demo=true가 있을 때만)
-  const isDemoMode = searchParams.get('demo') === 'true';
 
   const { starterPack, loading, error } = useStarterPackById(packId);
   const { toggleLike } = useStarterPackLike(packId);
@@ -71,12 +65,8 @@ const StarterPackDetailPage: React.FC = () => {
   const { data: currentUser } = useUser();
   const [localComments, setLocalComments] = useState<Comment[]>([]);
 
-  // 데모 모드일 때만 Mock 데이터 사용
-  const mockPack = isDemoMode ? mockStartPacks.find((pack) => pack.id === packId) : null;
-  const displayPack = starterPack || mockPack;
-
   // 작성자 확인: 현재 사용자와 스타터팩 작성자 비교
-  const isAuthor = currentUser?.userId === displayPack?.memberId;
+  const isAuthor = currentUser?.userId === starterPack?.memberId;
 
   // 댓글 상태 동기화
   useEffect(() => {
@@ -181,8 +171,8 @@ const StarterPackDetailPage: React.FC = () => {
     );
   }
 
-  // 에러 상태 처리 (데모 모드가 아닐 때만 에러 표시)
-  if (!isDemoMode && (error || !starterPack)) {
+  // 에러 상태 처리
+  if (error || !starterPack) {
     return (
       <StarterPackDetailPageContainer>
         <PageHeader>
@@ -196,52 +186,8 @@ const StarterPackDetailPage: React.FC = () => {
     );
   }
 
-  if (!displayPack) {
-    return (
-      <StarterPackDetailPageContainer>
-        <PageHeader>
-          <BackButton onClick={handleBack}>←</BackButton>
-          <PageTitle>스타터팩 상세보기</PageTitle>
-        </PageHeader>
-        <ErrorContainer>
-          <ErrorMessage>스타터팩을 찾을 수 없습니다.</ErrorMessage>
-        </ErrorContainer>
-      </StarterPackDetailPageContainer>
-    );
-  }
-
-  // 데모 모드가 아니고 데이터가 없는 경우
-  if (!isDemoMode && !starterPack) {
-    return (
-      <StarterPackDetailPageContainer>
-        <PageHeader>
-          <BackButton onClick={handleBack}>←</BackButton>
-          <PageTitle>스타터팩 상세보기</PageTitle>
-        </PageHeader>
-        <ErrorContainer>
-          <ErrorMessage>스타터팩을 찾을 수 없습니다.</ErrorMessage>
-        </ErrorContainer>
-      </StarterPackDetailPageContainer>
-    );
-  }
-
-  // 데모 모드이지만 Mock 데이터도 없는 경우
-  if (isDemoMode && !displayPack) {
-    return (
-      <StarterPackDetailPageContainer>
-        <PageHeader>
-          <BackButton onClick={handleBack}>←</BackButton>
-          <PageTitle>스타터팩 상세보기</PageTitle>
-        </PageHeader>
-        <ErrorContainer>
-          <ErrorMessage>데모용 스타터팩을 찾을 수 없습니다.</ErrorMessage>
-        </ErrorContainer>
-      </StarterPackDetailPageContainer>
-    );
-  }
-
   // 현재 좋아요 상태
-  const packWithLike = displayPack as StarterPack & { isLiked?: boolean };
+  const packWithLike = starterPack as StarterPack & { isLiked?: boolean };
   const isLiked = packWithLike?.isLiked ?? false;
 
   return (
@@ -251,13 +197,11 @@ const StarterPackDetailPage: React.FC = () => {
         <PageTitle>스타터팩 상세보기</PageTitle>
       </PageHeader>
 
-      {isDemoMode && <DemoModeBanner>📝 데모 모드</DemoModeBanner>}
-
       <ContentContainer>
         <TopSection>
           <LeftColumn>
             <MediaSection>
-              <MediaImage src={displayPack?.mainImageUrl} alt={displayPack?.name} />
+              <MediaImage src={starterPack?.mainImageUrl} alt={starterPack?.name} />
             </MediaSection>
           </LeftColumn>
 
@@ -266,30 +210,29 @@ const StarterPackDetailPage: React.FC = () => {
               <StarterPackHeader>
                 <UserInfo>
                   <Avatar src={defaultAvatar} alt="스타터팩" />
-                  <Username>@{displayPack?.categoryName}_master</Username>
+                  <Username>@{starterPack?.categoryName}_master</Username>
                 </UserInfo>
               </StarterPackHeader>
 
-              <StarterPackTitle>{displayPack?.name}</StarterPackTitle>
+              <StarterPackTitle>{starterPack?.name}</StarterPackTitle>
 
-              <StarterPackDescription>{displayPack?.description}</StarterPackDescription>
+              <StarterPackDescription>{starterPack?.description}</StarterPackDescription>
 
               <CategoryTag>
                 <Tag size={14} />
-                {displayPack?.categoryName}
+                {starterPack?.categoryName}
               </CategoryTag>
 
               <StatsSection>
                 <StatItem>
                   <Heart size={16} />
-                  {(displayPack?.likeCount ?? 0).toLocaleString()}개 좋아요
+                  {(starterPack?.likeCount ?? 0).toLocaleString()}개 좋아요
                 </StatItem>
               </StatsSection>
 
               <ActionButtons>
                 <ActionButton
                   onClick={handleLike}
-                  disabled={isDemoMode}
                   type="button"
                   aria-label={isLiked ? '좋아요 취소' : '좋아요'}
                   aria-pressed={isLiked}
@@ -342,12 +285,12 @@ const StarterPackDetailPage: React.FC = () => {
           </RightColumn>
         </TopSection>
 
-        {displayPack?.items && displayPack.items.length > 0 && (
+        {starterPack?.items && starterPack.items.length > 0 && (
           <BottomSection>
             <ProductsSection>
               <SectionTitle>포함 상품</SectionTitle>
               <ProductsGrid>
-                {displayPack.items.map((item, index) => (
+                {starterPack.items.map((item, index) => (
                   <ProductCard key={index}>
                     <ProductImage src={item.imageUrl} alt={item.name} />
                     <ProductName>{item.name}</ProductName>

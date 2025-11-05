@@ -168,26 +168,6 @@ export const EmptyState = styled.div`
   }
 `;
 
-export const DemoButton = styled.button`
-  padding: 0.75rem 1.5rem;
-  background-color: ${tokens.colors.orange.primary};
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 600;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: ${tokens.colors.orange.hover};
-  }
-
-  &:active {
-    background-color: ${tokens.colors.orange.active};
-  }
-`;
-
 export const LoadMoreObserver = styled.div`
   height: 1px;
   width: 100%;
