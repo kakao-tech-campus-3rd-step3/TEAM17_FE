@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FeedPost from '@/components/feed/FeedPost';
 import { useAuth } from '@/hooks/useAuth';
@@ -18,8 +18,8 @@ import {
   LoadingSpinner,
   ErrorContainer,
   ErrorMessage,
-  LoadMoreButton,
   EmptyState,
+  LoadMoreObserver,
 } from './FeedPage.styles';
 
 const FEED_PAGE_CONSTANTS = {
@@ -40,6 +40,8 @@ const FeedPage = () => {
   const [activeCategory, setActiveCategory] = useState<FeedCategoryKey>(
     FEED_CONSTANTS.DEFAULT_CATEGORY
   );
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const handleWriteClick = () => {
     if (!isLogin) {
@@ -128,6 +130,33 @@ const FeedPage = () => {
     return posts.filter((post) => matchCategory(post, activeCategory));
   }, [posts, activeCategory]);
 
+  // Intersection Observer를 사용한 무한 스크롤
+  useEffect(() => {
+    if (isLastPage || loadingMore || loading) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          handleLoadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observerRef.current = observer;
+
+    const currentRef = loadMoreRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (observer && currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [isLastPage, loadingMore, loading, handleLoadMore]);
+
   const showCategories = !loading && !error;
 
   if (loading) {
@@ -202,12 +231,7 @@ const FeedPage = () => {
               <FeedPost key={post.feedId} post={post} onLike={handleLike} />
             ))}
           </FeedGrid>
-
-          {!isLastPage && (
-            <LoadMoreButton onClick={handleLoadMore} disabled={loadingMore}>
-              {loadingMore ? '로딩 중...' : '더 보기'}
-            </LoadMoreButton>
-          )}
+          {!isLastPage && <LoadMoreObserver ref={loadMoreRef} />}
         </>
       )}
     </FeedContainer>

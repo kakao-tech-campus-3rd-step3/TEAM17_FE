@@ -152,27 +152,9 @@ export const ErrorMessage = styled.p`
   margin: 0;
 `;
 
-export const LoadMoreButton = styled.button`
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #0095f6;
-  color: #ffffff;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 1.25rem;
-  transition: background-color 0.2s ease;
-
-  &:hover:not(:disabled) {
-    background-color: #1877f2;
-  }
-
-  &:disabled {
-    background-color: #b2dffc;
-    cursor: not-allowed;
-  }
+export const LoadMoreObserver = styled.div`
+  height: 1px;
+  margin-top: 1rem;
 `;
 
 export const EmptyState = styled.div`
