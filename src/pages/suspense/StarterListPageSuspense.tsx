@@ -19,8 +19,25 @@ import {
 
 const matchCategory = (pack: StarterPack, active: CategoryKey) => {
   if (active === '전체') return true;
-  const cat: string = pack.categoryName ?? '';
-  return cat === active;
+  const cat: string = pack.categoryName?.trim() ?? '';
+  const activeCategory: string = active.trim();
+
+  if (cat === activeCategory) return true;
+
+  const categoryMapping: Record<string, CategoryKey> = {
+    헬스: '헬스',
+    요리: '요리',
+    쿠킹: '요리',
+    러닝: '러닝',
+    베이킹: '베이킹',
+    캠핑: '캠핑',
+    독서: '독서',
+  };
+
+  const mappedCategory = categoryMapping[cat];
+  if (mappedCategory && mappedCategory === activeCategory) return true;
+
+  return false;
 };
 
 const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
@@ -50,8 +67,34 @@ const StarterPackData = () => {
   });
 
   const allStarterPacks = useMemo(() => {
-    if (!starterPackResponse) return [];
-    return Object.values(starterPackResponse).flat();
+    if (!starterPackResponse || Object.keys(starterPackResponse).length === 0) return [];
+
+    const packs: StarterPack[] = [];
+    const categoryKeys = Object.keys(starterPackResponse);
+
+    categoryKeys.forEach((categoryKey) => {
+      const categoryPacks = starterPackResponse[categoryKey];
+      // categoryPacks가 배열인지 확인
+      if (!Array.isArray(categoryPacks)) return;
+
+      categoryPacks.forEach((pack) => {
+        const categoryMapping: Record<string, string> = {
+          헬스: '헬스',
+          요리: '요리',
+          러닝: '러닝',
+          베이킹: '베이킹',
+          캠핑: '캠핑',
+          독서: '독서',
+        };
+
+        const mappedCategoryName = categoryMapping[categoryKey] || categoryKey;
+        packs.push({
+          ...pack,
+          categoryName: pack.categoryName || mappedCategoryName,
+        });
+      });
+    });
+    return packs;
   }, [starterPackResponse]);
 
   const filteredPacks = useMemo(() => {
