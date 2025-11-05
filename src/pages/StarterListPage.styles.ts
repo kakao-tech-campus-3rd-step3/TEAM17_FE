@@ -26,6 +26,7 @@ export const StarterPackHeaderTop = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 `;
 
 export const StarterPackTitle = styled.h1`
@@ -38,8 +39,8 @@ export const StarterPackTitle = styled.h1`
 `;
 
 export const HeaderWriteButton = styled.button`
-  background-color: ${tokens.colors.orange.primary};
-  color: ${tokens.colors.text.white};
+  background-color: ${({ theme }) => theme.colors.orange.primary};
+  color: ${({ theme }) => theme.colors.text.white};
   border: none;
   border-radius: 0.5rem;
   padding: 0.625rem 1.25rem;
@@ -50,11 +51,11 @@ export const HeaderWriteButton = styled.button`
   white-space: nowrap;
 
   &:hover {
-    background-color: ${tokens.colors.orange.hover};
+    background-color: ${({ theme }) => theme.colors.orange.hover};
   }
 
   &:active {
-    background-color: ${tokens.colors.orange.active};
+    background-color: ${({ theme }) => theme.colors.orange.active};
   }
 
   @media (max-width: 768px) {
