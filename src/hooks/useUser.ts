@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import type { UseQueryOptions } from '@tanstack/react-query';
 import { fetchUserProfile, updateUserProfile } from '@/api/userApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
 import type { UserProfile, SessionUser } from '@/types/User';
@@ -9,12 +10,16 @@ type UpdateProfileVariables = {
   currentMember: SessionUser;
 };
 
-export const useUserProfile = (userId?: number) => {
+export const useUserProfile = (
+  userId?: number,
+  options?: Omit<UseQueryOptions<UserProfile>, 'queryKey' | 'queryFn'>
+) => {
   return useQuery<UserProfile>({
     queryKey: QUERY_KEYS.user.profile(userId ?? USER_CONSTANTS.INVALID_USER_ID),
     queryFn: () => fetchUserProfile(userId!),
     enabled: !!userId,
     retry: false,
+    ...options,
   });
 };
 
@@ -23,7 +28,7 @@ export const useUpdateUserProfile = (userId: number) => {
 
   return useMutation({
     mutationFn: ({ data, currentMember }: UpdateProfileVariables) =>
-      updateUserProfile(userId, data, currentMember), 
+      updateUserProfile(userId, data, currentMember),
 
     onSuccess: (updatedProfile) => {
       queryClient.setQueryData(QUERY_KEYS.user.profile(userId), updatedProfile);

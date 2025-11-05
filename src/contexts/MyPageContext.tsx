@@ -21,9 +21,16 @@ export const MyPageContext = createContext<MyPageContextType | null>(null);
 export const MyPageProvider = ({ children }: { children: ReactNode }) => {
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const { user } = useAuth();
-  const userId = user?.userId ?? 1;
+  const userId = user?.userId;
 
-  const { data: profile, isLoading, isError } = useUserProfile(userId);
+  const {
+    data: profile,
+    isLoading,
+    isError,
+  } = useUserProfile(userId, {
+    enabled: !!userId,
+  });
+
   const isOwner = !!profile?.isMe;
 
   const value: MyPageContextType = {
