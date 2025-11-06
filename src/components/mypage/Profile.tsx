@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUser';
+import { useMyPage } from '@/hooks/useMyPageContext';
+import { useParams } from 'react-router-dom';
 import defaultProfile from '@/assets/defaultProfile.png';
 import icongrid from '@/assets/icon-grid.svg';
 import iconsmile from '@/assets/icon-smile.svg';
@@ -25,12 +27,22 @@ import ProfileEditModal from '@/components/mypage/ProfileEditModal';
 
 const Profile = () => {
   const { user } = useAuth();
-  const userId = user?.userId;
+  const { isOwner } = useMyPage();
+  const { userId: paramId } = useParams<{ userId?: string }>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: profile, isLoading, isError } = useUserProfile(userId);
 
-  if (!userId) {
+  const targetId = paramId ? Number(paramId) : user?.userId;
+
+  const { data: profile, isLoading, isError } = useUserProfile(targetId, {
+    enabled: !!targetId,
+  });
+
+  if (!paramId && !user) {
     return <div>로그인이 필요한 서비스입니다.</div>;
+  }
+
+  if (!targetId) {
+    return <div>프로필을 찾을 수 없습니다.</div>;
   }
 
   if (isLoading) return <div>로딩 중...</div>;
@@ -50,17 +62,23 @@ const Profile = () => {
           </RowContainer>
           <SubInfo>프로필 정보를 불러오지 못했습니다.</SubInfo>
         </InfoContainer>
-        <ButtonWrapper>
-          <EditButton onClick={() => setIsModalOpen(true)}>정보 수정</EditButton>
-        </ButtonWrapper>
+
+        {isOwner && (
+          <ButtonWrapper>
+            <EditButton onClick={() => setIsModalOpen(true)}>정보 수정</EditButton>
+          </ButtonWrapper>
+        )}
       </Container>
     );
   }
 
   const displayNickname = profile.nickname?.trim() || '정보 없음';
   const displayHobby = profile.hobby?.trim() || '정보 없음';
-  const displayBio = profile.bio?.trim() ? profile.bio : '프로필 정보를 수정해주세요.';
-  const displayImage = profile.profileImageUrl?.trim() ? profile.profileImageUrl : defaultProfile;
+  const displayBio = profile.bio?.trim()
+    ? profile.bio
+    : '프로필 정보를 수정해주세요.';
+  const displayImage =
+    profile.profileImageUrl?.trim() || defaultProfile;
   const displayCount = profile.totalPostCount ?? 0;
   const displayPackCount = profile.packCount ?? 0;
   const displayFeedCount = profile.feedCount ?? 0;
@@ -97,13 +115,21 @@ const Profile = () => {
           </RowContainer>
         </InfoContainer>
 
-        <ButtonWrapper>
-          <EditButton onClick={() => setIsModalOpen(true)}>정보 수정</EditButton>
-        </ButtonWrapper>
+        {isOwner && (
+          <ButtonWrapper>
+            <EditButton onClick={() => setIsModalOpen(true)}>
+              정보 수정
+            </EditButton>
+          </ButtonWrapper>
+        )}
       </Container>
 
-      {isModalOpen && (
-        <ProfileEditModal profile={profile} userId={userId} onClose={() => setIsModalOpen(false)} />
+      {isOwner && isModalOpen && (
+        <ProfileEditModal
+          profile={profile}
+          userId={targetId}
+          onClose={() => setIsModalOpen(false)}
+        />
       )}
     </>
   );
