@@ -10,6 +10,7 @@ import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithReco
 import {
   FeedContainer,
   FeedHeader,
+  FeedHeaderTop,
   FeedTitle,
   HeaderWriteButton,
   FeedGrid,
@@ -91,8 +92,10 @@ const FeedData = () => {
     return (
       <FeedContainer>
         <FeedHeader>
-          <FeedTitle>피드</FeedTitle>
-          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          <FeedHeaderTop>
+            <FeedTitle>피드</FeedTitle>
+            <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          </FeedHeaderTop>
         </FeedHeader>
         <EmptyState>
           <p>아직 게시물이 없습니다.</p>
@@ -104,8 +107,10 @@ const FeedData = () => {
   return (
     <FeedContainer>
       <FeedHeader>
-        <FeedTitle>피드</FeedTitle>
-        <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+        <FeedHeaderTop>
+          <FeedTitle>피드</FeedTitle>
+          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+        </FeedHeaderTop>
       </FeedHeader>
 
       <FeedGrid>
