@@ -24,6 +24,10 @@ export const Router = () => (
       <Route path="/starterpack" element={<StarterListPageSuspense />} />
       <Route path="/starterpack/:id" element={<StarterPackDetailPageSuspense />} />
       <Route
+        path="/mypage/:userId"
+        element={<MyPage />} // 다른 사람 페이지는 로그인 없어도 조회 가능
+      />
+      <Route
         path="/mypage/*"
         element={
           <ProtectedRoute>
@@ -31,10 +35,7 @@ export const Router = () => (
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/mypage/:userId"
-        element={<MyPage />} // 다른 사람 페이지는 로그인 없어도 조회 가능
-      />
+
       <Route path="/feed" element={<FeedPageSuspense />} />
       <Route path="/feed/:id" element={<FeedDetailPageSuspense />} />
       <Route path="/pack-writing" element={<PackWriting />} />
