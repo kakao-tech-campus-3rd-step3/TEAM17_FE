@@ -14,9 +14,10 @@ export interface FeedPost {
   };
   hashtags?: FeedHashtag[] | string[];
   likeCount: number;
+  commentCount: number;
+  bookmarkCount: number;
   isLiked: boolean;
-  isBookmarked?: boolean;
-  bookmarkCount?: number;
+  isBookmarked: boolean;
   createdAt: string;
 }
 
@@ -155,9 +156,6 @@ export interface FeedDetail extends Omit<FeedPost, 'imageUrl' | 'author'> {
   imageUrl: string[];
   author: Member;
   comments: Comment[];
-  commentCount: number;
-  bookmarkCount: number;
-  isBookmarked: boolean;
   hashtags: FeedHashtag[] | string[];
   products?: FeedProduct[];
 }

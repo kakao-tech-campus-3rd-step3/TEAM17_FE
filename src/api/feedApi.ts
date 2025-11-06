@@ -13,6 +13,87 @@ import type {
   PageFeedLikerResponse,
 } from '@/types/Feed';
 
+type FeedStats = {
+  likeCount?: number;
+  bookmarkCount?: number;
+  commentCount?: number;
+};
+
+type FeedInteractionStatus = {
+  isLiked?: boolean;
+  isBookmarked?: boolean;
+};
+
+type RawFeedPost = Omit<
+  FeedPost,
+  'likeCount' | 'bookmarkCount' | 'commentCount' | 'isLiked' | 'isBookmarked'
+> &
+  Partial<FeedPost> & {
+    stats?: FeedStats;
+    interactionStatus?: FeedInteractionStatus;
+  };
+
+type RawFeedDetail = Omit<
+  FeedDetail,
+  'likeCount' | 'bookmarkCount' | 'commentCount' | 'isLiked' | 'isBookmarked'
+> &
+  Partial<FeedDetail> & {
+    imageUrl: string | string[];
+    stats?: FeedStats;
+    interactionStatus?: FeedInteractionStatus;
+  };
+
+const normalizeFeedMetrics = (data: {
+  likeCount?: number;
+  bookmarkCount?: number;
+  commentCount?: number;
+  isLiked?: boolean;
+  isBookmarked?: boolean;
+  stats?: FeedStats;
+  interactionStatus?: FeedInteractionStatus;
+}) => {
+  const likeCount =
+    typeof data.likeCount === 'number' ? data.likeCount : (data.stats?.likeCount ?? 0);
+  const commentCount =
+    typeof data.commentCount === 'number' ? data.commentCount : (data.stats?.commentCount ?? 0);
+  const bookmarkCount =
+    typeof data.bookmarkCount === 'number' ? data.bookmarkCount : (data.stats?.bookmarkCount ?? 0);
+  const isLiked =
+    typeof data.isLiked === 'boolean' ? data.isLiked : (data.interactionStatus?.isLiked ?? false);
+  const isBookmarked =
+    typeof data.isBookmarked === 'boolean'
+      ? data.isBookmarked
+      : (data.interactionStatus?.isBookmarked ?? false);
+
+  return { likeCount, commentCount, bookmarkCount, isLiked, isBookmarked };
+};
+
+const normalizeFeedPost = (feed: RawFeedPost): FeedPost => {
+  const { stats, interactionStatus, ...rest } = feed;
+  const metrics = normalizeFeedMetrics({ ...feed, stats, interactionStatus });
+
+  return {
+    ...rest,
+    ...metrics,
+    imageUrl: typeof rest.imageUrl === 'string' ? rest.imageUrl : rest.imageUrl || '',
+  } as FeedPost;
+};
+
+const normalizeFeedDetail = (feed: RawFeedDetail): FeedDetail => {
+  const { stats, interactionStatus, comments, hashtags, imageUrl, ...rest } = feed;
+  const metrics = normalizeFeedMetrics({ ...feed, stats, interactionStatus });
+
+  const normalizedImageUrls = Array.isArray(imageUrl) ? imageUrl : imageUrl ? [imageUrl] : [];
+
+  return {
+    ...rest,
+    ...metrics,
+    comments: comments ?? [],
+    hashtags: hashtags ?? [],
+    imageUrl: normalizedImageUrls,
+  } as FeedDetail;
+};
+
 // ==================== Feed 관련 API ====================
 
 // 피드 목록 조회 (페이지네이션)
@@ -31,44 +112,12 @@ export const fetchFeeds = async (
       params.sort = options.sort;
     }
 
-    const response = await axiosInstance.get<
-      FeedResponse & {
-        content: Array<
-          FeedPost & {
-            stats?: { likeCount?: number; bookmarkCount?: number };
-            interactionStatus?: { isLiked?: boolean; isBookmarked?: boolean };
-          }
-        >;
-      }
-    >('/api/feeds', { params });
+    const response = await axiosInstance.get<FeedResponse & { content: Array<RawFeedPost> }>(
+      '/api/feeds',
+      { params }
+    );
 
-    const feedList = response.data.content as Array<
-      FeedPost & {
-        stats?: { likeCount?: number; bookmarkCount?: number };
-        interactionStatus?: { isLiked?: boolean; isBookmarked?: boolean };
-      }
-    >;
-
-    const normalizedContent = feedList.map(({ stats, interactionStatus, ...feed }) => {
-      const likeCount =
-        typeof feed.likeCount === 'number' ? feed.likeCount : (stats?.likeCount ?? 0);
-      const bookmarkCount =
-        typeof feed.bookmarkCount === 'number' ? feed.bookmarkCount : (stats?.bookmarkCount ?? 0);
-      const isLiked =
-        typeof feed.isLiked === 'boolean' ? feed.isLiked : (interactionStatus?.isLiked ?? false);
-      const isBookmarked =
-        typeof feed.isBookmarked === 'boolean'
-          ? feed.isBookmarked
-          : (interactionStatus?.isBookmarked ?? false);
-
-      return {
-        ...feed,
-        likeCount,
-        bookmarkCount,
-        isLiked,
-        isBookmarked,
-      };
-    });
+    const normalizedContent = response.data.content.map(normalizeFeedPost);
 
     return {
       ...response.data,
@@ -83,37 +132,8 @@ export const fetchFeeds = async (
 // 특정 피드 상세 조회
 export const fetchFeedById = async (id: number): Promise<FeedDetail> => {
   try {
-    const response = await axiosInstance.get<
-      FeedDetail & {
-        stats?: { likeCount?: number; commentCount?: number; bookmarkCount?: number };
-        interactionStatus?: { isLiked?: boolean; isBookmarked?: boolean };
-      }
-    >(`/api/feeds/${id}`);
-    const data = response.data;
-
-    const likeCount =
-      typeof data.likeCount === 'number' ? data.likeCount : (data.stats?.likeCount ?? 0);
-    const commentCount =
-      typeof data.commentCount === 'number' ? data.commentCount : (data.stats?.commentCount ?? 0);
-    const bookmarkCount =
-      typeof data.bookmarkCount === 'number'
-        ? data.bookmarkCount
-        : (data.stats?.bookmarkCount ?? 0);
-    const isLiked =
-      typeof data.isLiked === 'boolean' ? data.isLiked : (data.interactionStatus?.isLiked ?? false);
-    const isBookmarked =
-      typeof data.isBookmarked === 'boolean'
-        ? data.isBookmarked
-        : (data.interactionStatus?.isBookmarked ?? false);
-
-    return {
-      ...data,
-      likeCount,
-      commentCount,
-      bookmarkCount,
-      isLiked,
-      isBookmarked,
-    };
+    const response = await axiosInstance.get<RawFeedDetail>(`/api/feeds/${id}`);
+    return normalizeFeedDetail(response.data);
   } catch (error) {
     console.error(`Failed to fetch feed ${id}:`, error);
     throw error;
