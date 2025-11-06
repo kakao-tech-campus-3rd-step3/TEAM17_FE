@@ -1,4 +1,5 @@
 import React from 'react';
+import { Heart, MessageSquare, Bookmark } from 'lucide-react';
 import type { FeedDetail } from '@/types/Feed';
 import { formatFeedDate } from '@/utils/date';
 import {
@@ -10,13 +11,22 @@ import {
   UserBio,
   PostContent,
   PostDate,
+  StatsSection,
+  StatItem,
 } from '@/components/feed/FeedInfoSection.styles';
 
 interface FeedInfoSectionProps {
   feed: FeedDetail;
+  onOpenLikers?: () => void;
 }
 
-const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({ feed }) => {
+const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({ feed, onOpenLikers }) => {
+  const handleLikeCountClick = () => {
+    if (onOpenLikers && feed.likeCount > 0) {
+      onOpenLikers();
+    }
+  };
+
   return (
     <InfoContainer>
       {/* 유저 프로필 섹션 */}
@@ -30,6 +40,23 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({ feed }) => {
 
       {/* 본문 내용 */}
       <PostContent>{feed.description}</PostContent>
+
+      {/* 통계 섹션 */}
+      <StatsSection>
+        <StatItem onClick={handleLikeCountClick} $clickable={feed.likeCount > 0}>
+          <Heart size={16} />
+          {feed.likeCount || 0}개
+        </StatItem>
+        <StatItem>
+          <MessageSquare size={16} />
+          {feed.commentCount || 0}개
+        </StatItem>
+        <StatItem>
+          <Bookmark size={16} />
+          {feed.bookmarkCount || 0}개
+        </StatItem>
+      </StatsSection>
+
       <PostDate>{formatFeedDate(feed.createdAt)}</PostDate>
     </InfoContainer>
   );

@@ -199,7 +199,7 @@ const FeedDetailData = () => {
           </LeftColumn>
 
           <RightColumn>
-            <FeedInfoSection feed={localFeed} />
+            <FeedInfoSection feed={localFeed} onOpenLikers={() => setIsLikersModalOpen(true)} />
             {isAuthor && (
               <ActionButtons>
                 <ActionButton onClick={handleEdit} type="button" aria-label="수정하기">

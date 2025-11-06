@@ -61,6 +61,27 @@ export const PostDate = styled.div`
   text-align: left;
 `;
 
+export const StatsSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+`;
+
+export const StatItem = styled.div<{ $clickable?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  color: ${tokens.colors.text.mediumGray};
+  cursor: ${(props) => (props.$clickable ? 'pointer' : 'default')};
+  transition: color 0.2s ease;
+
+  &:hover {
+    ${(props) => (props.$clickable ? `color: ${tokens.colors.orange.primary};` : '')}
+  }
+`;
+
 export const ProductSection = styled.div`
   background: ${tokens.colors.orange.muted};
   border-radius: 0.5rem;
