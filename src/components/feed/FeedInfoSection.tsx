@@ -85,10 +85,6 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({
           <MessageSquare size={16} />
           {feed.commentCount || 0}개
         </StatItem>
-        <StatItem>
-          <Bookmark size={16} />
-          {feed.bookmarkCount || 0}개
-        </StatItem>
       </StatsSection>
 
       {/* 액션 버튼 */}
