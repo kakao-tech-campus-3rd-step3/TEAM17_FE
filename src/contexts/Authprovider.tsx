@@ -47,8 +47,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       delete axios.defaults.headers.common['Authorization'];
 
-      localStorage.removeItem('user');
-      sessionStorage.removeItem('user');
     } catch (error) {
       console.error('로그아웃 중 오류 발생:', error);
     } finally {
