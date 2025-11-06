@@ -2,8 +2,8 @@ import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from 'rea
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share, Bookmark, Tag } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
-import { useSuspenseQuery, useQueryClient } from '@tanstack/react-query';
-import { fetchStarterPackById, togglePackCommentLike } from '@/api/starterPackApi';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { fetchStarterPackById } from '@/api/starterPackApi';
 import type { StarterPack } from '@/types/StarterPack';
 import type { Comment, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import CommentSection from '@/components/comment/CommentSection';
@@ -11,7 +11,9 @@ import {
   usePackComments,
   usePackCommentActions,
   useStarterPackLike,
+  usePackCommentLike,
 } from '@/hooks/useStarterPacks';
+import { useAuth } from '@/hooks/useAuth';
 import { QUERY_KEYS } from '@/utils/queryKeys';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
@@ -48,7 +50,6 @@ import {
 const StarterPackDetailData = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const packId = Number(id);
   if (!id || isNaN(packId)) {
@@ -64,6 +65,13 @@ const StarterPackDetailData = () => {
   const { comments, refresh: refreshComments } = usePackComments(packId);
   const { addComment: addCommentApi } = usePackCommentActions(packId);
   const { toggleLike } = useStarterPackLike(packId);
+  const {
+    toggleLike: toggleCommentLike,
+    loading: commentLikeLoading,
+    error: commentLikeError,
+    rawError: commentLikeRawError,
+  } = usePackCommentLike(packId);
+  const { isLogin } = useAuth();
   const [localComments, setLocalComments] = useState<Comment[]>([]);
   const prevCommentsKeyRef = useRef<string>('');
 
@@ -94,50 +102,40 @@ const StarterPackDetailData = () => {
     }
   }, [comments, currentCommentsKey]);
 
-  const handleLikeComment = useCallback(
-    async (commentId: number, isLiked: boolean, likeCount: number) => {
-      // 낙관적 업데이트
-      const oldIsLiked = isLiked;
-      const oldLikeCount = likeCount;
-      const newIsLiked = !isLiked;
-      const newLikeCount = newIsLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
+  // 댓글 좋아요 에러 처리
+  useEffect(() => {
+    if (commentLikeRawError) {
+      const axiosError = commentLikeRawError as { response?: { status?: number } };
+      const status = axiosError?.response?.status;
 
-      setLocalComments((prev) =>
-        prev.map((comment) =>
-          comment.commentId === commentId
-            ? { ...comment, isLiked: newIsLiked, likeCount: newLikeCount }
-            : comment
-        )
-      );
-
-      try {
-        // API 호출
-        const result = await togglePackCommentLike(commentId);
-        // 서버 응답으로 업데이트
-        setLocalComments((prev) =>
-          prev.map((comment) =>
-            comment.commentId === commentId
-              ? { ...comment, isLiked: result.isLiked, likeCount: result.likeCount }
-              : comment
-          )
-        );
-        // 댓글 목록 캐시 무효화하여 서버 데이터와 동기화
-        await queryClient.invalidateQueries({
-          queryKey: [...QUERY_KEYS.starterPacks.detail(packId), 'comments'],
-        });
-      } catch (error) {
-        // 실패 시 롤백
-        setLocalComments((prev) =>
-          prev.map((comment) =>
-            comment.commentId === commentId
-              ? { ...comment, isLiked: oldIsLiked, likeCount: oldLikeCount }
-              : comment
-          )
-        );
-        console.error('Failed to toggle comment like:', error);
+      if (status === 403) {
+        alert('로그인이 필요한 기능입니다.');
+        navigate('/login');
+      } else if (commentLikeError) {
+        alert(commentLikeError);
       }
+    }
+  }, [commentLikeRawError, commentLikeError, navigate]);
+
+  const handleLikeComment = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (commentId: number, _isLiked: boolean, _likeCount: number) => {
+      // 로그인 체크
+      if (!isLogin) {
+        alert('로그인이 필요한 기능입니다.');
+        navigate('/login');
+        return;
+      }
+
+      // 로딩 가드
+      if (commentLikeLoading) {
+        return;
+      }
+
+      // 훅에서 낙관적 업데이트 및 API 호출 처리
+      toggleCommentLike(commentId);
     },
-    [packId, queryClient]
+    [isLogin, navigate, commentLikeLoading, toggleCommentLike]
   );
 
   const handleLikeReply = useCallback((replyId: number, isLiked: boolean, likeCount: number) => {
