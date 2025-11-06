@@ -627,16 +627,14 @@ export const usePackCommentLike = (packId: number, commentId: number) => {
         queryKey: [...QUERY_KEYS.starterPacks.detail(packId), 'comments'],
       });
 
-      // 낙관적 업데이트를 위한 이전 댓글 데이터 저장
-      const previousComments = queryClient.getQueryData<PagePackCommentResponse | undefined>([
-        ...QUERY_KEYS.starterPacks.detail(packId),
-        'comments',
-      ]);
+      const commentQueries = queryClient.getQueriesData<PagePackCommentResponse>({
+        queryKey: [...QUERY_KEYS.starterPacks.detail(packId), 'comments'],
+      });
 
-      return { previousComments };
+      return { previousCommentQueries: commentQueries };
     },
     onSuccess: (result) => {
-      // 댓글 목록 캐시 업데이트
+      // 모든 페이지네이션 변형의 댓글 목록 캐시 업데이트
       queryClient.setQueriesData(
         { queryKey: [...QUERY_KEYS.starterPacks.detail(packId), 'comments'] },
         (old: PagePackCommentResponse | undefined) => {
@@ -653,12 +651,11 @@ export const usePackCommentLike = (packId: number, commentId: number) => {
       );
     },
     onError: (_, __, context) => {
-      // 실패 시 이전 상태로 롤백
-      if (context?.previousComments) {
-        queryClient.setQueryData(
-          [...QUERY_KEYS.starterPacks.detail(packId), 'comments'],
-          context.previousComments
-        );
+      // 실패 시 모든 매칭되는 쿼리 캐시를 이전 상태로 롤백
+      if (context?.previousCommentQueries) {
+        context.previousCommentQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
       }
       // 댓글 목록 무효화하여 서버 데이터로 복구
       queryClient.invalidateQueries({
