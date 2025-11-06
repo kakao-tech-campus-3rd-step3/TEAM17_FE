@@ -2,6 +2,7 @@ import React from 'react';
 import { Heart, MessageSquare, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
 import type { StarterPack } from '@/types/StarterPack';
 import { tokens } from '@/styles/tokens';
+import defaultProfile from '@/assets/defaultProfile.png';
 import {
   PostContainer,
   PostHeader,
@@ -48,7 +49,7 @@ const StarterPackCard: React.FC<Props> = ({
     <PostContainer>
       <PostHeader>
         <UserInfo>
-          <Avatar src="/default-avatar.png" alt="스타터팩" />
+          <Avatar src={pack.authorProfileImageUrl || defaultProfile} alt={pack.authorNickname} />
           <Username>@{pack.authorNickname}</Username>
         </UserInfo>
         <MoreButton>

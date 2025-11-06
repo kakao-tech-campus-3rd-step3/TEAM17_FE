@@ -24,6 +24,7 @@ export interface StarterPack {
   bookmarkCount: number;
   commentCount: number;
   authorNickname: string;
+  authorProfileImageUrl?: string;
   memberId: number;
   isBookmarked?: boolean;
 }

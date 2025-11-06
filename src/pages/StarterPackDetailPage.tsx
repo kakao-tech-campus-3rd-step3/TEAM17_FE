@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share, Bookmark, Tag, Clock, Edit, Trash2 } from 'lucide-react';
-import defaultAvatar from '@/assets/icon-smile.svg';
+import defaultProfile from '@/assets/defaultProfile.png';
 import {
   useStarterPackById,
   useStarterPackLike,
@@ -209,8 +209,11 @@ const StarterPackDetailPage: React.FC = () => {
             <InfoSection>
               <StarterPackHeader>
                 <UserInfo>
-                  <Avatar src={defaultAvatar} alt="스타터팩" />
-                  <Username>@{starterPack?.categoryName}_master</Username>
+                  <Avatar
+                    src={starterPack?.authorProfileImageUrl || defaultProfile}
+                    alt={starterPack?.authorNickname || '작성자'}
+                  />
+                  <Username>@{starterPack?.authorNickname}</Username>
                 </UserInfo>
               </StarterPackHeader>
 
