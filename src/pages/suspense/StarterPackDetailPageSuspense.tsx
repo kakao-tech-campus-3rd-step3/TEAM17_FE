@@ -1,4 +1,4 @@
-import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
+import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share, Bookmark, Tag } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
@@ -65,18 +65,32 @@ const StarterPackDetailData = () => {
   const [localComments, setLocalComments] = useState<Comment[]>([]);
   const prevCommentsKeyRef = useRef<string>('');
 
-  useEffect(() => {
-    // 댓글 ID 목록을 문자열로 변환하여 이전 값과 비교
-    const currentCommentsKey = comments.map((c) => c.commentId).join(',');
+  // 댓글 트리를 결정론적으로 직렬화 (댓글 ID + 답글 ID 목록 포함)
+  const currentCommentsKey = useMemo(() => {
+    return comments
+      .map((comment) => {
+        const replyIds =
+          comment.replies && comment.replies.length > 0
+            ? comment.replies
+                .map((reply) => {
+                  const replyWithId = reply as typeof reply & { replyId?: number };
+                  return replyWithId.replyId || reply.commentId;
+                })
+                .sort((a, b) => a - b)
+                .join(',')
+            : '';
+        return replyIds ? `${comment.commentId}:${replyIds}` : `${comment.commentId}`;
+      })
+      .join('|');
+  }, [comments]);
 
-    // 댓글 ID 목록이 실제로 변경되었을 때만 업데이트
+  useEffect(() => {
+    // 댓글 트리 전체를 직렬화하여 이전 값과 비교 (답글 변경도 감지)
     if (prevCommentsKeyRef.current !== currentCommentsKey) {
       prevCommentsKeyRef.current = currentCommentsKey;
       setLocalComments(comments);
     }
-    // comments 배열의 참조가 아닌 실제 내용(commentId)만 비교하도록 의존성 최적화
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [comments.length, comments.map((c) => c.commentId).join(',')]);
+  }, [comments, currentCommentsKey]);
 
   const handleLikeComment = useCallback(
     (commentId: number, isLiked: boolean, likeCount: number) => {
