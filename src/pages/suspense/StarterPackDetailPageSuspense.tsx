@@ -19,6 +19,7 @@ import { QUERY_KEYS } from '@/utils/queryKeys';
 import { formatFeedDate } from '@/utils/date';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
+import { tokens } from '@/styles/tokens';
 import {
   StarterPackDetailPageContainer,
   PageHeader,
@@ -232,9 +233,12 @@ const StarterPackDetailData = () => {
     toggleBookmark();
   };
 
-  // 북마크 상태 확인
-  const packWithBookmark = displayPack as StarterPack & { isBookmarked?: boolean };
-  const isBookmarked = packWithBookmark?.isBookmarked ?? false;
+  const packInteraction = displayPack as StarterPack & {
+    isBookmarked?: boolean;
+    isLiked?: boolean;
+  };
+  const isBookmarked = packInteraction?.isBookmarked ?? false;
+  const isLiked = packInteraction?.isLiked ?? false;
 
   return (
     <StarterPackDetailPageContainer>
@@ -286,8 +290,12 @@ const StarterPackDetailData = () => {
               </StatsSection>
 
               <ActionButtons>
-                <ActionButton onClick={handleLike}>
-                  <Heart size={20} />
+                <ActionButton onClick={handleLike} type="button" aria-pressed={isLiked}>
+                  <Heart
+                    size={20}
+                    fill={isLiked ? tokens.colors.orange.primary : 'none'}
+                    color={tokens.colors.orange.primary}
+                  />
                   좋아요
                 </ActionButton>
                 <ActionButton onClick={handleShare}>
@@ -302,8 +310,8 @@ const StarterPackDetailData = () => {
                 >
                   <Bookmark
                     size={20}
-                    fill={isBookmarked ? '#3b82f6' : 'none'}
-                    color={isBookmarked ? '#3b82f6' : '#000'}
+                    fill={isBookmarked ? tokens.colors.orange.primary : 'none'}
+                    color={isBookmarked ? tokens.colors.orange.primary : tokens.colors.text.black}
                   />
                   북마크
                 </ActionButton>

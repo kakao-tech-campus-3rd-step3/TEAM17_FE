@@ -30,10 +30,55 @@ export const fetchStarterPack = async (
       params.category = options.category;
     }
 
-    const response = await axiosInstance.get<StarterPackResponse>('/api/starterPack/packs', {
+    const response = await axiosInstance.get<
+      StarterPackResponse & {
+        [key: string]: Array<
+          StarterPack & {
+            stats?: { likeCount?: number; bookmarkCount?: number; commentCount?: number };
+            interactionStatus?: { isLiked?: boolean; isBookmarked?: boolean };
+          }
+        >;
+      }
+    >('/api/starterPack/packs', {
       params,
     });
-    return response.data;
+
+    const normalized: StarterPackResponse = {};
+
+    Object.keys(response.data).forEach((key) => {
+      const packs = response.data[key] as Array<
+        StarterPack & {
+          stats?: { likeCount?: number; bookmarkCount?: number; commentCount?: number };
+          interactionStatus?: { isLiked?: boolean; isBookmarked?: boolean };
+        }
+      >;
+
+      normalized[key] = packs.map(({ stats, interactionStatus, ...rest }) => {
+        const likeCount =
+          typeof rest.likeCount === 'number' ? rest.likeCount : (stats?.likeCount ?? 0);
+        const bookmarkCount =
+          typeof rest.bookmarkCount === 'number' ? rest.bookmarkCount : (stats?.bookmarkCount ?? 0);
+        const commentCount =
+          typeof rest.commentCount === 'number' ? rest.commentCount : (stats?.commentCount ?? 0);
+        const isLiked =
+          typeof rest.isLiked === 'boolean' ? rest.isLiked : (interactionStatus?.isLiked ?? false);
+        const isBookmarked =
+          typeof rest.isBookmarked === 'boolean'
+            ? rest.isBookmarked
+            : (interactionStatus?.isBookmarked ?? false);
+
+        return {
+          ...rest,
+          likeCount,
+          bookmarkCount,
+          commentCount,
+          isLiked,
+          isBookmarked,
+        };
+      });
+    });
+
+    return normalized;
   } catch (error) {
     console.error('Failed to fetch starter packs:', error);
     throw error;
@@ -43,8 +88,40 @@ export const fetchStarterPack = async (
 // 특정 스타터팩 조회
 export const fetchStarterPackById = async (id: number): Promise<StarterPack> => {
   try {
-    const response = await axiosInstance.get<StarterPack>(`/api/starterPack/packs/${id}`);
-    return response.data;
+    const response = await axiosInstance.get<
+      StarterPack & {
+        stats?: { likeCount?: number; bookmarkCount?: number; commentCount?: number };
+        interactionStatus?: { isLiked?: boolean; isBookmarked?: boolean };
+      }
+    >(`/api/starterPack/packs/${id}`);
+
+    const data = response.data as StarterPack & {
+      stats?: { likeCount?: number; bookmarkCount?: number; commentCount?: number };
+      interactionStatus?: { isLiked?: boolean; isBookmarked?: boolean };
+    };
+
+    const { stats, interactionStatus, ...rest } = data;
+
+    const likeCount = typeof rest.likeCount === 'number' ? rest.likeCount : (stats?.likeCount ?? 0);
+    const bookmarkCount =
+      typeof rest.bookmarkCount === 'number' ? rest.bookmarkCount : (stats?.bookmarkCount ?? 0);
+    const commentCount =
+      typeof rest.commentCount === 'number' ? rest.commentCount : (stats?.commentCount ?? 0);
+    const isLiked =
+      typeof rest.isLiked === 'boolean' ? rest.isLiked : (interactionStatus?.isLiked ?? false);
+    const isBookmarked =
+      typeof rest.isBookmarked === 'boolean'
+        ? rest.isBookmarked
+        : (interactionStatus?.isBookmarked ?? false);
+
+    return {
+      ...rest,
+      likeCount,
+      bookmarkCount,
+      commentCount,
+      isLiked,
+      isBookmarked,
+    };
   } catch (error) {
     console.error(`Failed to fetch starter pack ${id}:`, error);
     throw error;
@@ -142,10 +219,53 @@ export const fetchStarterPackByCategory = async (
   categoryId: number
 ): Promise<StarterPackResponse> => {
   try {
-    const response = await axiosInstance.get<StarterPackResponse>(
-      `/api/starterPack/categories/${categoryId}/packs`
-    );
-    return response.data;
+    const response = await axiosInstance.get<
+      StarterPackResponse & {
+        [key: string]: Array<
+          StarterPack & {
+            stats?: { likeCount?: number; bookmarkCount?: number; commentCount?: number };
+            interactionStatus?: { isLiked?: boolean; isBookmarked?: boolean };
+          }
+        >;
+      }
+    >(`/api/starterPack/categories/${categoryId}/packs`);
+
+    const normalized: StarterPackResponse = {};
+
+    Object.keys(response.data).forEach((key) => {
+      const packs = response.data[key] as Array<
+        StarterPack & {
+          stats?: { likeCount?: number; bookmarkCount?: number; commentCount?: number };
+          interactionStatus?: { isLiked?: boolean; isBookmarked?: boolean };
+        }
+      >;
+
+      normalized[key] = packs.map(({ stats, interactionStatus, ...rest }) => {
+        const likeCount =
+          typeof rest.likeCount === 'number' ? rest.likeCount : (stats?.likeCount ?? 0);
+        const bookmarkCount =
+          typeof rest.bookmarkCount === 'number' ? rest.bookmarkCount : (stats?.bookmarkCount ?? 0);
+        const commentCount =
+          typeof rest.commentCount === 'number' ? rest.commentCount : (stats?.commentCount ?? 0);
+        const isLiked =
+          typeof rest.isLiked === 'boolean' ? rest.isLiked : (interactionStatus?.isLiked ?? false);
+        const isBookmarked =
+          typeof rest.isBookmarked === 'boolean'
+            ? rest.isBookmarked
+            : (interactionStatus?.isBookmarked ?? false);
+
+        return {
+          ...rest,
+          likeCount,
+          bookmarkCount,
+          commentCount,
+          isLiked,
+          isBookmarked,
+        };
+      });
+    });
+
+    return normalized;
   } catch (error) {
     console.error(`Failed to fetch starter packs by category ${categoryId}:`, error);
     throw error;

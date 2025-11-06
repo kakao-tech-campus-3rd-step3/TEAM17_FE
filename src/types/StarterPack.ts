@@ -27,6 +27,7 @@ export interface StarterPack {
   authorProfileImageUrl?: string;
   memberId: number;
   isBookmarked?: boolean;
+  isLiked?: boolean;
   createdAt?: string;
 }
 
