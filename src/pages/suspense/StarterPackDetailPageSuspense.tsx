@@ -1,10 +1,10 @@
 import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Heart, MessageSquare, Share, Bookmark, Tag, Edit, Trash2 } from 'lucide-react';
+import { Heart, MessageSquare, Share, Bookmark, Tag } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { fetchStarterPackById } from '@/api/starterPackApi';
-import type { StarterPack, PackCommentResponse } from '@/types/StarterPack';
+import type { StarterPack } from '@/types/StarterPack';
 import type { Comment, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import CommentSection from '@/components/comment/CommentSection';
 import {
@@ -13,9 +13,8 @@ import {
   useStarterPackLike,
   usePackCommentLike,
   useStarterPackBookmark,
-  useStarterPackActions,
 } from '@/hooks/useStarterPacks';
-import { useAuth, useUser } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { QUERY_KEYS } from '@/utils/queryKeys';
 import { formatFeedDate } from '@/utils/date';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
@@ -41,8 +40,6 @@ import {
   StarterPackTitle,
   StarterPackDescription,
   CategoryTag,
-  HashtagSection,
-  Hashtag,
   StatsSection,
   StatItem,
   ActionButtons,
@@ -55,35 +52,7 @@ import {
   ProductName,
   TimeStamp,
   ErrorStateContainer,
-  OwnerActions,
-  OwnerButton,
-  OwnerDeleteButton,
 } from '@/pages/StarterPackDetailPage.styles';
-
-const convertPackCommentToComment = (packComment: PackCommentResponse): Comment => {
-  const baseComment: Comment = {
-    commentId: packComment.id,
-    author: {
-      userId: packComment.author.id,
-      name: packComment.author.name,
-      profileImageUrl: packComment.author.profileImageUrl,
-    },
-    content: packComment.content,
-    createdAt: packComment.createdAt,
-    likeCount: packComment.likeCount ?? 0,
-    isLiked: packComment.isLiked ?? false,
-    parentId: packComment.parentId ?? null,
-    isMine: packComment.isMine ?? false,
-    isDeleted: packComment.isDeleted ?? false,
-    replies: [],
-  };
-
-  if (packComment.parentId !== null && packComment.parentId !== undefined) {
-    (baseComment as Comment & { replyId: number }).replyId = packComment.id;
-  }
-
-  return baseComment;
-};
 
 const StarterPackDetailData = () => {
   const { id } = useParams<{ id: string }>();
@@ -110,9 +79,7 @@ const StarterPackDetailData = () => {
     rawError: commentLikeRawError,
   } = usePackCommentLike(packId);
   const { toggleBookmark } = useStarterPackBookmark(packId);
-  const { remove: deletePack, loading: isActionLoading } = useStarterPackActions();
   const { isLogin } = useAuth();
-  const { data: currentUser } = useUser();
   const [localComments, setLocalComments] = useState<Comment[]>([]);
   const prevCommentsKeyRef = useRef<string>('');
 
@@ -195,64 +162,27 @@ const StarterPackDetailData = () => {
   }, []);
 
   const handleAddComment = async (comment: CreateCommentRequest) => {
-    if (!isLogin) {
-      alert('로그인이 필요한 기능입니다.');
-      navigate('/login');
-      return;
-    }
+    if (!packId) return;
 
     try {
-      const created = await addCommentApi(comment.content, comment.parentId ?? null);
-      const newComment = convertPackCommentToComment(created);
-
-      if (created.parentId) {
-        setLocalComments((prev) =>
-          prev.map((item) =>
-            item.commentId === created.parentId
-              ? {
-                  ...item,
-                  replies: [...(item.replies ?? []), newComment],
-                }
-              : item
-          )
-        );
-      } else {
-        setLocalComments((prev) => [...prev, newComment]);
-      }
-
+      await addCommentApi(comment.content, comment.parentId);
       await refreshComments();
     } catch (error) {
-      console.error('댓글 작성 실패:', error);
-      alert('댓글 작성에 실패했습니다. 다시 시도해주세요.');
+      console.error('Failed to add comment:', error);
+      alert('댓글 작성에 실패했습니다.');
     }
   };
 
   const handleAddReply = async (reply: CreateReplyRequest) => {
-    if (!isLogin) {
-      alert('로그인이 필요한 기능입니다.');
-      navigate('/login');
-      return;
-    }
+    if (!packId) return;
 
     try {
-      const created = await addCommentApi(reply.content, reply.commentId);
-      const replyComment = convertPackCommentToComment(created);
-
-      setLocalComments((prev) =>
-        prev.map((comment) =>
-          comment.commentId === reply.commentId
-            ? {
-                ...comment,
-                replies: [...(comment.replies ?? []), replyComment],
-              }
-            : comment
-        )
-      );
-
+      // 답글은 parentId를 포함하여 댓글 작성
+      await addCommentApi(reply.content, reply.commentId);
       await refreshComments();
     } catch (error) {
-      console.error('답글 작성 실패:', error);
-      alert('답글 작성에 실패했습니다. 다시 시도해주세요.');
+      console.error('Failed to add reply:', error);
+      alert('답글 작성에 실패했습니다.');
     }
   };
 
@@ -303,36 +233,12 @@ const StarterPackDetailData = () => {
     toggleBookmark();
   };
 
-  const handleEdit = () => {
-    navigate(`/pack-writing?edit=${packId}`);
-  };
-
-  const handleDelete = async () => {
-    if (!packId) return;
-
-    const confirmed = window.confirm(
-      '정말로 이 스타터팩을 삭제하시겠습니까?\n삭제된 스타터팩은 복구할 수 없습니다.'
-    );
-    if (!confirmed) return;
-
-    try {
-      await deletePack(packId);
-      alert('스타터팩이 삭제되었습니다.');
-      navigate('/starterpack');
-    } catch (error) {
-      console.error('Failed to delete starter pack:', error);
-      alert('스타터팩 삭제에 실패했습니다. 다시 시도해주세요.');
-    }
-  };
-
-  // 북마크 상태 확인
-  const packWithBookmark = displayPack as StarterPack & {
+  const packInteraction = displayPack as StarterPack & {
     isBookmarked?: boolean;
     isLiked?: boolean;
   };
-  const isBookmarked = packWithBookmark?.isBookmarked ?? false;
-  const isLiked = packWithBookmark?.isLiked ?? false;
-  const isAuthor = currentUser?.userId === displayPack.memberId;
+  const isBookmarked = packInteraction?.isBookmarked ?? false;
+  const isLiked = packInteraction?.isLiked ?? false;
 
   return (
     <StarterPackDetailPageContainer>
@@ -372,14 +278,6 @@ const StarterPackDetailData = () => {
                 {displayPack.categoryName}
               </CategoryTag>
 
-              {displayPack.hashtags && displayPack.hashtags.length > 0 && (
-                <HashtagSection>
-                  {displayPack.hashtags.map((tag) => (
-                    <Hashtag key={tag.id}>#{tag.hashtagName}</Hashtag>
-                  ))}
-                </HashtagSection>
-              )}
-
               <StatsSection>
                 <StatItem>
                   <Heart size={16} />
@@ -413,7 +311,7 @@ const StarterPackDetailData = () => {
                   <Bookmark
                     size={20}
                     fill={isBookmarked ? tokens.colors.orange.primary : 'none'}
-                    color={tokens.colors.orange.primary}
+                    color={isBookmarked ? tokens.colors.orange.primary : tokens.colors.text.black}
                   />
                   북마크
                 </ActionButton>
@@ -423,24 +321,6 @@ const StarterPackDetailData = () => {
                 <TimeStamp>
                   {formatFeedDate((displayPack as StarterPack & { createdAt?: string }).createdAt!)}
                 </TimeStamp>
-              )}
-
-              {isAuthor && (
-                <OwnerActions>
-                  <OwnerButton type="button" onClick={handleEdit} aria-label="수정하기">
-                    <Edit size={18} />
-                    수정
-                  </OwnerButton>
-                  <OwnerDeleteButton
-                    type="button"
-                    onClick={handleDelete}
-                    aria-label="삭제하기"
-                    disabled={isActionLoading}
-                  >
-                    <Trash2 size={18} />
-                    삭제
-                  </OwnerDeleteButton>
-                </OwnerActions>
               )}
             </InfoSection>
           </RightColumn>

@@ -1,15 +1,21 @@
 import { Suspense, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { Edit, Trash2 } from 'lucide-react';
 import FeedMediaSection from '@/components/feed/FeedMediaSection';
 import FeedInfoSection from '@/components/feed/FeedInfoSection';
 import CommentSection from '@/components/comment/CommentSection';
 import FeedLikersModal from '@/components/feed/FeedLikersModal';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useCommentActions, useFeedLike, useFeedBookmark } from '@/hooks/useFeeds';
-import { fetchFeedById, deleteFeed } from '@/api/feedApi';
+import { useCommentActions, useFeedBookmark, useFeedLike } from '@/hooks/useFeeds';
+import { fetchFeedById, deleteFeed, fetchComments } from '@/api/feedApi';
 import { useUser, useAuth } from '@/hooks/useAuth';
-import type { FeedDetail, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
+import type {
+  FeedDetail,
+  CreateCommentRequest,
+  CreateReplyRequest,
+  CommentResponse,
+} from '@/types/Feed';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
 import { QUERY_KEYS } from '@/utils/queryKeys';
@@ -23,6 +29,9 @@ import {
   LeftColumn,
   RightColumn,
   BottomSection,
+  ActionButtons,
+  ActionButton,
+  DeleteButton,
 } from '@/pages/FeedDetailPage.styles';
 
 const FeedDetailData = () => {
@@ -42,9 +51,17 @@ const FeedDetailData = () => {
     staleTime: 5 * 60 * 1000,
   });
 
+  const { data: commentsResponse } = useSuspenseQuery<CommentResponse>({
+    queryKey: QUERY_KEYS.feeds.comments(feedId),
+    queryFn: () => fetchComments(feedId),
+    staleTime: 60 * 1000,
+  });
+
+  const initialComments = commentsResponse?.content ?? [];
+
   const { addComment } = useCommentActions(feedId);
-  const { toggleLike } = useFeedLike(feedId);
   const { toggleBookmark } = useFeedBookmark(feedId);
+  const { toggleLike } = useFeedLike(feedId);
   const { isLogin } = useAuth();
 
   // 작성자 확인: 현재 사용자와 피드 작성자 비교
@@ -52,7 +69,7 @@ const FeedDetailData = () => {
 
   const [localFeed, setLocalFeed] = useState<FeedDetail>({
     ...feed,
-    comments: feed?.comments || [],
+    comments: initialComments,
   });
   const [isLikersModalOpen, setIsLikersModalOpen] = useState(false);
 
@@ -60,10 +77,10 @@ const FeedDetailData = () => {
     if (feed) {
       setLocalFeed({
         ...feed,
-        comments: feed.comments || [],
+        comments: commentsResponse?.content ?? [],
       });
     }
-  }, [feed]);
+  }, [feed, commentsResponse]);
 
   const handleBack = () => {
     navigate(-1);
@@ -94,62 +111,91 @@ const FeedDetailData = () => {
   };
 
   const handleLike = () => {
+    if (!localFeed) return;
     if (!isLogin) {
       alert('로그인이 필요한 기능입니다.');
       navigate('/login');
       return;
     }
+
+    const newIsLiked = !localFeed.isLiked;
+    const newLikeCount = newIsLiked
+      ? (localFeed.likeCount ?? 0) + 1
+      : Math.max(0, (localFeed.likeCount ?? 0) - 1);
+
+    setLocalFeed((prev) =>
+      prev ? { ...prev, isLiked: newIsLiked, likeCount: newLikeCount } : prev
+    );
+
+    queryClient.setQueryData(QUERY_KEYS.feeds.detail(feedId), (old: FeedDetail | undefined) => {
+      if (!old) return old;
+      return { ...old, isLiked: newIsLiked, likeCount: newLikeCount };
+    });
+
     toggleLike();
   };
 
   const handleShare = () => {
-    if (!feed) return;
+    if (!localFeed) return;
+
+    const shareData = {
+      title: '피드 공유',
+      text: localFeed.description || '',
+      url: window.location.href,
+    };
 
     if (navigator.share) {
-      navigator
-        .share({
-          title: '피드 공유',
-          text: feed.description || '',
-          url: window.location.href,
-        })
-        .catch((error) => {
-          console.error('공유 실패:', error);
-        });
-    } else if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      navigator.share(shareData).catch((shareError) => {
+        console.error('공유 실패:', shareError);
+      });
+      return;
+    }
+
+    if (navigator.clipboard) {
       navigator.clipboard
         .writeText(window.location.href)
         .then(() => {
           alert('링크가 클립보드에 복사되었습니다.');
         })
-        .catch((error) => {
-          console.error('클립보드 복사 실패:', error);
-          alert('링크 복사에 실패했습니다. 다시 시도해주세요.');
+        .catch((clipboardError) => {
+          console.error('클립보드 복사 실패:', clipboardError);
+          alert('공유 기능을 사용할 수 없습니다.');
         });
-    } else {
-      try {
-        window.prompt(
-          '공유 기능을 지원하지 않는 환경입니다. URL을 직접 복사해주세요.',
-          window.location.href
-        );
-      } catch (error) {
-        console.error('URL 안내 중 오류가 발생했습니다:', error);
-        alert(`아래 URL을 직접 복사해주세요:\n${window.location.href}`);
-      }
+      return;
     }
+
+    alert('이 브라우저에서는 공유 기능을 지원하지 않습니다.');
   };
 
   const handleBookmark = () => {
+    if (!localFeed) return;
     if (!isLogin) {
       alert('로그인이 필요한 기능입니다.');
       navigate('/login');
       return;
     }
+
+    const newIsBookmarked = !localFeed.isBookmarked;
+    const newBookmarkCount = newIsBookmarked
+      ? (localFeed.bookmarkCount ?? 0) + 1
+      : Math.max(0, (localFeed.bookmarkCount ?? 0) - 1);
+
+    setLocalFeed((prev) =>
+      prev ? { ...prev, isBookmarked: newIsBookmarked, bookmarkCount: newBookmarkCount } : prev
+    );
+
+    queryClient.setQueryData(QUERY_KEYS.feeds.detail(feedId), (old: FeedDetail | undefined) => {
+      if (!old) return old;
+      return { ...old, isBookmarked: newIsBookmarked, bookmarkCount: newBookmarkCount };
+    });
+
     toggleBookmark();
   };
 
   const handleAddComment = async (comment: CreateCommentRequest) => {
     try {
       await addComment(comment);
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.comments(feedId) });
       alert('댓글이 추가되었습니다!');
     } catch (error) {
       console.error('댓글 작성 실패:', error);
@@ -159,14 +205,12 @@ const FeedDetailData = () => {
 
   const handleAddReply = async (reply: CreateReplyRequest) => {
     try {
-      // 답글은 댓글 작성 API에 parentId를 포함하여 호출
       await addComment({
         feedId: reply.feedId,
         content: reply.content,
         parentId: reply.commentId,
       });
-      // 답글 작성 성공 후 피드 상세 정보 새로고침
-      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.detail(feedId) });
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.comments(feedId) });
       alert('답글이 추가되었습니다!');
     } catch (error) {
       console.error('답글 작성 실패:', error);
@@ -233,10 +277,19 @@ const FeedDetailData = () => {
               onShare={handleShare}
               onBookmark={handleBookmark}
               onOpenLikers={() => setIsLikersModalOpen(true)}
-              isAuthor={isAuthor}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
             />
+            {isAuthor && (
+              <ActionButtons>
+                <ActionButton onClick={handleEdit} type="button" aria-label="수정하기">
+                  <Edit size={20} />
+                  수정하기
+                </ActionButton>
+                <DeleteButton onClick={handleDelete} type="button" aria-label="삭제하기">
+                  <Trash2 size={20} />
+                  삭제하기
+                </DeleteButton>
+              </ActionButtons>
+            )}
           </RightColumn>
         </TopSection>
 
