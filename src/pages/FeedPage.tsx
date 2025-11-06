@@ -110,16 +110,28 @@ const FeedPage = () => {
 
   const handleBookmark = useCallback(
     async (feedId: number, isBookmarked: boolean, bookmarkCount: number) => {
-      setPosts((prev) =>
-        prev.map((post) => {
+      // 낙관적 업데이트 전 원본 상태 저장
+      let originalPost:
+        | ((typeof posts)[0] & { isBookmarked?: boolean; bookmarkCount?: number })
+        | null = null;
+      setPosts((prev) => {
+        const found = prev.find((p) => p.feedId === feedId);
+        if (found) {
+          originalPost = {
+            ...found,
+            isBookmarked: (found as typeof found & { isBookmarked?: boolean }).isBookmarked,
+            bookmarkCount: (found as typeof found & { bookmarkCount?: number }).bookmarkCount,
+          };
+        }
+        return prev.map((post) => {
           if (post.feedId !== feedId) return post;
           return {
             ...post,
             isBookmarked,
             bookmarkCount,
           } as typeof post & { isBookmarked: boolean; bookmarkCount: number };
-        })
-      );
+        });
+      });
 
       try {
         const response = await toggleFeedBookmark(feedId);
@@ -137,14 +149,15 @@ const FeedPage = () => {
         queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.all });
       } catch (error) {
         console.error('Failed to toggle bookmark:', error);
-        // 실패 시 롤백
-        setPosts((prev) =>
-          prev.map((post) => {
-            if (post.feedId !== feedId) return post;
-            const originalPost = prev.find((p) => p.feedId === feedId);
-            return originalPost || post;
-          })
-        );
+        // 실패 시 저장된 원본 상태로 롤백
+        if (originalPost) {
+          setPosts((prev) =>
+            prev.map((post) => {
+              if (post.feedId !== feedId) return post;
+              return originalPost as typeof post;
+            })
+          );
+        }
       }
     },
     [queryClient]
