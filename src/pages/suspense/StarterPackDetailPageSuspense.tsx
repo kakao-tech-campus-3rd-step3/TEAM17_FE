@@ -12,6 +12,7 @@ import {
   usePackCommentActions,
   useStarterPackLike,
 } from '@/hooks/useStarterPacks';
+import { useAuth } from '@/hooks/useAuth';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
 import {
@@ -61,7 +62,8 @@ const StarterPackDetailData = () => {
 
   const { comments, refresh: refreshComments } = usePackComments(packId);
   const { addComment: addCommentApi } = usePackCommentActions(packId);
-  const { toggleLike } = useStarterPackLike(packId);
+  const { toggleLike, error: likeError, rawError } = useStarterPackLike(packId);
+  const { isLogin } = useAuth();
   const [localComments, setLocalComments] = useState<Comment[]>([]);
   const prevCommentsKeyRef = useRef<string>('');
 
@@ -162,8 +164,28 @@ const StarterPackDetailData = () => {
   };
 
   const handleLike = () => {
+    if (!isLogin) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
     toggleLike();
   };
+
+  // 좋아요 에러 처리
+  useEffect(() => {
+    if (rawError) {
+      const axiosError = rawError as { response?: { status?: number } };
+      const status = axiosError?.response?.status;
+
+      if (status === 403) {
+        alert('로그인이 필요한 기능입니다.');
+        navigate('/login');
+      } else if (likeError) {
+        alert(likeError);
+      }
+    }
+  }, [rawError, likeError, navigate]);
 
   const handleShare = async () => {
     try {
