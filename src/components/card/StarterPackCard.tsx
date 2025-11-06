@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import { Heart, MessageSquare, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
 import type { StarterPack } from '@/types/StarterPack';
 import { tokens } from '@/styles/tokens';
@@ -44,15 +45,21 @@ const StarterPackCard: React.FC<Props> = ({
   onOpen,
   onToggleBookmark,
 }) => {
+  const navigate = useNavigate(); 
   const isBookmarked = pack.isBookmarked ?? false;
 
   const handleAvatarError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const target = e.currentTarget;
-    // defaultProfile도 실패할 경우 무한 루프 방지
     if (target.src !== defaultProfile) {
       target.src = defaultProfile;
     }
   };
+
+const handleProfileClick = () => {
+  if (!pack.memberId) return;
+  navigate(`/mypage/${pack.memberId}`, { state: { hideScrap: true } });
+};
+
 
   return (
     <PostContainer>
@@ -62,8 +69,12 @@ const StarterPackCard: React.FC<Props> = ({
             src={pack.authorProfileImageUrl || defaultProfile}
             alt={pack.authorNickname}
             onError={handleAvatarError}
+            onClick={handleProfileClick}
+            style={{ cursor: 'pointer' }}
           />
-          <Username>@{pack.authorNickname}</Username>
+          <Username onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
+            @{pack.authorNickname}
+          </Username>
         </UserInfo>
         <MoreButton>
           <MoreHorizontal size={20} />
@@ -92,6 +103,7 @@ const StarterPackCard: React.FC<Props> = ({
           </EngagementIcon>
           <EngagementCount>{(pack.likeCount ?? 0).toLocaleString()}</EngagementCount>
         </EngagementItem>
+
         <EngagementItem
           type="button"
           onClick={(e) => {
@@ -105,13 +117,12 @@ const StarterPackCard: React.FC<Props> = ({
           </EngagementIcon>
           <EngagementCount>{(pack.commentCount ?? 0).toLocaleString()}</EngagementCount>
         </EngagementItem>
+
         <BookmarkButton
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            if (onToggleBookmark) {
-              onToggleBookmark(pack.id);
-            }
+            onToggleBookmark?.(pack.id);
           }}
           aria-label={isBookmarked ? '북마크 취소' : '북마크'}
           aria-pressed={isBookmarked}
@@ -134,7 +145,7 @@ const StarterPackCard: React.FC<Props> = ({
         {pack.categoryName}
       </CategoryTag>
 
-      {pack.hashtags && pack.hashtags.length > 0 && (
+      {pack.hashtags?.length > 0 && (
         <HashtagContainer>
           {pack.hashtags.map((hashtag) => (
             <HashtagSpan key={hashtag.id}>#{hashtag.hashtagName}</HashtagSpan>
@@ -142,12 +153,11 @@ const StarterPackCard: React.FC<Props> = ({
         </HashtagContainer>
       )}
 
-      {pack.items && pack.items.length > 0 && (
+      {pack.items?.length > 0 && (
         <ProductsSection>
           <h4>관련 제품</h4>
           <ul role="list" aria-label="관련 제품 목록">
             {pack.items.slice(0, MAX_DISPLAY_ITEMS).map((item) => {
-              // name과 linkUrl 조합으로 고유한 key 생성
               const itemKey = `${item.name}-${item.linkUrl}`;
               const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
                 e.currentTarget.style.display = 'none';
