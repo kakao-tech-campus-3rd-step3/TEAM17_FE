@@ -31,8 +31,49 @@ export const fetchFeeds = async (
       params.sort = options.sort;
     }
 
-    const response = await axiosInstance.get<FeedResponse>('/api/feeds', { params });
-    return response.data;
+    const response = await axiosInstance.get<
+      FeedResponse & {
+        content: Array<
+          FeedPost & {
+            stats?: { likeCount?: number; bookmarkCount?: number };
+            interactionStatus?: { isLiked?: boolean; isBookmarked?: boolean };
+          }
+        >;
+      }
+    >('/api/feeds', { params });
+
+    const feedList = response.data.content as Array<
+      FeedPost & {
+        stats?: { likeCount?: number; bookmarkCount?: number };
+        interactionStatus?: { isLiked?: boolean; isBookmarked?: boolean };
+      }
+    >;
+
+    const normalizedContent = feedList.map(({ stats, interactionStatus, ...feed }) => {
+      const likeCount =
+        typeof feed.likeCount === 'number' ? feed.likeCount : (stats?.likeCount ?? 0);
+      const bookmarkCount =
+        typeof feed.bookmarkCount === 'number' ? feed.bookmarkCount : (stats?.bookmarkCount ?? 0);
+      const isLiked =
+        typeof feed.isLiked === 'boolean' ? feed.isLiked : (interactionStatus?.isLiked ?? false);
+      const isBookmarked =
+        typeof feed.isBookmarked === 'boolean'
+          ? feed.isBookmarked
+          : (interactionStatus?.isBookmarked ?? false);
+
+      return {
+        ...feed,
+        likeCount,
+        bookmarkCount,
+        isLiked,
+        isBookmarked,
+      };
+    });
+
+    return {
+      ...response.data,
+      content: normalizedContent,
+    };
   } catch (error) {
     console.error('Failed to fetch feeds:', error);
     throw error;
