@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import type { FeedPost as FeedPostType, FeedResponse } from '@/types/Feed';
 import { fetchFeeds } from '@/api/feedApi';
 import { FEED_CONSTANTS, FEED_CATEGORIES, type FeedCategoryKey } from '@/constants/feed';
+import { CATEGORY_MAPPING } from '@/constants/starterPack';
 import {
   FeedContainer,
   FeedHeader,
@@ -111,16 +112,7 @@ const FeedPage = () => {
 
     if (postCategory === activeCategoryTrimmed) return true;
 
-    const CATEGORY_MAPPING: Record<string, FeedCategoryKey> = {
-      헬스: '헬스',
-      요리: '요리',
-      러닝: '러닝',
-      베이킹: '베이킹',
-      캠핑: '캠핑',
-      독서: '독서',
-    };
-
-    const mappedCategory = CATEGORY_MAPPING[postCategory];
+    const mappedCategory = CATEGORY_MAPPING[postCategory] as FeedCategoryKey | undefined;
     if (mappedCategory && mappedCategory === activeCategoryTrimmed) return true;
 
     return false;
