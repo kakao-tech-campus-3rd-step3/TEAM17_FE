@@ -131,12 +131,10 @@ const Banner = () => {
 
   const handleLeftCardClick = () => {
     // TODO: 팀에서 카테고리 분류 방식 확인 후 URL 설정
-    console.log('Left card clicked:', leftItem);
   };
 
   const handleRightCardClick = () => {
     // TODO: 팀에서 카테고리 분류 방식 확인 후 URL 설정
-    console.log('Right card clicked:', rightItem);
   };
 
   const leftItem = LEFT_BANNER_ITEMS[leftIndex];

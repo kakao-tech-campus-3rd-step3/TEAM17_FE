@@ -30,16 +30,15 @@ export const Card = styled.div<{ $variant: 'left' | 'right'; $imageUrl?: string 
   height: 16rem;
   border-radius: 0.5rem;
   overflow: hidden;
-  background-image: ${({ $variant, $imageUrl }) => {
-    const gradient =
-      $variant === 'left'
-        ? 'linear-gradient(135deg, rgba(30, 58, 138, 0.8) 0%, rgba(88, 28, 135, 0.8) 100%)'
-        : 'linear-gradient(135deg, rgba(34, 211, 238, 0.8) 0%, rgba(37, 99, 235, 0.8) 100%)';
-    return $imageUrl ? `url(${$imageUrl}), ${gradient}` : gradient;
-  }};
+  background-image: ${({ $imageUrl }) => ($imageUrl ? `url(${$imageUrl})` : 'none')};
   background-size: cover;
   background-position: center;
-  background-blend-mode: overlay;
+  background-color: ${({ $variant, $imageUrl }) => {
+    if ($imageUrl) return 'transparent';
+    return $variant === 'left'
+      ? 'linear-gradient(135deg, #1e3a8a 0%, #581c87 100%)'
+      : 'linear-gradient(135deg, #22d3ee 0%, #2563eb 100%)';
+  }};
   transition: transform 0.3s ease;
 
   @media (max-width: 768px) {
