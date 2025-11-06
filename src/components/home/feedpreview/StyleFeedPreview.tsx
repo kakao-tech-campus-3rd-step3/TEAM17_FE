@@ -36,7 +36,8 @@ const LOAD_MORE_PAGE_SIZE = 6;
 
 const StyleFeedPreview = () => {
   const navigate = useNavigate();
-  const [displayedCount, setDisplayedCount] = useState(LOAD_MORE_PAGE_SIZE);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [allFeeds, setAllFeeds] = useState<FeedPost[]>([]);
   const [feedLikes, setFeedLikes] = useState<
     Record<number, { isLiked: boolean; likeCount: number }>
   >({});
@@ -44,13 +45,19 @@ const StyleFeedPreview = () => {
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   // 서버에서 인기순으로 정렬된 피드 가져오기
-  const { feeds, loading, error, hasNext } = useFeeds(0, displayedCount, {
+  const { feeds, loading, error, hasNext } = useFeeds(currentPage, LOAD_MORE_PAGE_SIZE, {
     sort: 'likeCount,desc',
   });
 
-  // 피드 데이터가 변경될 때 좋아요 상태 초기화
+  // 피드 데이터가 변경될 때 allFeeds에 추가 및 좋아요 상태 초기화
   useEffect(() => {
     if (feeds.length > 0) {
+      setAllFeeds((prev) => {
+        const existingIds = new Set(prev.map((f) => f.feedId));
+        const newFeeds = feeds.filter((f) => !existingIds.has(f.feedId));
+        return [...prev, ...newFeeds];
+      });
+
       setFeedLikes((prev) => {
         const updated = { ...prev };
         feeds.forEach((feed) => {
@@ -72,8 +79,8 @@ const StyleFeedPreview = () => {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          setDisplayedCount((prev) => prev + LOAD_MORE_PAGE_SIZE);
+        if (entries[0].isIntersecting && hasNext) {
+          setCurrentPage((prev) => prev + 1);
         }
       },
       { threshold: 0.1 }
@@ -202,7 +209,7 @@ const StyleFeedPreview = () => {
     );
   }
 
-  if (!loading && feeds.length === 0) {
+  if (!loading && currentPage === 0 && allFeeds.length === 0) {
     return (
       <Wrap>
         <Header>
@@ -228,7 +235,7 @@ const StyleFeedPreview = () => {
       </Header>
 
       <Grid>
-        {feeds.map((feed) => {
+        {allFeeds.map((feed) => {
           const likeState = feedLikes[feed.feedId] || {
             isLiked: feed.isLiked ?? false,
             likeCount: feed.likeCount ?? 0,
@@ -310,7 +317,7 @@ const StyleFeedPreview = () => {
       </Grid>
 
       {hasNext && <div ref={loadMoreRef} style={{ height: '1px', marginTop: '1rem' }} />}
-      {loading && feeds.length > 0 && (
+      {loading && allFeeds.length > 0 && (
         <Grid>
           {Array.from({ length: 3 }).map((_, index) => (
             <FeedSkeleton key={`loading-${index}`} />
