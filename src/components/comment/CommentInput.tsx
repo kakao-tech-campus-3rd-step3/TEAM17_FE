@@ -5,14 +5,17 @@ import {
   CommentInputSection,
   CommentInput as StyledCommentInput,
   CommentSubmitButton,
-} from './CommentSection.styles';
+} from '@/components/comment/CommentSection.styles';
 
 interface CommentInputProps {
   onSubmit: (content: string) => void;
   placeholder?: string;
 }
 
-const CommentInput: React.FC<CommentInputProps> = ({ onSubmit, placeholder = COMMENT_CONSTANTS.COMMENT_PLACEHOLDER }) => {
+const CommentInput: React.FC<CommentInputProps> = ({
+  onSubmit,
+  placeholder = COMMENT_CONSTANTS.COMMENT_PLACEHOLDER,
+}) => {
   const [content, setContent] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {

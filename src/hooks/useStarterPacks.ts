@@ -6,6 +6,7 @@ import {
   updateStarterPack,
   deleteStarterPack,
   toggleStarterPackLike,
+  toggleStarterPackBookmark,
   fetchPackComments,
   createPackComment,
   updatePackComment,
@@ -18,6 +19,7 @@ import type {
   StarterPackResponse,
   StarterPackRequest,
   LikeStarterPackResponse,
+  BookmarkStarterPackResponse,
   PackCommentResponse,
 } from '@/types/StarterPack';
 import type { Comment } from '@/types/Feed';
@@ -305,6 +307,118 @@ export const useStarterPackLike = (id: number) => {
       ? createUserFriendlyMessage(
           parseAxiosError(toggleLikeMutation.error),
           '좋아요 처리에 실패했습니다.'
+        )
+      : null,
+  };
+};
+
+// 스타터팩 북마크 관리 훅
+export const useStarterPackBookmark = (id: number) => {
+  const queryClient = useQueryClient();
+
+  const toggleBookmarkMutation = useMutation({
+    mutationFn: () => toggleStarterPackBookmark(id),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.starterPacks.detail(id) });
+
+      const previousPack = queryClient.getQueryData(QUERY_KEYS.starterPacks.detail(id));
+
+      queryClient.setQueryData(
+        QUERY_KEYS.starterPacks.detail(id),
+        (old: StarterPack | undefined) => {
+          if (!old) return old;
+          const currentIsBookmarked =
+            (old as StarterPack & { isBookmarked?: boolean }).isBookmarked ?? false;
+          return {
+            ...old,
+            isBookmarked: !currentIsBookmarked,
+            bookmarkCount: currentIsBookmarked
+              ? Math.max(0, old.bookmarkCount - 1)
+              : old.bookmarkCount + 1,
+          };
+        }
+      );
+
+      queryClient.setQueryData(
+        QUERY_KEYS.starterPacks.list,
+        (old: StarterPackResponse | undefined) => {
+          if (!old) return old;
+
+          const updatePack = (pack: StarterPack) => {
+            const currentIsBookmarked =
+              (pack as StarterPack & { isBookmarked?: boolean }).isBookmarked ?? false;
+            return pack.id === id
+              ? {
+                  ...pack,
+                  isBookmarked: !currentIsBookmarked,
+                  bookmarkCount: currentIsBookmarked
+                    ? Math.max(0, pack.bookmarkCount - 1)
+                    : pack.bookmarkCount + 1,
+                }
+              : pack;
+          };
+
+          const updated: StarterPackResponse = {};
+          for (const key in old) {
+            updated[key] = old[key].map(updatePack);
+          }
+          return updated;
+        }
+      );
+
+      return { previousPack };
+    },
+    onSuccess: (result: BookmarkStarterPackResponse) => {
+      queryClient.setQueryData(
+        QUERY_KEYS.starterPacks.detail(id),
+        (old: StarterPack | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            bookmarkCount: result.bookmarkCount,
+            isBookmarked: result.isBookmarked,
+          };
+        }
+      );
+
+      queryClient.setQueryData(
+        QUERY_KEYS.starterPacks.list,
+        (old: StarterPackResponse | undefined) => {
+          if (!old) return old;
+
+          const updatePack = (pack: StarterPack) =>
+            pack.id === id
+              ? { ...pack, bookmarkCount: result.bookmarkCount, isBookmarked: result.isBookmarked }
+              : pack;
+
+          const updated: StarterPackResponse = {};
+          for (const key in old) {
+            updated[key] = old[key].map(updatePack);
+          }
+          return updated;
+        }
+      );
+    },
+    onError: (_, __, context) => {
+      if (context?.previousPack) {
+        queryClient.setQueryData(QUERY_KEYS.starterPacks.detail(id), context.previousPack);
+      }
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.starterPacks.list });
+    },
+  });
+
+  const handleToggleBookmark = () => {
+    if (toggleBookmarkMutation.isPending) return;
+    toggleBookmarkMutation.mutate();
+  };
+
+  return {
+    toggleBookmark: handleToggleBookmark,
+    loading: toggleBookmarkMutation.isPending,
+    error: toggleBookmarkMutation.error
+      ? createUserFriendlyMessage(
+          parseAxiosError(toggleBookmarkMutation.error),
+          '북마크 처리에 실패했습니다.'
         )
       : null,
   };

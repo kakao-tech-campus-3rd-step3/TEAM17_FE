@@ -2,7 +2,12 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StarterPackCard from '@/components/card/StarterPackCard';
 import { useAuth } from '@/hooks/useAuth';
-import { useStarterPack, useStarterPackLike, useStarterPackById } from '@/hooks/useStarterPacks';
+import {
+  useStarterPack,
+  useStarterPackLike,
+  useStarterPackById,
+  useStarterPackBookmark,
+} from '@/hooks/useStarterPacks';
 import type { StarterPack } from '@/types/StarterPack';
 import {
   STARTER_PACK_CONSTANTS,
@@ -44,6 +49,7 @@ const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
   const navigate = useNavigate();
   const { starterPack } = useStarterPackById(pack.id);
   const { toggleLike } = useStarterPackLike(pack.id);
+  const { toggleBookmark } = useStarterPackBookmark(pack.id);
 
   const packWithLike = starterPack as StarterPack & { isLiked?: boolean };
   const isLiked = packWithLike?.isLiked ?? false;
@@ -58,6 +64,7 @@ const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
       isLiked={isLiked}
       onToggleLike={() => toggleLike()}
       onOpen={handleOpenDetail}
+      onToggleBookmark={() => toggleBookmark()}
     />
   );
 };

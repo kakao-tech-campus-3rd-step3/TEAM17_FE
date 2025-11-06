@@ -1,6 +1,6 @@
 import React from 'react';
 import Skeleton from '@/components/common/Skeleton';
-import { GridItem } from './StarterPreview.styles';
+import { GridItem } from '@/components/home/starterpreview/StarterPreview.styles';
 import styled from 'styled-components';
 
 const SkeletonWrapper = styled(GridItem)`

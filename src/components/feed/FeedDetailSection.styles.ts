@@ -165,12 +165,18 @@ export const HashtagSection = styled.div`
 `;
 
 export const Hashtag = styled.span`
-  background: #f0f0f0;
-  color: #007bff;
+  background: ${tokens.colors.orange.muted};
+  color: ${tokens.colors.orange.primary};
   padding: 0.25rem 0.5rem;
   border-radius: 0.75rem;
   font-size: 0.875rem;
   font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${tokens.colors.orange.light};
+    color: ${tokens.colors.orange.dark};
+  }
 `;
 
 export const ProductSection = styled.div`

@@ -2,7 +2,7 @@ import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStarterPack } from '@/hooks/useStarterPacks';
 import type { StarterPack } from '@/types/StarterPack';
-import StarterSkeleton from './StarterSkeleton';
+import StarterSkeleton from '@/components/home/starterpreview/StarterSkeleton';
 import {
   Wrap,
   Header,
@@ -17,7 +17,7 @@ import {
   ErrorContainer,
   ErrorMessage,
   EmptyState,
-} from './StarterPreview.styles';
+} from '@/components/home/starterpreview/StarterPreview.styles';
 
 const StarterPreview = () => {
   const navigate = useNavigate();

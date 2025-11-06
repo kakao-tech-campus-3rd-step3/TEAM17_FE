@@ -64,6 +64,7 @@ export const PostActions = styled.div`
   padding: 0.375rem 1rem 0.5rem;
   gap: 1.25rem;
   border-bottom: 1px solid ${tokens.colors.line.lightGray};
+  margin-bottom: 1rem;
 `;
 
 export const EngagementItem = styled.button`
@@ -116,6 +117,12 @@ export const BookmarkButton = styled.button`
 
   &:hover {
     opacity: 0.7;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${tokens.colors.orange.primary};
+    outline-offset: 2px;
+    border-radius: 0.25rem;
   }
 
   &:disabled {

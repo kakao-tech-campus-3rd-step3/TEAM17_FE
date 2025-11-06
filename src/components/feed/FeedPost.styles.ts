@@ -193,7 +193,7 @@ export const CategoryTag = styled.div`
   gap: 0.25rem;
   padding: 0 1rem 0.5rem;
   font-size: 0.75rem;
-  color: #0095f6;
+  color: ${tokens.colors.orange.primary};
   font-weight: 500;
 `;
 

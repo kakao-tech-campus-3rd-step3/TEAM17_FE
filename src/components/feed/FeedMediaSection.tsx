@@ -15,7 +15,7 @@ import {
   EngagementCount,
   HashtagSection,
   Hashtag,
-} from './FeedMediaSection.styles';
+} from '@/components/feed/FeedMediaSection.styles';
 
 interface FeedMediaSectionProps {
   feed: FeedDetail;
@@ -131,9 +131,11 @@ const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({
       {/* 해시태그 */}
       {feed.hashtags && feed.hashtags.length > 0 && (
         <HashtagSection>
-          {feed.hashtags.map((tag) => (
-            <Hashtag key={tag}>{tag}</Hashtag>
-          ))}
+          {feed.hashtags.map((tag, index) => {
+            const tagName = typeof tag === 'string' ? tag : tag.hashtagName;
+            const tagKey = typeof tag === 'string' ? tag : tag.id;
+            return <Hashtag key={tagKey || index}>#{tagName}</Hashtag>;
+          })}
         </HashtagSection>
       )}
     </MediaContainer>

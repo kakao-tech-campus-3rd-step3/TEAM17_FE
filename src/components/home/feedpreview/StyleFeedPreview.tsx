@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share } from 'lucide-react';
 import { useFeeds } from '@/hooks/useFeeds';
 import type { FeedPost } from '@/types/Feed';
-import FeedSkeleton from './FeedSkeleton';
+import FeedSkeleton from '@/components/home/feedpreview/FeedSkeleton';
 import {
   Wrap,
   Header,
@@ -28,7 +28,7 @@ import {
   ErrorContainer,
   ErrorMessage,
   EmptyState,
-} from './StyleFeedPreview.styles';
+} from '@/components/home/feedpreview/StyleFeedPreview.styles';
 
 const StyleFeedPreview = () => {
   const navigate = useNavigate();
