@@ -268,6 +268,51 @@ export const DeleteButton = styled(ActionButton)`
   }
 `;
 
+export const OwnerActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid ${tokens.colors.line.lightGray};
+`;
+
+export const OwnerButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: ${tokens.colors.text.mediumGray};
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.4rem;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background: ${tokens.colors.orange.muted};
+    color: ${tokens.colors.orange.dark};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${tokens.colors.orange.primary};
+    outline-offset: 2px;
+  }
+`;
+
+export const OwnerDeleteButton = styled(OwnerButton)`
+  color: #ef4444;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+  }
+`;
+
 export const ProductsSection = styled.div`
   margin-top: 1rem;
   padding-top: 1rem;

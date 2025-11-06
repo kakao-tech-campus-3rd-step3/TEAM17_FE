@@ -1,6 +1,6 @@
 import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Heart, MessageSquare, Share, Bookmark, Tag } from 'lucide-react';
+import { Heart, MessageSquare, Share, Bookmark, Tag, Edit, Trash2 } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { fetchStarterPackById } from '@/api/starterPackApi';
@@ -13,12 +13,14 @@ import {
   useStarterPackLike,
   usePackCommentLike,
   useStarterPackBookmark,
+  useStarterPackActions,
 } from '@/hooks/useStarterPacks';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth, useUser } from '@/hooks/useAuth';
 import { QUERY_KEYS } from '@/utils/queryKeys';
 import { formatFeedDate } from '@/utils/date';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
+import { tokens } from '@/styles/tokens';
 import {
   StarterPackDetailPageContainer,
   PageHeader,
@@ -51,6 +53,9 @@ import {
   ProductName,
   TimeStamp,
   ErrorStateContainer,
+  OwnerActions,
+  OwnerButton,
+  OwnerDeleteButton,
 } from '@/pages/StarterPackDetailPage.styles';
 
 const StarterPackDetailData = () => {
@@ -78,7 +83,9 @@ const StarterPackDetailData = () => {
     rawError: commentLikeRawError,
   } = usePackCommentLike(packId);
   const { toggleBookmark } = useStarterPackBookmark(packId);
+  const { remove: deletePack, loading: isActionLoading } = useStarterPackActions();
   const { isLogin } = useAuth();
+  const { data: currentUser } = useUser();
   const [localComments, setLocalComments] = useState<Comment[]>([]);
   const prevCommentsKeyRef = useRef<string>('');
 
@@ -232,9 +239,36 @@ const StarterPackDetailData = () => {
     toggleBookmark();
   };
 
+  const handleEdit = () => {
+    navigate(`/pack-writing?edit=${packId}`);
+  };
+
+  const handleDelete = async () => {
+    if (!packId) return;
+
+    const confirmed = window.confirm(
+      '정말로 이 스타터팩을 삭제하시겠습니까?\n삭제된 스타터팩은 복구할 수 없습니다.'
+    );
+    if (!confirmed) return;
+
+    try {
+      await deletePack(packId);
+      alert('스타터팩이 삭제되었습니다.');
+      navigate('/starterpack');
+    } catch (error) {
+      console.error('Failed to delete starter pack:', error);
+      alert('스타터팩 삭제에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
   // 북마크 상태 확인
-  const packWithBookmark = displayPack as StarterPack & { isBookmarked?: boolean };
+  const packWithBookmark = displayPack as StarterPack & {
+    isBookmarked?: boolean;
+    isLiked?: boolean;
+  };
   const isBookmarked = packWithBookmark?.isBookmarked ?? false;
+  const isLiked = packWithBookmark?.isLiked ?? false;
+  const isAuthor = currentUser?.userId === displayPack.memberId;
 
   return (
     <StarterPackDetailPageContainer>
@@ -286,11 +320,15 @@ const StarterPackDetailData = () => {
               </StatsSection>
 
               <ActionButtons>
-                <ActionButton onClick={handleLike}>
-                  <Heart size={20} />
+                <ActionButton onClick={handleLike} type="button" aria-pressed={isLiked}>
+                  <Heart
+                    size={20}
+                    fill={isLiked ? tokens.colors.orange.primary : 'none'}
+                    color={tokens.colors.orange.primary}
+                  />
                   좋아요
                 </ActionButton>
-                <ActionButton onClick={handleShare}>
+                <ActionButton onClick={handleShare} type="button">
                   <Share size={20} />
                   공유
                 </ActionButton>
@@ -302,8 +340,8 @@ const StarterPackDetailData = () => {
                 >
                   <Bookmark
                     size={20}
-                    fill={isBookmarked ? '#3b82f6' : 'none'}
-                    color={isBookmarked ? '#3b82f6' : '#000'}
+                    fill={isBookmarked ? tokens.colors.orange.primary : 'none'}
+                    color={tokens.colors.orange.primary}
                   />
                   북마크
                 </ActionButton>
@@ -313,6 +351,24 @@ const StarterPackDetailData = () => {
                 <TimeStamp>
                   {formatFeedDate((displayPack as StarterPack & { createdAt?: string }).createdAt!)}
                 </TimeStamp>
+              )}
+
+              {isAuthor && (
+                <OwnerActions>
+                  <OwnerButton type="button" onClick={handleEdit} aria-label="수정하기">
+                    <Edit size={18} />
+                    수정
+                  </OwnerButton>
+                  <OwnerDeleteButton
+                    type="button"
+                    onClick={handleDelete}
+                    aria-label="삭제하기"
+                    disabled={isActionLoading}
+                  >
+                    <Trash2 size={18} />
+                    삭제
+                  </OwnerDeleteButton>
+                </OwnerActions>
               )}
             </InfoSection>
           </RightColumn>
