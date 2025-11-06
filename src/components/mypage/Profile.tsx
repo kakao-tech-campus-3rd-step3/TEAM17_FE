@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUser';
 import { useMyPage } from '@/hooks/useMyPageContext';
+import { useParams } from 'react-router-dom';
 import defaultProfile from '@/assets/defaultProfile.png';
 import icongrid from '@/assets/icon-grid.svg';
 import iconsmile from '@/assets/icon-smile.svg';
@@ -26,12 +27,17 @@ import ProfileEditModal from '@/components/mypage/ProfileEditModal';
 
 const Profile = () => {
   const { user } = useAuth();
-  const { isOwner } = useMyPage(); 
-  const userId = user?.userId;
+  const { isOwner } = useMyPage();
+  const { userId: paramId } = useParams<{ userId?: string }>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: profile, isLoading, isError } = useUserProfile(userId);
 
-  if (!userId) {
+  const targetId = paramId ? Number(paramId) : user?.userId;
+
+  const { data: profile, isLoading, isError } = useUserProfile(targetId, {
+    enabled: !!targetId,
+  });
+
+  if (!targetId) {
     return <div>로그인이 필요한 서비스입니다.</div>;
   }
 
@@ -110,7 +116,11 @@ const Profile = () => {
       </Container>
 
       {isOwner && isModalOpen && (
-        <ProfileEditModal profile={profile} userId={userId} onClose={() => setIsModalOpen(false)} />
+        <ProfileEditModal
+          profile={profile}
+          userId={targetId}
+          onClose={() => setIsModalOpen(false)}
+        />
       )}
     </>
   );
