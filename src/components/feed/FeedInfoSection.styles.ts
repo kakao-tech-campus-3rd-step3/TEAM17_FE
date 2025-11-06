@@ -47,7 +47,7 @@ export const UserBio = styled.p`
 
 export const PostContent = styled.div`
   font-size: 1rem;
-  line-height: 1.5;
+  line-height: 1.25;
   color: ${tokens.colors.text.black};
   margin-bottom: 0.5rem;
   white-space: pre-line;

@@ -10,6 +10,7 @@ export interface UserProfile {
   packs: PackItem[];
   feeds: FeedItem[];
   bookmarkedFeeds?: BookmarkedFeedItem[];
+  bookmarkedPacks?: PackItem[];
   isMe: boolean;
 }
 

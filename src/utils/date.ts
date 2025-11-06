@@ -91,9 +91,9 @@ export const formatFeedDate = (dateString: string): string => {
   const now = new Date();
   const postDate = new Date(dateString);
 
-  // 오늘 날짜
+  // 오늘 날짜 (시간 제외, 00:00:00)
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  // 게시물 날짜
+  // 게시물 날짜 (시간 제외, 00:00:00)
   const postDay = new Date(postDate.getFullYear(), postDate.getMonth(), postDate.getDate());
 
   // 오늘인지 확인

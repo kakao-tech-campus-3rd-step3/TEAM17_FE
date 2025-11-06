@@ -11,8 +11,11 @@ import {
   usePackComments,
   usePackCommentActions,
   useStarterPackLike,
+  useStarterPackBookmark,
 } from '@/hooks/useStarterPacks';
 import { QUERY_KEYS } from '@/utils/queryKeys';
+import { useAuth } from '@/hooks/useAuth';
+import { formatFeedDate } from '@/utils/date';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
 import {
@@ -29,6 +32,9 @@ import {
   MediaImage,
   InfoSection,
   StarterPackHeader,
+  UserInfo,
+  Avatar,
+  Username,
   StarterPackTitle,
   StarterPackDescription,
   CategoryTag,
@@ -42,6 +48,7 @@ import {
   ProductCard,
   ProductImage,
   ProductName,
+  TimeStamp,
   ErrorStateContainer,
 } from '@/pages/StarterPackDetailPage.styles';
 
@@ -63,7 +70,13 @@ const StarterPackDetailData = () => {
 
   const { comments, refresh: refreshComments } = usePackComments(packId);
   const { addComment: addCommentApi } = usePackCommentActions(packId);
-  const { toggleLike } = useStarterPackLike(packId);
+  const { toggleLike, error: likeError, rawError } = useStarterPackLike(packId);
+  const {
+    toggleBookmark,
+    error: bookmarkError,
+    rawError: bookmarkRawError,
+  } = useStarterPackBookmark(packId);
+  const { isLogin } = useAuth();
   const [localComments, setLocalComments] = useState<Comment[]>([]);
   const prevCommentsKeyRef = useRef<string>('');
 
@@ -93,6 +106,36 @@ const StarterPackDetailData = () => {
       setLocalComments(comments);
     }
   }, [comments, currentCommentsKey]);
+
+  // 좋아요 에러 처리
+  useEffect(() => {
+    if (rawError) {
+      const axiosError = rawError as { response?: { status?: number } };
+      const status = axiosError?.response?.status;
+
+      if (status === 403) {
+        alert('로그인이 필요한 기능입니다.');
+        navigate('/login');
+      } else if (likeError) {
+        alert(likeError);
+      }
+    }
+  }, [rawError, likeError, navigate]);
+
+  // 북마크 에러 처리
+  useEffect(() => {
+    if (bookmarkRawError) {
+      const axiosError = bookmarkRawError as { response?: { status?: number } };
+      const status = axiosError?.response?.status;
+
+      if (status === 403) {
+        alert('로그인이 필요한 기능입니다.');
+        navigate('/login');
+      } else if (bookmarkError) {
+        alert(bookmarkError);
+      }
+    }
+  }, [bookmarkRawError, bookmarkError, navigate]);
 
   const handleLikeComment = useCallback(
     async (commentId: number, isLiked: boolean, likeCount: number) => {
@@ -199,6 +242,11 @@ const StarterPackDetailData = () => {
   };
 
   const handleLike = () => {
+    if (!isLogin) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
     toggleLike();
   };
 
@@ -214,8 +262,17 @@ const StarterPackDetailData = () => {
   };
 
   const handleBookmark = () => {
-    // 북마크 기능은 이미 구현되어 있음
+    if (!isLogin) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
+    toggleBookmark();
   };
+
+  // 북마크 상태 확인
+  const packWithBookmark = displayPack as StarterPack & { isBookmarked?: boolean };
+  const isBookmarked = packWithBookmark?.isBookmarked ?? false;
 
   return (
     <StarterPackDetailPageContainer>
@@ -237,8 +294,17 @@ const StarterPackDetailData = () => {
           <RightColumn>
             <InfoSection>
               <StarterPackHeader>
-                <StarterPackTitle>{displayPack.name}</StarterPackTitle>
+                <UserInfo>
+                  <Avatar
+                    src={displayPack.authorProfileImageUrl || defaultAvatar}
+                    alt={displayPack.authorNickname || '작성자'}
+                  />
+                  <Username>@{displayPack.authorNickname}</Username>
+                </UserInfo>
               </StarterPackHeader>
+
+              <StarterPackTitle>{displayPack.name}</StarterPackTitle>
+
               <StarterPackDescription>{displayPack.description}</StarterPackDescription>
 
               <CategoryTag>
@@ -255,10 +321,6 @@ const StarterPackDetailData = () => {
                   <MessageSquare size={16} />
                   {displayPack.commentCount || 0}개
                 </StatItem>
-                <StatItem>
-                  <Bookmark size={16} />
-                  {displayPack.bookmarkCount || 0}개
-                </StatItem>
               </StatsSection>
 
               <ActionButtons>
@@ -270,11 +332,26 @@ const StarterPackDetailData = () => {
                   <Share size={20} />
                   공유
                 </ActionButton>
-                <ActionButton onClick={handleBookmark}>
-                  <Bookmark size={20} />
+                <ActionButton
+                  onClick={handleBookmark}
+                  type="button"
+                  aria-label={isBookmarked ? '북마크 취소' : '북마크'}
+                  aria-pressed={isBookmarked}
+                >
+                  <Bookmark
+                    size={20}
+                    fill={isBookmarked ? '#3b82f6' : 'none'}
+                    color={isBookmarked ? '#3b82f6' : '#000'}
+                  />
                   북마크
                 </ActionButton>
               </ActionButtons>
+
+              {(displayPack as StarterPack & { createdAt?: string }).createdAt && (
+                <TimeStamp>
+                  {formatFeedDate((displayPack as StarterPack & { createdAt?: string }).createdAt!)}
+                </TimeStamp>
+              )}
             </InfoSection>
           </RightColumn>
         </TopSection>

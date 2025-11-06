@@ -9,7 +9,7 @@ import {
   usePackCommentActions,
   useStarterPackActions,
 } from '@/hooks/useStarterPacks';
-import { useUser } from '@/hooks/useAuth';
+import { useUser, useAuth } from '@/hooks/useAuth';
 import CommentSection from '@/components/comment/CommentSection';
 import type { Comment, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import type { StarterPack } from '@/types/StarterPack';
@@ -58,11 +58,12 @@ const StarterPackDetailPage: React.FC = () => {
   const packId = id ? parseInt(id, 10) : 0;
 
   const { starterPack, loading, error } = useStarterPackById(packId);
-  const { toggleLike } = useStarterPackLike(packId);
+  const { toggleLike, error: likeError, rawError } = useStarterPackLike(packId);
   const { comments, refresh: refreshComments } = usePackComments(packId);
   const { addComment: addCommentApi } = usePackCommentActions(packId);
   const { remove: deletePack, loading: isActionLoading } = useStarterPackActions();
   const { data: currentUser } = useUser();
+  const { isLogin } = useAuth();
   const [localComments, setLocalComments] = useState<Comment[]>([]);
 
   // 작성자 확인: 현재 사용자와 스타터팩 작성자 비교
@@ -102,8 +103,28 @@ const StarterPackDetailPage: React.FC = () => {
   };
 
   const handleLike = () => {
+    if (!isLogin) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
     toggleLike();
   };
+
+  // 좋아요 에러 처리
+  useEffect(() => {
+    if (rawError) {
+      const axiosError = rawError as { response?: { status?: number } };
+      const status = axiosError?.response?.status;
+      
+      if (status === 403) {
+        alert('로그인이 필요한 기능입니다.');
+        navigate('/login');
+      } else if (likeError) {
+        alert(likeError);
+      }
+    }
+  }, [rawError, likeError, navigate]);
 
   const handleAddComment = async (comment: CreateCommentRequest) => {
     if (!packId) return;
