@@ -8,9 +8,14 @@ import CommentSection from '@/components/comment/CommentSection';
 import FeedLikersModal from '@/components/feed/FeedLikersModal';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useCommentActions, useFeedBookmark } from '@/hooks/useFeeds';
-import { fetchFeedById, deleteFeed } from '@/api/feedApi';
+import { fetchFeedById, deleteFeed, fetchComments } from '@/api/feedApi';
 import { useUser, useAuth } from '@/hooks/useAuth';
-import type { FeedDetail, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
+import type {
+  FeedDetail,
+  CreateCommentRequest,
+  CreateReplyRequest,
+  CommentResponse,
+} from '@/types/Feed';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
 import { QUERY_KEYS } from '@/utils/queryKeys';
@@ -46,6 +51,14 @@ const FeedDetailData = () => {
     staleTime: 5 * 60 * 1000,
   });
 
+  const { data: commentsResponse } = useSuspenseQuery<CommentResponse>({
+    queryKey: QUERY_KEYS.feeds.comments(feedId),
+    queryFn: () => fetchComments(feedId),
+    staleTime: 60 * 1000,
+  });
+
+  const initialComments = commentsResponse?.content ?? [];
+
   const { addComment } = useCommentActions(feedId);
   const { toggleBookmark } = useFeedBookmark(feedId);
   const { isLogin } = useAuth();
@@ -55,7 +68,7 @@ const FeedDetailData = () => {
 
   const [localFeed, setLocalFeed] = useState<FeedDetail>({
     ...feed,
-    comments: feed?.comments || [],
+    comments: initialComments,
   });
   const [isLikersModalOpen, setIsLikersModalOpen] = useState(false);
 
@@ -63,10 +76,10 @@ const FeedDetailData = () => {
     if (feed) {
       setLocalFeed({
         ...feed,
-        comments: feed.comments || [],
+        comments: commentsResponse?.content ?? [],
       });
     }
-  }, [feed]);
+  }, [feed, commentsResponse]);
 
   const handleBack = () => {
     navigate(-1);
@@ -118,6 +131,7 @@ const FeedDetailData = () => {
   const handleAddComment = async (comment: CreateCommentRequest) => {
     try {
       await addComment(comment);
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.comments(feedId) });
       alert('댓글이 추가되었습니다!');
     } catch (error) {
       console.error('댓글 작성 실패:', error);
@@ -127,14 +141,12 @@ const FeedDetailData = () => {
 
   const handleAddReply = async (reply: CreateReplyRequest) => {
     try {
-      // 답글은 댓글 작성 API에 parentId를 포함하여 호출
       await addComment({
         feedId: reply.feedId,
         content: reply.content,
         parentId: reply.commentId,
       });
-      // 답글 작성 성공 후 피드 상세 정보 새로고침
-      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.detail(feedId) });
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feeds.comments(feedId) });
       alert('답글이 추가되었습니다!');
     } catch (error) {
       console.error('답글 작성 실패:', error);
