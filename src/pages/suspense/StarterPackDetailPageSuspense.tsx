@@ -4,7 +4,7 @@ import { Heart, MessageSquare, Share, Bookmark, Tag, Edit, Trash2 } from 'lucide
 import defaultAvatar from '@/assets/icon-smile.svg';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { fetchStarterPackById } from '@/api/starterPackApi';
-import type { StarterPack } from '@/types/StarterPack';
+import type { StarterPack, PackCommentResponse } from '@/types/StarterPack';
 import type { Comment, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import CommentSection from '@/components/comment/CommentSection';
 import {
@@ -57,6 +57,25 @@ import {
   OwnerButton,
   OwnerDeleteButton,
 } from '@/pages/StarterPackDetailPage.styles';
+
+const convertPackCommentToComment = (packComment: PackCommentResponse): Comment => {
+  return {
+    commentId: packComment.id,
+    author: {
+      userId: packComment.author.id,
+      name: packComment.author.name,
+      profileImageUrl: packComment.author.profileImageUrl,
+    },
+    content: packComment.content,
+    createdAt: packComment.createdAt,
+    likeCount: packComment.likeCount ?? 0,
+    isLiked: packComment.isLiked ?? false,
+    parentId: packComment.parentId ?? null,
+    isMine: packComment.isMine ?? false,
+    isDeleted: packComment.isDeleted ?? false,
+    replies: [],
+  };
+};
 
 const StarterPackDetailData = () => {
   const { id } = useParams<{ id: string }>();
@@ -168,27 +187,64 @@ const StarterPackDetailData = () => {
   }, []);
 
   const handleAddComment = async (comment: CreateCommentRequest) => {
-    if (!packId) return;
+    if (!isLogin) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
 
     try {
-      await addCommentApi(comment.content, comment.parentId);
+      const created = await addCommentApi(comment.content, comment.parentId ?? null);
+      const newComment = convertPackCommentToComment(created);
+
+      if (created.parentId) {
+        setLocalComments((prev) =>
+          prev.map((item) =>
+            item.commentId === created.parentId
+              ? {
+                  ...item,
+                  replies: [...(item.replies ?? []), newComment],
+                }
+              : item
+          )
+        );
+      } else {
+        setLocalComments((prev) => [...prev, newComment]);
+      }
+
       await refreshComments();
     } catch (error) {
-      console.error('Failed to add comment:', error);
-      alert('댓글 작성에 실패했습니다.');
+      console.error('댓글 작성 실패:', error);
+      alert('댓글 작성에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
   const handleAddReply = async (reply: CreateReplyRequest) => {
-    if (!packId) return;
+    if (!isLogin) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
 
     try {
-      // 답글은 parentId를 포함하여 댓글 작성
-      await addCommentApi(reply.content, reply.commentId);
+      const created = await addCommentApi(reply.content, reply.commentId);
+      const replyComment = convertPackCommentToComment(created);
+
+      setLocalComments((prev) =>
+        prev.map((comment) =>
+          comment.commentId === reply.commentId
+            ? {
+                ...comment,
+                replies: [...(comment.replies ?? []), replyComment],
+              }
+            : comment
+        )
+      );
+
       await refreshComments();
     } catch (error) {
-      console.error('Failed to add reply:', error);
-      alert('답글 작성에 실패했습니다.');
+      console.error('답글 작성 실패:', error);
+      alert('답글 작성에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
