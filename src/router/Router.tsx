@@ -13,6 +13,7 @@ import Login from '@/pages/Login';
 import MyPage from '@/pages/MyPage';
 import PackWriting from '@/pages/PackWriting';
 import FeedWriting from '@/pages/FeedWriting';
+import ErrorPage from '@/pages/404Page';
 
 export const Router = () => (
   <Routes>
@@ -40,6 +41,7 @@ export const Router = () => (
       <Route path="/feed/:id" element={<FeedDetailPageSuspense />} />
       <Route path="/pack-writing" element={<PackWriting />} />
       <Route path="/feed-writing" element={<FeedWriting />} />
+      <Route path="*" element={<ErrorPage />} />
     </Route>
   </Routes>
 );
