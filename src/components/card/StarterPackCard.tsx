@@ -45,11 +45,24 @@ const StarterPackCard: React.FC<Props> = ({
   onToggleBookmark,
 }) => {
   const isBookmarked = pack.isBookmarked ?? false;
+
+  const handleAvatarError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const target = e.currentTarget;
+    // defaultProfile도 실패할 경우 무한 루프 방지
+    if (target.src !== defaultProfile) {
+      target.src = defaultProfile;
+    }
+  };
+
   return (
     <PostContainer>
       <PostHeader>
         <UserInfo>
-          <Avatar src={pack.authorProfileImageUrl || defaultProfile} alt={pack.authorNickname} />
+          <Avatar
+            src={pack.authorProfileImageUrl || defaultProfile}
+            alt={pack.authorNickname}
+            onError={handleAvatarError}
+          />
           <Username>@{pack.authorNickname}</Username>
         </UserInfo>
         <MoreButton>
