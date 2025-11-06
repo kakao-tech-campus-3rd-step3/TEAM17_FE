@@ -62,7 +62,7 @@ export default function LoginForm() {
     <>
       <LoginContainer onSubmit={handleSubmit(onSubmit)}>
         <Title>로그인</Title>
-        <Inputfield onSubmit={handleSubmit(onSubmit)}>
+        <Inputfield>
           <Label>이메일</Label>
           <Input
             type="email"
@@ -97,14 +97,14 @@ export default function LoginForm() {
 
           <Line />
         </Inputfield>
-        <SocialButton $bgColor=" #E5E7EB" $color="#000">
+        <SocialButton type="button" $bgColor=" #E5E7EB" $color="#000">
           <img src={google} alt="Google" />
           Google 계정으로 로그인
         </SocialButton>
 
         <KakaoLoginButton />
 
-        <SocialButton $bgColor="#03C75A" $color="#fff">
+        <SocialButton type="button" $bgColor="#03C75A" $color="#fff">
           <img src={naver} alt="Naver" />
           네이버 계정으로 로그인
         </SocialButton>

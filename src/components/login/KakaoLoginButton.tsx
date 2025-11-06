@@ -7,7 +7,9 @@ const KAKAO_REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
 const KakaoLoginButton = () => {
   const handleKakaoLogin = () => {
     if (!KAKAO_CLIENT_ID || !KAKAO_REDIRECT_URI) {
-      console.error('VITE_KAKAO_CLIENT_ID 또는 VITE_KAKAO_REDIRECT_URI가 .env 파일에 설정되지 않았습니다.');
+      console.error(
+        'VITE_KAKAO_CLIENT_ID 또는 VITE_KAKAO_REDIRECT_URI가 .env 파일에 설정되지 않았습니다.'
+      );
       alert('카카오 로그인 설정에 문제가 있습니다. 잠시 후 다시 시도해주세요.');
       return;
     }
@@ -18,13 +20,12 @@ const KakaoLoginButton = () => {
       response_type: 'code',
     });
 
-
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
     window.location.href = kakaoAuthUrl;
-};
+  };
 
   return (
-    <Button onClick={handleKakaoLogin}>
+    <Button type="button" onClick={handleKakaoLogin}>
       <img src={kakaoLogo} alt="Kakao" />
       카카오로 로그인
     </Button>
