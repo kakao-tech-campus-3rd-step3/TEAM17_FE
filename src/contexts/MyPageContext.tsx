@@ -36,8 +36,7 @@ export const MyPageProvider = ({ children }: { children: ReactNode }) => {
     enabled: !!targetUserId,
   });
 
-  //isOwner 판단 (URL에 ID가 없거나, 내 ID와 같으면 true)
-  const isOwner = !paramId || Number(paramId) === user?.userId;
+  const isOwner = !!user && (!paramId || Number(paramId) === user.userId);
 
   const value: MyPageContextType = {
     activeTab,
