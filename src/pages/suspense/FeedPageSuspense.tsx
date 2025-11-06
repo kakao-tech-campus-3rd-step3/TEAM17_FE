@@ -137,7 +137,7 @@ const FeedData = () => {
               ...post,
               isBookmarked,
               bookmarkCount,
-            } as typeof post & { isBookmarked: boolean; bookmarkCount: number };
+            };
           }),
         };
       });
@@ -154,7 +154,7 @@ const FeedData = () => {
                 ...post,
                 isBookmarked: response.isBookmarked,
                 bookmarkCount: response.bookmarkCount,
-              } as typeof post & { isBookmarked: boolean; bookmarkCount: number };
+              };
             }),
           };
         });

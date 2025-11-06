@@ -39,33 +39,21 @@ const FeedPost = ({ post, onLike, onBookmark }: FeedPostProps) => {
     const count = post.likeCount;
     return typeof count === 'number' && !isNaN(count) ? count : 0;
   });
-  const [isBookmarked, setIsBookmarked] = useState(
-    (post as typeof post & { isBookmarked?: boolean }).isBookmarked ?? false
-  );
+  const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked ?? false);
   const [bookmarkCount, setBookmarkCount] = useState(() => {
-    const count = (post as typeof post & { bookmarkCount?: number }).bookmarkCount;
-    return typeof count === 'number' && !isNaN(count) ? count : 0;
+    return typeof post.bookmarkCount === 'number' && !isNaN(post.bookmarkCount)
+      ? post.bookmarkCount
+      : 0;
   });
 
   useEffect(() => {
-    const newLikeCount = post.likeCount;
-    if (typeof newLikeCount === 'number' && !isNaN(newLikeCount)) {
-      setLikeCount(newLikeCount);
-    }
-    setIsLiked(post.isLiked);
+    setLikeCount(typeof post.likeCount === 'number' && !isNaN(post.likeCount) ? post.likeCount : 0);
+    setIsLiked(post.isLiked ?? false);
 
-    const postWithBookmark = post as typeof post & {
-      bookmarkCount?: number;
-      isBookmarked?: boolean;
-    };
-    const newBookmarkCount = postWithBookmark.bookmarkCount;
-    if (typeof newBookmarkCount === 'number' && !isNaN(newBookmarkCount)) {
-      setBookmarkCount(newBookmarkCount);
-    }
-    const newIsBookmarked = postWithBookmark.isBookmarked;
-    if (typeof newIsBookmarked === 'boolean') {
-      setIsBookmarked(newIsBookmarked);
-    }
+    setBookmarkCount(
+      typeof post.bookmarkCount === 'number' && !isNaN(post.bookmarkCount) ? post.bookmarkCount : 0
+    );
+    setIsBookmarked(post.isBookmarked ?? false);
   }, [post]);
 
   const handleLike = useCallback(async () => {

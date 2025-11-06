@@ -111,16 +111,14 @@ const FeedPage = () => {
   const handleBookmark = useCallback(
     async (feedId: number, isBookmarked: boolean, bookmarkCount: number) => {
       // 낙관적 업데이트 전 원본 상태 저장
-      let originalPost:
-        | ((typeof posts)[0] & { isBookmarked?: boolean; bookmarkCount?: number })
-        | null = null;
+      let originalPost: FeedPostType | null = null;
       setPosts((prev) => {
         const found = prev.find((p) => p.feedId === feedId);
         if (found) {
           originalPost = {
             ...found,
-            isBookmarked: (found as typeof found & { isBookmarked?: boolean }).isBookmarked,
-            bookmarkCount: (found as typeof found & { bookmarkCount?: number }).bookmarkCount,
+            isBookmarked: found.isBookmarked,
+            bookmarkCount: found.bookmarkCount,
           };
         }
         return prev.map((post) => {
@@ -129,7 +127,7 @@ const FeedPage = () => {
             ...post,
             isBookmarked,
             bookmarkCount,
-          } as typeof post & { isBookmarked: boolean; bookmarkCount: number };
+          };
         });
       });
 
@@ -142,7 +140,7 @@ const FeedPage = () => {
               ...post,
               isBookmarked: response.isBookmarked,
               bookmarkCount: response.bookmarkCount,
-            } as typeof post & { isBookmarked: boolean; bookmarkCount: number };
+            };
           })
         );
         // 북마크 변경 시 프로필 데이터 갱신

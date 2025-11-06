@@ -14,6 +14,8 @@ export interface FeedPost {
   };
   likeCount: number;
   isLiked: boolean;
+  isBookmarked?: boolean;
+  bookmarkCount?: number;
   createdAt: string;
 }
 
