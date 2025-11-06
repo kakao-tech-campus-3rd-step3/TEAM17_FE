@@ -55,6 +55,17 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({
       {/* 본문 내용 */}
       <PostContent>{feed.description}</PostContent>
 
+      {/* 해시태그 */}
+      {feed.hashtags && feed.hashtags.length > 0 && (
+        <HashtagSection>
+          {feed.hashtags.map((tag, index) => {
+            const tagName = typeof tag === 'string' ? tag : tag.hashtagName;
+            const tagKey = typeof tag === 'string' ? tag : tag.id;
+            return <Hashtag key={tagKey || index}>#{tagName}</Hashtag>;
+          })}
+        </HashtagSection>
+      )}
+
       {/* 통계 섹션 */}
       <StatsSection>
         <StatItem onClick={handleLikeCountClick} $clickable={feed.likeCount > 0}>
@@ -99,17 +110,6 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({
           북마크
         </ActionButton>
       </ActionButtons>
-
-      {/* 해시태그 */}
-      {feed.hashtags && feed.hashtags.length > 0 && (
-        <HashtagSection>
-          {feed.hashtags.map((tag, index) => {
-            const tagName = typeof tag === 'string' ? tag : tag.hashtagName;
-            const tagKey = typeof tag === 'string' ? tag : tag.id;
-            return <Hashtag key={tagKey || index}>#{tagName}</Hashtag>;
-          })}
-        </HashtagSection>
-      )}
 
       <PostDate>{formatFeedDate(feed.createdAt)}</PostDate>
     </InfoContainer>
