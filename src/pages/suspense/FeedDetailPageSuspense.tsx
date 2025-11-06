@@ -1,13 +1,15 @@
 import { Suspense, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { Edit, Trash2 } from 'lucide-react';
 import FeedMediaSection from '@/components/feed/FeedMediaSection';
 import FeedInfoSection from '@/components/feed/FeedInfoSection';
 import CommentSection from '@/components/comment/CommentSection';
 import FeedLikersModal from '@/components/feed/FeedLikersModal';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useCommentActions } from '@/hooks/useFeeds';
-import { fetchFeedById } from '@/api/feedApi';
+import { fetchFeedById, deleteFeed } from '@/api/feedApi';
+import { useUser } from '@/hooks/useAuth';
 import type { FeedDetail, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
@@ -22,12 +24,16 @@ import {
   LeftColumn,
   RightColumn,
   BottomSection,
-} from '../FeedDetailPage.styles';
+  ActionButtons,
+  ActionButton,
+  DeleteButton,
+} from '@/pages/FeedDetailPage.styles';
 
 const FeedDetailData = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { data: currentUser } = useUser();
 
   const feedId = Number(id);
   if (!id || isNaN(feedId)) {
@@ -42,15 +48,50 @@ const FeedDetailData = () => {
 
   const { addComment } = useCommentActions(feedId);
 
-  const [localFeed, setLocalFeed] = useState<FeedDetail>(feed);
+  // 작성자 확인: 현재 사용자와 피드 작성자 비교
+  const isAuthor = currentUser?.userId === feed?.author.userId;
+
+  const [localFeed, setLocalFeed] = useState<FeedDetail>({
+    ...feed,
+    comments: feed?.comments || [],
+  });
   const [isLikersModalOpen, setIsLikersModalOpen] = useState(false);
 
   useEffect(() => {
-    setLocalFeed(feed);
+    if (feed) {
+      setLocalFeed({
+        ...feed,
+        comments: feed.comments || [],
+      });
+    }
   }, [feed]);
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  // 수정 핸들러
+  const handleEdit = () => {
+    navigate(`/feed-writing?edit=${feedId}`);
+  };
+
+  // 삭제 핸들러
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      '정말로 이 피드를 삭제하시겠습니까?\n삭제된 피드는 복구할 수 없습니다.'
+    );
+    if (!confirmed) return;
+
+    try {
+      await deleteFeed(feedId);
+      queryClient.removeQueries({ queryKey: QUERY_KEYS.feeds.detail(feedId) });
+      queryClient.invalidateQueries({ queryKey: ['feeds'] });
+      alert('피드가 삭제되었습니다.');
+      navigate('/feed');
+    } catch (error) {
+      console.error('Failed to delete feed:', error);
+      alert('피드 삭제에 실패했습니다.');
+    }
   };
 
   const handleLike = (isLiked: boolean, likeCount: number) => {
@@ -101,7 +142,7 @@ const FeedDetailData = () => {
   const handleLikeComment = (commentId: number, isLiked: boolean, likeCount: number) => {
     setLocalFeed((prev) => ({
       ...prev,
-      comments: prev.comments.map((comment) =>
+      comments: (prev.comments || []).map((comment) =>
         comment.commentId === commentId ? { ...comment, isLiked, likeCount } : comment
       ),
     }));
@@ -110,7 +151,7 @@ const FeedDetailData = () => {
   const handleLikeReply = (replyId: number, isLiked: boolean, likeCount: number) => {
     setLocalFeed((prev) => ({
       ...prev,
-      comments: prev.comments.map((comment) => ({
+      comments: (prev.comments || []).map((comment) => ({
         ...comment,
         replies:
           comment.replies?.map((reply) => {
@@ -157,12 +198,24 @@ const FeedDetailData = () => {
 
           <RightColumn>
             <FeedInfoSection feed={localFeed} />
+            {isAuthor && (
+              <ActionButtons>
+                <ActionButton onClick={handleEdit} type="button" aria-label="수정하기">
+                  <Edit size={20} />
+                  수정하기
+                </ActionButton>
+                <DeleteButton onClick={handleDelete} type="button" aria-label="삭제하기">
+                  <Trash2 size={20} />
+                  삭제하기
+                </DeleteButton>
+              </ActionButtons>
+            )}
           </RightColumn>
         </TopSection>
 
         <BottomSection>
           <CommentSection
-            comments={localFeed.comments}
+            comments={localFeed.comments || []}
             feedId={localFeed.feedId}
             onAddComment={handleAddComment}
             onAddReply={handleAddReply}

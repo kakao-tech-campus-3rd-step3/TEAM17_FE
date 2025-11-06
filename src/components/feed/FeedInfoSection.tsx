@@ -9,7 +9,7 @@ import {
   UserBio,
   PostContent,
   PostDate,
-} from './FeedInfoSection.styles';
+} from '@/components/feed/FeedInfoSection.styles';
 
 interface FeedInfoSectionProps {
   feed: FeedDetail;

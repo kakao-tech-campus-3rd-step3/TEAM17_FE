@@ -10,7 +10,7 @@ import {
   IconButton,
   Avatar,
   LogoutButton,
-} from './Header.styles';
+} from '@/components/common/Header.styles';
 import { Link } from 'react-router-dom';
 
 import { User as UserIcon } from 'lucide-react';

@@ -8,7 +8,7 @@ import {
   LikesCount,
   Caption,
   CategoryTag,
-} from './StyleFeedPreview.styles';
+} from '@/components/home/feedpreview/StyleFeedPreview.styles';
 
 const FeedSkeleton: React.FC = () => {
   return (

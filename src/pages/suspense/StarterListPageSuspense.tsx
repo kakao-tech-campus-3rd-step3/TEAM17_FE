@@ -10,6 +10,7 @@ import {
   type CategoryKey,
 } from '@/constants/starterPack';
 import { useAuth } from '@/hooks/useAuth';
+import { useStarterPackBookmark } from '@/hooks/useStarterPacks';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
 import {
@@ -22,7 +23,7 @@ import {
   CategoryBtn,
   StarterPackGrid,
   EmptyState,
-} from '../StarterListPage.styles';
+} from '@/pages/StarterListPage.styles';
 
 const matchCategory = (pack: StarterPack, active: CategoryKey) => {
   if (active === '전체') return true;
@@ -39,6 +40,7 @@ const matchCategory = (pack: StarterPack, active: CategoryKey) => {
 
 const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
   const navigate = useNavigate();
+  const { toggleBookmark } = useStarterPackBookmark(pack.id);
 
   const handleOpenDetail = () => {
     navigate(`/starterpack/${pack.id}`);
@@ -50,6 +52,7 @@ const StarterPackCardWrapper = ({ pack }: { pack: StarterPack }) => {
       isLiked={false}
       onToggleLike={() => {}}
       onOpen={handleOpenDetail}
+      onToggleBookmark={() => toggleBookmark()}
     />
   );
 };

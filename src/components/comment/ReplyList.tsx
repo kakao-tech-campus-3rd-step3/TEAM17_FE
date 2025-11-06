@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Reply } from '@/types/Feed';
-import ReplyItem from './ReplyItem';
-import { ReplySection, ShowRepliesButton } from './CommentSection.styles';
+import ReplyItem from '@/components/comment/ReplyItem';
+import { ReplySection, ShowRepliesButton } from '@/components/comment/CommentSection.styles';
 
 interface ReplyListProps {
   replies: Reply[];

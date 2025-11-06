@@ -5,14 +5,17 @@ import {
   ReplyInputSection,
   ReplyInput as StyledReplyInput,
   ReplySubmitButton,
-} from './CommentSection.styles';
+} from '@/components/comment/CommentSection.styles';
 
 interface ReplyInputProps {
   onSubmit: (content: string) => void;
   placeholder?: string;
 }
 
-const ReplyInput: React.FC<ReplyInputProps> = ({ onSubmit, placeholder = COMMENT_CONSTANTS.REPLY_PLACEHOLDER }) => {
+const ReplyInput: React.FC<ReplyInputProps> = ({
+  onSubmit,
+  placeholder = COMMENT_CONSTANTS.REPLY_PLACEHOLDER,
+}) => {
   const [content, setContent] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
