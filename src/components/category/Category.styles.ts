@@ -5,18 +5,18 @@ export const Wrap = styled.nav`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8rem;
+  gap: 6rem;
   padding: 1.25rem 1rem;
   background: #fff;
   border-radius: 0.75rem;
 
   @media (max-width: 768px) {
-    gap: 1.5rem;
+    gap: 2rem;
     padding: 1rem 0.75rem;
   }
 
   @media (max-width: 480px) {
-    gap: 1rem;
+    gap: 1.5rem;
     padding: 0.75rem 0.5rem;
   }
 `;

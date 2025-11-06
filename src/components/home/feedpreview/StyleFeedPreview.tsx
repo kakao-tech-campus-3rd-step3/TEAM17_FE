@@ -1,7 +1,9 @@
-import { useCallback } from 'react';
+import { useCallback, useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share } from 'lucide-react';
 import { useFeeds } from '@/hooks/useFeeds';
+import { toggleFeedLike } from '@/api/feedApi';
+import { tokens } from '@/styles/tokens';
 import type { FeedPost } from '@/types/Feed';
 import FeedSkeleton from '@/components/home/feedpreview/FeedSkeleton';
 import {
@@ -30,13 +32,74 @@ import {
   EmptyState,
 } from '@/components/home/feedpreview/StyleFeedPreview.styles';
 
+const LOAD_MORE_PAGE_SIZE = 6;
+
 const StyleFeedPreview = () => {
   const navigate = useNavigate();
-  // 서버에서 인기순으로 상위 6개를 정렬
-  const { feeds, loading, error } = useFeeds(0, 6, { sort: 'likeCount,desc' });
+  const [currentPage, setCurrentPage] = useState(0);
+  const [allFeeds, setAllFeeds] = useState<FeedPost[]>([]);
+  const [feedLikes, setFeedLikes] = useState<
+    Record<number, { isLiked: boolean; likeCount: number; isPending?: boolean }>
+  >({});
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-  // 인기순으로 정렬된 피드 6개 추출
-  const popularFeeds = feeds as FeedPost[];
+  // 서버에서 인기순으로 정렬된 피드 가져오기
+  const { feeds, loading, error, hasNext } = useFeeds(currentPage, LOAD_MORE_PAGE_SIZE, {
+    sort: 'likeCount,desc',
+  });
+
+  useEffect(() => {
+    if (feeds.length > 0) {
+      setAllFeeds((prev) => {
+        const existingIds = new Set(prev.map((f) => f.feedId));
+        const newFeeds = feeds.filter((f) => !existingIds.has(f.feedId));
+        return [...prev, ...newFeeds];
+      });
+
+      setFeedLikes((prev) => {
+        const updated = { ...prev };
+        feeds.forEach((feed) => {
+          // isPending이 true인 경우 서버 데이터로 덮어쓰지 않음
+          if (!updated[feed.feedId] || !updated[feed.feedId].isPending) {
+            updated[feed.feedId] = {
+              isLiked: feed.isLiked ?? false,
+              likeCount: feed.likeCount ?? 0,
+              isPending: updated[feed.feedId]?.isPending ?? false,
+            };
+          }
+        });
+        return updated;
+      });
+    }
+  }, [feeds]);
+
+  // 무한 스크롤을 위한 Intersection Observer
+  useEffect(() => {
+    if (!hasNext || loading) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNext) {
+          setCurrentPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observerRef.current = observer;
+
+    const currentRef = loadMoreRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (observer && currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [hasNext, loading]);
 
   const handleMoreClick = useCallback(() => {
     navigate('/feed');
@@ -48,6 +111,73 @@ const StyleFeedPreview = () => {
     },
     [navigate]
   );
+
+  const handleLikeClick = useCallback(
+    async (e: React.MouseEvent, feed: FeedPost) => {
+      e.stopPropagation();
+      const currentLike = feedLikes[feed.feedId] || {
+        isLiked: feed.isLiked ?? false,
+        likeCount: feed.likeCount ?? 0,
+      };
+
+      // 낙관적 업데이트 (isPending 플래그 설정)
+      const newIsLiked = !currentLike.isLiked;
+      const newLikeCount = newIsLiked
+        ? currentLike.likeCount + 1
+        : Math.max(0, currentLike.likeCount - 1);
+
+      setFeedLikes((prev) => ({
+        ...prev,
+        [feed.feedId]: {
+          isLiked: newIsLiked,
+          likeCount: newLikeCount,
+          isPending: true,
+        },
+      }));
+
+      try {
+        const response = await toggleFeedLike(feed.feedId);
+        setFeedLikes((prev) => ({
+          ...prev,
+          [feed.feedId]: {
+            isLiked: response.isLiked,
+            likeCount: response.likeCount,
+            isPending: false,
+          },
+        }));
+      } catch (error) {
+        // 실패 시 롤백
+        setFeedLikes((prev) => ({
+          ...prev,
+          [feed.feedId]: {
+            ...currentLike,
+            isPending: false,
+          },
+        }));
+        console.error('Failed to toggle like:', error);
+      }
+    },
+    [feedLikes]
+  );
+
+  const handleCommentClick = useCallback(
+    (e: React.MouseEvent, feed: FeedPost) => {
+      e.stopPropagation();
+      navigate(`/feed/${feed.feedId}`);
+    },
+    [navigate]
+  );
+
+  const handleShareClick = useCallback(async (feedId: number) => {
+    try {
+      const url = `${window.location.origin}/feed/${feedId}`;
+      await navigator.clipboard.writeText(url);
+      alert('링크가 복사되었습니다!');
+    } catch (error) {
+      console.error('링크 복사에 실패했습니다:', error);
+      alert('링크 복사에 실패했습니다. 다시 시도해주세요.');
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -85,7 +215,7 @@ const StyleFeedPreview = () => {
     );
   }
 
-  if (popularFeeds.length === 0) {
+  if (!loading && currentPage === 0 && allFeeds.length === 0) {
     return (
       <Wrap>
         <Header>
@@ -111,55 +241,95 @@ const StyleFeedPreview = () => {
       </Header>
 
       <Grid>
-        {popularFeeds.map((feed) => (
-          <FeedItem key={feed.feedId} onClick={() => handleFeedClick(feed)}>
-            <PostHeader>
-              <UserInfo>
-                <Avatar
-                  src={feed.author.profileImageUrl}
-                  alt={feed.author.name}
+        {allFeeds.map((feed) => {
+          const likeState = feedLikes[feed.feedId] || {
+            isLiked: feed.isLiked ?? false,
+            likeCount: feed.likeCount ?? 0,
+          };
+
+          return (
+            <FeedItem key={feed.feedId} onClick={() => handleFeedClick(feed)}>
+              <PostHeader>
+                <UserInfo>
+                  <Avatar
+                    src={feed.author.profileImageUrl}
+                    alt={feed.author.name}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <Username>@{feed.author.name}</Username>
+                </UserInfo>
+              </PostHeader>
+
+              {feed.imageUrl ? (
+                <PostImage
+                  src={feed.imageUrl}
+                  alt={`Post by ${feed.author.name}`}
                   loading="lazy"
                   decoding="async"
                 />
-                <Username>@{feed.author.name}</Username>
-              </UserInfo>
-            </PostHeader>
+              ) : (
+                <ImagePlaceholder>이미지 없음</ImagePlaceholder>
+              )}
 
-            {feed.imageUrl ? (
-              <PostImage
-                src={feed.imageUrl}
-                alt={`Post by ${feed.author.name}`}
-                loading="lazy"
-                decoding="async"
-              />
-            ) : (
-              <ImagePlaceholder>이미지 없음</ImagePlaceholder>
-            )}
+              <PostActions>
+                <ActionButton
+                  type="button"
+                  aria-label={likeState.isLiked ? '좋아요 취소' : '좋아요'}
+                  onClick={(e) => handleLikeClick(e, feed)}
+                >
+                  <Heart
+                    size={16}
+                    fill={likeState.isLiked ? tokens.colors.orange.primary : 'none'}
+                    color={tokens.colors.orange.primary}
+                  />
+                </ActionButton>
+                <ActionButton
+                  type="button"
+                  aria-label="댓글 달기"
+                  onClick={(e) => handleCommentClick(e, feed)}
+                >
+                  <MessageSquare size={16} color={tokens.colors.orange.primary} />
+                </ActionButton>
+                <ActionButton
+                  type="button"
+                  aria-label="공유하기"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleShareClick(feed.feedId);
+                  }}
+                >
+                  <Share size={16} color={tokens.colors.orange.primary} />
+                </ActionButton>
+              </PostActions>
 
-            <PostActions>
-              <ActionButton type="button" aria-label="좋아요">
-                <Heart size={16} fill="#ef4444" color="#ef4444" />
-              </ActionButton>
-              <ActionButton type="button" aria-label="댓글 달기">
-                <MessageSquare size={16} />
-              </ActionButton>
-              <ActionButton type="button" aria-label="공유하기">
-                <Share size={16} />
-              </ActionButton>
-            </PostActions>
+              <LikesCount>
+                {typeof likeState.likeCount === 'number' && !isNaN(likeState.likeCount)
+                  ? likeState.likeCount.toLocaleString()
+                  : '0'}
+                개 좋아요
+              </LikesCount>
 
-            <LikesCount>{(feed.likeCount ?? 0).toLocaleString()}개 좋아요</LikesCount>
+              <Caption>
+                <Username>@{feed.author.name}</Username> {feed.description}
+              </Caption>
 
-            <Caption>
-              <Username>@{feed.author.name}</Username> {feed.description}
-            </Caption>
+              <CategoryTag>#{feed.category.categoryName}</CategoryTag>
 
-            <CategoryTag>#{feed.category.categoryName}</CategoryTag>
-
-            <FeedTypeTag $feedType={feed.feedType}>{feed.feedType}</FeedTypeTag>
-          </FeedItem>
-        ))}
+              <FeedTypeTag $feedType={feed.feedType}>{feed.feedType}</FeedTypeTag>
+            </FeedItem>
+          );
+        })}
       </Grid>
+
+      {hasNext && <div ref={loadMoreRef} style={{ height: '1px', marginTop: '1rem' }} />}
+      {loading && allFeeds.length > 0 && (
+        <Grid>
+          {Array.from({ length: 3 }).map((_, index) => (
+            <FeedSkeleton key={`loading-${index}`} />
+          ))}
+        </Grid>
+      )}
     </Wrap>
   );
 };

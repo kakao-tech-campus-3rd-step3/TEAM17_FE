@@ -1,11 +1,13 @@
 import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import FeedPost from '@/components/feed/FeedPost';
 import { useAuth } from '@/hooks/useAuth';
 import type { FeedPost as FeedPostType, FeedResponse } from '@/types/Feed';
-import { fetchFeeds } from '@/api/feedApi';
+import { fetchFeeds, toggleFeedBookmark } from '@/api/feedApi';
 import { FEED_CONSTANTS, FEED_CATEGORIES, type FeedCategoryKey } from '@/constants/feed';
 import { CATEGORY_MAPPING } from '@/constants/starterPack';
+import { QUERY_KEYS } from '@/utils/queryKeys';
 import {
   FeedContainer,
   FeedHeader,
@@ -32,6 +34,7 @@ const FEED_PAGE_CONSTANTS = {
 const FeedPage = () => {
   const navigate = useNavigate();
   const { isLogin } = useAuth();
+  const queryClient = useQueryClient();
   const [posts, setPosts] = useState<FeedPostType[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -104,6 +107,46 @@ const FeedPage = () => {
       prev.map((post) => (post.feedId === feedId ? { ...post, isLiked, likeCount } : post))
     );
   }, []);
+
+  const handleBookmark = useCallback(
+    async (feedId: number, isBookmarked: boolean, bookmarkCount: number) => {
+      // 낙관적 업데이트 전 원본 상태를 동기적으로 캡처
+      let previousPosts: FeedPostType[] | null = null;
+      setPosts((prev) => {
+        previousPosts = prev;
+        return prev.map((post) => {
+          if (post.feedId !== feedId) return post;
+          return {
+            ...post,
+            isBookmarked,
+            bookmarkCount,
+          };
+        });
+      });
+
+      try {
+        const response = await toggleFeedBookmark(feedId);
+        setPosts((prev) =>
+          prev.map((post) => {
+            if (post.feedId !== feedId) return post;
+            return {
+              ...post,
+              isBookmarked: response.isBookmarked,
+              bookmarkCount: response.bookmarkCount,
+            };
+          })
+        );
+        // 북마크 변경 시 프로필 데이터 갱신
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.all });
+      } catch (error) {
+        console.error('Failed to toggle bookmark:', error);
+        if (previousPosts) {
+          setPosts(previousPosts);
+        }
+      }
+    },
+    [queryClient]
+  );
 
   const matchCategory = (post: FeedPostType, category: FeedCategoryKey) => {
     if (category === '전체') return true;
@@ -219,7 +262,12 @@ const FeedPage = () => {
       {filteredPosts.length > 0 && (
         <FeedGrid>
           {filteredPosts.map((post) => (
-            <FeedPost key={post.feedId} post={post} onLike={handleLike} />
+            <FeedPost
+              key={post.feedId}
+              post={post}
+              onLike={handleLike}
+              onBookmark={handleBookmark}
+            />
           ))}
         </FeedGrid>
       )}
