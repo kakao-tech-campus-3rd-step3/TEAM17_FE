@@ -225,15 +225,14 @@ const FeedPage = () => {
       )}
 
       {filteredPosts.length > 0 && (
-        <>
-          <FeedGrid>
-            {filteredPosts.map((post) => (
-              <FeedPost key={post.feedId} post={post} onLike={handleLike} />
-            ))}
-          </FeedGrid>
-          {!isLastPage && <LoadMoreObserver ref={loadMoreRef} />}
-        </>
+        <FeedGrid>
+          {filteredPosts.map((post) => (
+            <FeedPost key={post.feedId} post={post} onLike={handleLike} />
+          ))}
+        </FeedGrid>
       )}
+
+      {!isLastPage && <LoadMoreObserver ref={loadMoreRef} />}
     </FeedContainer>
   );
 };
