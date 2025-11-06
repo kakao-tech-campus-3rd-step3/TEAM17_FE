@@ -94,6 +94,21 @@ const StarterPackDetailData = () => {
     }
   }, [comments, currentCommentsKey]);
 
+  // 좋아요 에러 처리
+  useEffect(() => {
+    if (rawError) {
+      const axiosError = rawError as { response?: { status?: number } };
+      const status = axiosError?.response?.status;
+
+      if (status === 403) {
+        alert('로그인이 필요한 기능입니다.');
+        navigate('/login');
+      } else if (likeError) {
+        alert(likeError);
+      }
+    }
+  }, [rawError, likeError, navigate]);
+
   const handleLikeComment = useCallback(
     (commentId: number, isLiked: boolean, likeCount: number) => {
       setLocalComments((prev) =>
@@ -171,21 +186,6 @@ const StarterPackDetailData = () => {
     }
     toggleLike();
   };
-
-  // 좋아요 에러 처리
-  useEffect(() => {
-    if (rawError) {
-      const axiosError = rawError as { response?: { status?: number } };
-      const status = axiosError?.response?.status;
-
-      if (status === 403) {
-        alert('로그인이 필요한 기능입니다.');
-        navigate('/login');
-      } else if (likeError) {
-        alert(likeError);
-      }
-    }
-  }, [rawError, likeError, navigate]);
 
   const handleShare = async () => {
     try {
