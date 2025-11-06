@@ -398,6 +398,9 @@ export const useStarterPackBookmark = (id: number) => {
           return updated;
         }
       );
+
+      // 북마크 변경 시 프로필 데이터 갱신
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.all });
     },
     onError: (_, __, context) => {
       if (context?.previousPack) {

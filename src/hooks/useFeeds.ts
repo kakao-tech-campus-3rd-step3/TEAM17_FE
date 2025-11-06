@@ -368,6 +368,9 @@ export const useFeedBookmark = (id: number) => {
           };
         }
       );
+
+      // 북마크 변경 시 프로필 데이터 갱신
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.all });
     },
     onError: (_, __, context) => {
       // 실패 시 상세 캐시 롤백

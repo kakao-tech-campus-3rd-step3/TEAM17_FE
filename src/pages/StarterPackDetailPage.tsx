@@ -249,7 +249,20 @@ const StarterPackDetailPage: React.FC = () => {
                 <ActionButton type="button" aria-label="댓글 달기">
                   <MessageSquare size={24} />
                 </ActionButton>
-                <ActionButton type="button" aria-label="공유하기">
+                <ActionButton
+                  type="button"
+                  aria-label="공유하기"
+                  onClick={async () => {
+                    try {
+                      const url = `${window.location.origin}${window.location.pathname}`;
+                      await navigator.clipboard.writeText(url);
+                      alert('링크가 복사되었습니다!');
+                    } catch (error) {
+                      console.error('링크 복사에 실패했습니다:', error);
+                      alert('링크 복사에 실패했습니다. 다시 시도해주세요.');
+                    }
+                  }}
+                >
                   <Share size={24} />
                 </ActionButton>
                 <ActionButtonRight type="button" aria-label="저장">
