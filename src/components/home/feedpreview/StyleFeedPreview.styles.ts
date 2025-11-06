@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { tokens } from '@/styles/tokens';
 
 export const Wrap = styled.div`
   background-color: #ffffff;
@@ -43,7 +44,7 @@ export const Emoji = styled.span`
 export const Button = styled.button`
   font-size: 0.875rem;
   font-weight: 500;
-  color: #3b82f6;
+  color: ${tokens.colors.orange.primary};
   cursor: pointer;
   background: transparent;
   border: 1px solid #d1d5db;
@@ -53,7 +54,7 @@ export const Button = styled.button`
 
   &:hover {
     background-color: #f3f4f6;
-    border-color: #3b82f6;
+    border-color: ${tokens.colors.orange.primary};
   }
 `;
 
