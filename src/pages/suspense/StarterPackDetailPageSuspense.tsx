@@ -16,7 +16,6 @@ import {
 } from '@/hooks/useStarterPacks';
 import { useAuth } from '@/hooks/useAuth';
 import { QUERY_KEYS } from '@/utils/queryKeys';
-import { useAuth } from '@/hooks/useAuth';
 import { formatFeedDate } from '@/utils/date';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
@@ -72,6 +71,14 @@ const StarterPackDetailData = () => {
   const { comments, refresh: refreshComments } = usePackComments(packId);
   const { addComment: addCommentApi } = usePackCommentActions(packId);
   const { toggleLike } = useStarterPackLike(packId);
+  const {
+    toggleLike: toggleCommentLike,
+    loading: commentLikeLoading,
+    error: commentLikeError,
+    rawError: commentLikeRawError,
+  } = usePackCommentLike(packId);
+  const { toggleBookmark } = useStarterPackBookmark(packId);
+  const { isLogin } = useAuth();
   const [localComments, setLocalComments] = useState<Comment[]>([]);
   const prevCommentsKeyRef = useRef<string>('');
 
@@ -101,6 +108,21 @@ const StarterPackDetailData = () => {
       setLocalComments(comments);
     }
   }, [comments, currentCommentsKey]);
+
+  // 댓글 좋아요 에러 처리
+  useEffect(() => {
+    if (commentLikeRawError) {
+      const axiosError = commentLikeRawError as { response?: { status?: number } };
+      const status = axiosError?.response?.status;
+
+      if (status === 403) {
+        alert('로그인이 필요한 기능입니다.');
+        navigate('/login');
+      } else if (commentLikeError) {
+        alert(commentLikeError);
+      }
+    }
+  }, [commentLikeRawError, commentLikeError, navigate]);
 
   const handleLikeComment = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
