@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import errorImage from '@/assets/errorimage.png'; 
+import errorImage from '@/assets/errorimage.png';
+import { tokens } from '@/styles/tokens';
 
 const ErrorPage = () => {
   const navigate = useNavigate();
@@ -15,7 +16,6 @@ const ErrorPage = () => {
 };
 
 export default ErrorPage;
-
 
 const Wrap = styled.div`
   display: flex;
@@ -46,7 +46,7 @@ const Title = styled.h1`
 `;
 
 const HomeButton = styled.button`
-  background-color: #3b82f6;
+  background-color: ${tokens.colors.orange.primary};
   color: white;
   font-size: 1rem;
   font-weight: 600;
@@ -58,6 +58,6 @@ const HomeButton = styled.button`
   transition: 0.2s ease;
 
   &:hover {
-    background-color: #2563eb;
+    background-color: ${tokens.colors.orange.hover};
   }
 `;
