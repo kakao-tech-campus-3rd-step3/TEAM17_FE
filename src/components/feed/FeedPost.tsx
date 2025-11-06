@@ -39,6 +39,10 @@ const FeedPost = ({ post, onLike, onBookmark }: FeedPostProps) => {
     const count = post.likeCount;
     return typeof count === 'number' && !isNaN(count) ? count : 0;
   });
+  const [commentCount, setCommentCount] = useState(() => {
+    const count = post.commentCount;
+    return typeof count === 'number' && !isNaN(count) ? count : 0;
+  });
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked ?? false);
   const [bookmarkCount, setBookmarkCount] = useState(() => {
     return typeof post.bookmarkCount === 'number' && !isNaN(post.bookmarkCount)
@@ -49,6 +53,9 @@ const FeedPost = ({ post, onLike, onBookmark }: FeedPostProps) => {
   useEffect(() => {
     setLikeCount(typeof post.likeCount === 'number' && !isNaN(post.likeCount) ? post.likeCount : 0);
     setIsLiked(post.isLiked ?? false);
+    setCommentCount(
+      typeof post.commentCount === 'number' && !isNaN(post.commentCount) ? post.commentCount : 0
+    );
 
     setBookmarkCount(
       typeof post.bookmarkCount === 'number' && !isNaN(post.bookmarkCount) ? post.bookmarkCount : 0
@@ -128,7 +135,7 @@ const FeedPost = ({ post, onLike, onBookmark }: FeedPostProps) => {
             src={post.author.profileImageUrl}
             alt={post.author.name}
             onClick={handleProfileClick}
-            style={{ cursor: 'pointer' }} 
+            style={{ cursor: 'pointer' }}
           />
           <Username onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
             @{post.author.name}
@@ -171,7 +178,11 @@ const FeedPost = ({ post, onLike, onBookmark }: FeedPostProps) => {
           <EngagementIcon role="button" aria-label="댓글 달기">
             <MessageSquare size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
           </EngagementIcon>
-          <EngagementCount>0</EngagementCount>
+          <EngagementCount>
+            {typeof commentCount === 'number' && !isNaN(commentCount)
+              ? commentCount.toLocaleString()
+              : '0'}
+          </EngagementCount>
         </EngagementItem>
         <BookmarkButton
           type="button"

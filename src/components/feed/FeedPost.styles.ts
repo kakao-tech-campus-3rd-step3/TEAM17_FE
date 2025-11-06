@@ -61,7 +61,7 @@ export const PostImage = styled.img`
 export const PostActions = styled.div`
   display: flex;
   align-items: center;
-  padding: 0.375rem 1rem 0.5rem;
+  padding: 0.75rem 1rem;
   gap: 1.25rem;
   border-bottom: 1px solid ${tokens.colors.line.lightGray};
 `;
@@ -142,9 +142,9 @@ export const LikesCount = styled.div`
 `;
 
 export const Caption = styled.div`
-  padding: 0 1rem 0.5rem;
+  padding: 1rem 1rem 0.75rem;
   font-size: 0.875rem;
-  line-height: 1.4;
+  line-height: 1.6;
   color: ${tokens.colors.text.darkGray};
 
   ${Username} {
@@ -191,7 +191,7 @@ export const CategoryTag = styled.div`
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  padding: 0 1rem 0.5rem;
+  padding: 0.5rem 1rem 0.5rem;
   font-size: 0.75rem;
   color: ${tokens.colors.orange.primary};
   font-weight: 500;
@@ -200,7 +200,7 @@ export const CategoryTag = styled.div`
 export const FeedTypeTag = styled.div<{ $feedType: string }>`
   display: inline-block;
   padding: 0.25rem 0.5rem;
-  margin: 0 1rem 0.5rem;
+  margin: 0 1rem 0.75rem;
   font-size: 0.625rem;
   font-weight: 600;
   border-radius: 0.25rem;

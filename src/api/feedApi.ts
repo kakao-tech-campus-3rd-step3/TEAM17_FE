@@ -13,6 +13,87 @@ import type {
   PageFeedLikerResponse,
 } from '@/types/Feed';
 
+type FeedStats = {
+  likeCount?: number;
+  bookmarkCount?: number;
+  commentCount?: number;
+};
+
+type FeedInteractionStatus = {
+  isLiked?: boolean;
+  isBookmarked?: boolean;
+};
+
+type RawFeedPost = Omit<
+  FeedPost,
+  'likeCount' | 'bookmarkCount' | 'commentCount' | 'isLiked' | 'isBookmarked'
+> &
+  Partial<FeedPost> & {
+    stats?: FeedStats;
+    interactionStatus?: FeedInteractionStatus;
+  };
+
+type RawFeedDetail = Omit<
+  FeedDetail,
+  'likeCount' | 'bookmarkCount' | 'commentCount' | 'isLiked' | 'isBookmarked'
+> &
+  Partial<FeedDetail> & {
+    imageUrl: string | string[];
+    stats?: FeedStats;
+    interactionStatus?: FeedInteractionStatus;
+  };
+
+const normalizeFeedMetrics = (data: {
+  likeCount?: number;
+  bookmarkCount?: number;
+  commentCount?: number;
+  isLiked?: boolean;
+  isBookmarked?: boolean;
+  stats?: FeedStats;
+  interactionStatus?: FeedInteractionStatus;
+}) => {
+  const likeCount =
+    typeof data.likeCount === 'number' ? data.likeCount : (data.stats?.likeCount ?? 0);
+  const commentCount =
+    typeof data.commentCount === 'number' ? data.commentCount : (data.stats?.commentCount ?? 0);
+  const bookmarkCount =
+    typeof data.bookmarkCount === 'number' ? data.bookmarkCount : (data.stats?.bookmarkCount ?? 0);
+  const isLiked =
+    typeof data.isLiked === 'boolean' ? data.isLiked : (data.interactionStatus?.isLiked ?? false);
+  const isBookmarked =
+    typeof data.isBookmarked === 'boolean'
+      ? data.isBookmarked
+      : (data.interactionStatus?.isBookmarked ?? false);
+
+  return { likeCount, commentCount, bookmarkCount, isLiked, isBookmarked };
+};
+
+const normalizeFeedPost = (feed: RawFeedPost): FeedPost => {
+  const { stats, interactionStatus, ...rest } = feed;
+  const metrics = normalizeFeedMetrics({ ...feed, stats, interactionStatus });
+
+  return {
+    ...rest,
+    ...metrics,
+    imageUrl: typeof rest.imageUrl === 'string' ? rest.imageUrl : rest.imageUrl || '',
+  } as FeedPost;
+};
+
+const normalizeFeedDetail = (feed: RawFeedDetail): FeedDetail => {
+  const { stats, interactionStatus, comments, hashtags, imageUrl, ...rest } = feed;
+  const metrics = normalizeFeedMetrics({ ...feed, stats, interactionStatus });
+
+  const normalizedImageUrls = Array.isArray(imageUrl) ? imageUrl : imageUrl ? [imageUrl] : [];
+
+  return {
+    ...rest,
+    ...metrics,
+    comments: comments ?? [],
+    hashtags: hashtags ?? [],
+    imageUrl: normalizedImageUrls,
+  } as FeedDetail;
+};
+
 // ==================== Feed 관련 API ====================
 
 // 피드 목록 조회 (페이지네이션)
@@ -31,8 +112,17 @@ export const fetchFeeds = async (
       params.sort = options.sort;
     }
 
-    const response = await axiosInstance.get<FeedResponse>('/api/feeds', { params });
-    return response.data;
+    const response = await axiosInstance.get<FeedResponse & { content: Array<RawFeedPost> }>(
+      '/api/feeds',
+      { params }
+    );
+
+    const normalizedContent = response.data.content.map(normalizeFeedPost);
+
+    return {
+      ...response.data,
+      content: normalizedContent,
+    };
   } catch (error) {
     console.error('Failed to fetch feeds:', error);
     throw error;
@@ -42,8 +132,8 @@ export const fetchFeeds = async (
 // 특정 피드 상세 조회
 export const fetchFeedById = async (id: number): Promise<FeedDetail> => {
   try {
-    const response = await axiosInstance.get<FeedDetail>(`/api/feeds/${id}`);
-    return response.data;
+    const response = await axiosInstance.get<RawFeedDetail>(`/api/feeds/${id}`);
+    return normalizeFeedDetail(response.data);
   } catch (error) {
     console.error(`Failed to fetch feed ${id}:`, error);
     throw error;
