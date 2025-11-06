@@ -33,29 +33,17 @@ const Footer = () => {
               <ListItem>
                 <ListLink to="/feed">피드 보러가기</ListLink>
               </ListItem>
-              <ListItem>
-                <li>커뮤니티</li>
-              </ListItem>
-              <ListItem>
-                <li>파티원 모집</li>
-              </ListItem>
+              <ListItem>커뮤니티</ListItem>
+              <ListItem>파티원 모집</ListItem>
             </List>
           </Column>
           <Column>
             <ColumnTitle>고객지원</ColumnTitle>
             <List>
-              <ListItem>
-                <li>공지사항</li>
-              </ListItem>
-              <ListItem>
-                <li>FAQ</li>
-              </ListItem>
-              <ListItem>
-                <li>문의하기</li>
-              </ListItem>
-              <ListItem>
-                <li>이용약관</li>
-              </ListItem>
+              <ListItem>공지사항</ListItem>
+              <ListItem>FAQ</ListItem>
+              <ListItem>문의하기</ListItem>
+              <ListItem>이용약관</ListItem>
             </List>
           </Column>
         </LinksGrid>
