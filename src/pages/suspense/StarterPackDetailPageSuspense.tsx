@@ -1,4 +1,4 @@
-import { Suspense, useState, useEffect, useCallback } from 'react';
+import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share, Bookmark, Tag } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
@@ -63,10 +63,20 @@ const StarterPackDetailData = () => {
   const { addComment: addCommentApi } = usePackCommentActions(packId);
   const { toggleLike } = useStarterPackLike(packId);
   const [localComments, setLocalComments] = useState<Comment[]>([]);
+  const prevCommentsKeyRef = useRef<string>('');
 
   useEffect(() => {
-    setLocalComments(comments);
-  }, [comments]);
+    // 댓글 ID 목록을 문자열로 변환하여 이전 값과 비교
+    const currentCommentsKey = comments.map((c) => c.commentId).join(',');
+
+    // 댓글 ID 목록이 실제로 변경되었을 때만 업데이트
+    if (prevCommentsKeyRef.current !== currentCommentsKey) {
+      prevCommentsKeyRef.current = currentCommentsKey;
+      setLocalComments(comments);
+    }
+    // comments 배열의 참조가 아닌 실제 내용(commentId)만 비교하도록 의존성 최적화
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [comments.length, comments.map((c) => c.commentId).join(',')]);
 
   const handleLikeComment = useCallback(
     (commentId: number, isLiked: boolean, likeCount: number) => {
