@@ -1,14 +1,14 @@
 import React from 'react';
 import type { Comment, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import { useCommentActions } from '@/hooks/useCommentActions';
-import CommentInput from './CommentInput';
-import CommentItem from './CommentItem';
+import CommentInput from '@/components/comment/CommentInput';
+import CommentItem from '@/components/comment/CommentItem';
 import {
   CommentContainer,
   CommentHeader,
   CommentTitle,
   CommentList,
-} from './CommentSection.styles';
+} from '@/components/comment/CommentSection.styles';
 
 interface CommentSectionProps {
   comments: Comment[];

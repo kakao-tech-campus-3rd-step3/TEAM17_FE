@@ -29,7 +29,7 @@ import {
   ProductName,
   ProductDescription,
   ProductLink,
-} from './FeedDetailSection.styles';
+} from '@/components/feed/FeedDetailSection.styles';
 
 interface FeedDetailSectionProps {
   feed: FeedDetail;

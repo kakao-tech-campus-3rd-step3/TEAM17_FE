@@ -2,8 +2,8 @@ import React from 'react';
 import { Heart, Reply as ReplyIcon, Flag } from 'lucide-react';
 import type { Comment } from '@/types/Feed';
 import { formatKoreanDate } from '@/utils/date';
-import ReplyList from './ReplyList';
-import ReplyInput from './ReplyInput';
+import ReplyList from '@/components/comment/ReplyList';
+import ReplyInput from '@/components/comment/ReplyInput';
 import {
   CommentItem as StyledCommentItem,
   CommentAuthor,
@@ -17,7 +17,7 @@ import {
   CommentLikeCount,
   ReplyButton,
   ReportButton,
-} from './CommentSection.styles';
+} from '@/components/comment/CommentSection.styles';
 
 interface CommentItemProps {
   comment: Comment;

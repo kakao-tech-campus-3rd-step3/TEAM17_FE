@@ -50,7 +50,7 @@ import {
   ProductImage,
   ProductName,
   TimeStamp,
-} from './StarterPackDetailPage.styles';
+} from '@/pages/StarterPackDetailPage.styles';
 
 const StarterPackDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

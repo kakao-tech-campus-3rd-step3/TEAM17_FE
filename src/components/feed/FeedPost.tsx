@@ -20,7 +20,7 @@ import {
   TimeStamp,
   CategoryTag,
   FeedTypeTag,
-} from './FeedPost.styles';
+} from '@/components/feed/FeedPost.styles';
 
 interface FeedPostProps {
   post: FeedPostType;

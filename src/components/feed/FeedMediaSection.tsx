@@ -15,7 +15,7 @@ import {
   EngagementCount,
   HashtagSection,
   Hashtag,
-} from './FeedMediaSection.styles';
+} from '@/components/feed/FeedMediaSection.styles';
 
 interface FeedMediaSectionProps {
   feed: FeedDetail;

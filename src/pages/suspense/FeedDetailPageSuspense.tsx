@@ -27,7 +27,7 @@ import {
   ActionButtons,
   ActionButton,
   DeleteButton,
-} from '../FeedDetailPage.styles';
+} from '@/pages/FeedDetailPage.styles';
 
 const FeedDetailData = () => {
   const { id } = useParams<{ id: string }>();

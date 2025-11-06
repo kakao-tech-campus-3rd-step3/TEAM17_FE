@@ -14,7 +14,7 @@ import {
   HeaderWriteButton,
   FeedGrid,
   EmptyState,
-} from '../FeedPage.styles';
+} from '@/pages/FeedPage.styles';
 
 const FEED_CONSTANTS = {
   INITIAL_PAGE: 0,

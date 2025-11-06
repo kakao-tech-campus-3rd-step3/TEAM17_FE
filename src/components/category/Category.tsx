@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wrap, Item, IconBox, Icon, Label } from './Category.styles';
+import { Wrap, Item, IconBox, Icon, Label } from '@/components/category/Category.styles';
 
 import ShoppingCartIcon from '@/assets/icon-shopping-cart.svg';
 import CameraIcon from '@/assets/icon-camera.svg';

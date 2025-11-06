@@ -10,7 +10,7 @@ import {
   List,
   Bottom,
   Copy,
-} from './Footer.styles';
+} from '@/components/common/Footer.styles';
 
 const Footer = () => {
   return (

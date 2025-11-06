@@ -20,7 +20,7 @@ import {
   ErrorMessage,
   EmptyState,
   LoadMoreObserver,
-} from './FeedPage.styles';
+} from '@/pages/FeedPage.styles';
 
 const FEED_PAGE_CONSTANTS = {
   INITIAL_PAGE: 0,

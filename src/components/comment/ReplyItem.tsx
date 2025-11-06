@@ -15,7 +15,7 @@ import {
   ReplyLikeCount,
   ReplyButton,
   ReportButton,
-} from './CommentSection.styles';
+} from '@/components/comment/CommentSection.styles';
 
 interface ReplyItemProps {
   reply: Reply;

@@ -26,7 +26,7 @@ import {
   ActionButtons,
   ActionButton,
   DeleteButton,
-} from './FeedDetailPage.styles';
+} from '@/pages/FeedDetailPage.styles';
 
 const FeedDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

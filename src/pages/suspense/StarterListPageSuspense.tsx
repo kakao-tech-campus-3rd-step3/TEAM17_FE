@@ -23,7 +23,7 @@ import {
   CategoryBtn,
   StarterPackGrid,
   EmptyState,
-} from '../StarterListPage.styles';
+} from '@/pages/StarterListPage.styles';
 
 const matchCategory = (pack: StarterPack, active: CategoryKey) => {
   if (active === '전체') return true;

@@ -13,7 +13,7 @@ import {
   RatingStar,
   RatingValue,
   CartIcon,
-} from './StarterpackDetail.styles';
+} from '@/components/home/StarterPackList/StarterpackDetail.styles';
 
 type Props = { pack: StarterPack; onClose: () => void };
 

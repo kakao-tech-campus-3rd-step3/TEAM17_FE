@@ -42,7 +42,7 @@ import {
   ProductImage,
   ProductName,
   ErrorStateContainer,
-} from '../StarterPackDetailPage.styles';
+} from '@/pages/StarterPackDetailPage.styles';
 
 const StarterPackDetailData = () => {
   const { id } = useParams<{ id: string }>();
