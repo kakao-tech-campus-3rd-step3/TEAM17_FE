@@ -2,13 +2,14 @@ import { Suspense, useCallback, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useSuspenseQuery, useQueryClient } from '@tanstack/react-query';
-import { fetchFeeds, toggleFeedLike } from '@/api/feedApi';
+import { fetchFeeds, toggleFeedLike, toggleFeedBookmark } from '@/api/feedApi';
 import type { FeedPost as FeedPostType, FeedResponse } from '@/types/Feed';
 import { FEED_CONSTANTS, FEED_CATEGORIES, type FeedCategoryKey } from '@/constants/feed';
 import { CATEGORY_MAPPING } from '@/constants/starterPack';
 import FeedPost from '@/components/feed/FeedPost';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
+import { QUERY_KEYS } from '@/utils/queryKeys';
 import {
   FeedContainer,
   FeedHeader,
@@ -114,6 +115,58 @@ const FeedData = () => {
     [queryClient]
   );
 
+  const handleBookmark = useCallback(
+    async (feedId: number, isBookmarked: boolean, bookmarkCount: number) => {
+      const queryKey = [
+        'feeds',
+        FEED_PAGE_CONSTANTS.INITIAL_PAGE,
+        FEED_PAGE_CONSTANTS.INITIAL_PAGE_SIZE,
+      ] as const;
+
+      const previousData = queryClient.getQueryData<FeedResponse>(queryKey);
+
+      if (!previousData) return;
+
+      queryClient.setQueryData<FeedResponse>(queryKey, (old) => {
+        if (!old?.content) return old;
+        return {
+          ...old,
+          content: old.content.map((post) => {
+            if (post.feedId !== feedId) return post;
+            return {
+              ...post,
+              isBookmarked,
+              bookmarkCount,
+            } as typeof post & { isBookmarked: boolean; bookmarkCount: number };
+          }),
+        };
+      });
+
+      try {
+        const response = await toggleFeedBookmark(feedId);
+        queryClient.setQueryData<FeedResponse>(queryKey, (old) => {
+          if (!old?.content) return old;
+          return {
+            ...old,
+            content: old.content.map((post) => {
+              if (post.feedId !== feedId) return post;
+              return {
+                ...post,
+                isBookmarked: response.isBookmarked,
+                bookmarkCount: response.bookmarkCount,
+              } as typeof post & { isBookmarked: boolean; bookmarkCount: number };
+            }),
+          };
+        });
+        // 북마크 변경 시 프로필 데이터 갱신
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.all });
+      } catch {
+        queryClient.setQueryData(queryKey, previousData);
+      }
+    },
+    [queryClient]
+  );
+
   if (!feedResponse?.content || feedResponse.content.length === 0) {
     return (
       <FeedContainer>
@@ -177,7 +230,12 @@ const FeedData = () => {
       {filteredPosts.length > 0 && (
         <FeedGrid>
           {filteredPosts.map((post: FeedPostType) => (
-            <FeedPost key={post.feedId} post={post} onLike={handleLike} />
+            <FeedPost
+              key={post.feedId}
+              post={post}
+              onLike={handleLike}
+              onBookmark={handleBookmark}
+            />
           ))}
         </FeedGrid>
       )}

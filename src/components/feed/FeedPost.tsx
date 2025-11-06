@@ -25,12 +25,23 @@ import {
 interface FeedPostProps {
   post: FeedPostType;
   onLike?: (feedId: number, isLiked: boolean, likeCount: number) => void | Promise<void>;
+  onBookmark?: (
+    feedId: number,
+    isBookmarked: boolean,
+    bookmarkCount: number
+  ) => void | Promise<void>;
 }
 
-const FeedPost = ({ post, onLike }: FeedPostProps) => {
+const FeedPost = ({ post, onLike, onBookmark }: FeedPostProps) => {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
+  const [isBookmarked, setIsBookmarked] = useState(
+    (post as typeof post & { isBookmarked?: boolean }).isBookmarked ?? false
+  );
+  const [bookmarkCount, setBookmarkCount] = useState(
+    (post as typeof post & { bookmarkCount?: number }).bookmarkCount ?? 0
+  );
 
   const handleLike = useCallback(async () => {
     const oldIsLiked = isLiked;
@@ -51,6 +62,26 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
       }
     }
   }, [isLiked, likeCount, post.feedId, onLike]);
+
+  const handleBookmark = useCallback(async () => {
+    const oldIsBookmarked = isBookmarked;
+    const oldBookmarkCount = bookmarkCount;
+    const newIsBookmarked = !isBookmarked;
+    const newBookmarkCount = newIsBookmarked ? bookmarkCount + 1 : Math.max(0, bookmarkCount - 1);
+
+    setIsBookmarked(newIsBookmarked);
+    setBookmarkCount(newBookmarkCount);
+
+    if (onBookmark) {
+      try {
+        await onBookmark(post.feedId, newIsBookmarked, newBookmarkCount);
+      } catch (error) {
+        setIsBookmarked(oldIsBookmarked);
+        setBookmarkCount(oldBookmarkCount);
+        console.error('Failed to toggle bookmark:', error);
+      }
+    }
+  }, [isBookmarked, bookmarkCount, post.feedId, onBookmark]);
 
   const handlePostClick = useCallback(() => {
     navigate(`/feed/${post.feedId}`);
@@ -125,8 +156,18 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
           </EngagementIcon>
           <EngagementCount>0</EngagementCount>
         </EngagementItem>
-        <BookmarkButton type="button" aria-label="저장">
-          <Bookmark size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
+        <BookmarkButton
+          type="button"
+          onClick={handleBookmark}
+          aria-label={isBookmarked ? '북마크 취소' : '북마크'}
+          aria-pressed={isBookmarked}
+        >
+          <Bookmark
+            size={18}
+            strokeWidth={2}
+            fill={isBookmarked ? tokens.colors.orange.primary : 'none'}
+            color={tokens.colors.orange.primary}
+          />
         </BookmarkButton>
       </PostActions>
 
