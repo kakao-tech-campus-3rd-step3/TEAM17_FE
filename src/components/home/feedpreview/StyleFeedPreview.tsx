@@ -39,7 +39,7 @@ const StyleFeedPreview = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [allFeeds, setAllFeeds] = useState<FeedPost[]>([]);
   const [feedLikes, setFeedLikes] = useState<
-    Record<number, { isLiked: boolean; likeCount: number }>
+    Record<number, { isLiked: boolean; likeCount: number; isPending?: boolean }>
   >({});
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
@@ -49,7 +49,6 @@ const StyleFeedPreview = () => {
     sort: 'likeCount,desc',
   });
 
-  // 피드 데이터가 변경될 때 allFeeds에 추가 및 좋아요 상태 초기화
   useEffect(() => {
     if (feeds.length > 0) {
       setAllFeeds((prev) => {
@@ -61,10 +60,12 @@ const StyleFeedPreview = () => {
       setFeedLikes((prev) => {
         const updated = { ...prev };
         feeds.forEach((feed) => {
-          if (!updated[feed.feedId]) {
+          // isPending이 true인 경우 서버 데이터로 덮어쓰지 않음
+          if (!updated[feed.feedId] || !updated[feed.feedId].isPending) {
             updated[feed.feedId] = {
               isLiked: feed.isLiked ?? false,
               likeCount: feed.likeCount ?? 0,
+              isPending: updated[feed.feedId]?.isPending ?? false,
             };
           }
         });
@@ -119,7 +120,7 @@ const StyleFeedPreview = () => {
         likeCount: feed.likeCount ?? 0,
       };
 
-      // 낙관적 업데이트
+      // 낙관적 업데이트 (isPending 플래그 설정)
       const newIsLiked = !currentLike.isLiked;
       const newLikeCount = newIsLiked
         ? currentLike.likeCount + 1
@@ -130,6 +131,7 @@ const StyleFeedPreview = () => {
         [feed.feedId]: {
           isLiked: newIsLiked,
           likeCount: newLikeCount,
+          isPending: true,
         },
       }));
 
@@ -140,13 +142,17 @@ const StyleFeedPreview = () => {
           [feed.feedId]: {
             isLiked: response.isLiked,
             likeCount: response.likeCount,
+            isPending: false,
           },
         }));
       } catch (error) {
         // 실패 시 롤백
         setFeedLikes((prev) => ({
           ...prev,
-          [feed.feedId]: currentLike,
+          [feed.feedId]: {
+            ...currentLike,
+            isPending: false,
+          },
         }));
         console.error('Failed to toggle like:', error);
       }
