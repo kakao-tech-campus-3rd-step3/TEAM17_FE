@@ -81,6 +81,7 @@ export const FeedItem = styled.article`
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
+  margin-bottom: 0;
 
   &:hover {
     transform: translateY(-0.125rem);
@@ -116,7 +117,7 @@ export const Username = styled.span`
 
 export const PostImage = styled.img`
   width: 100%;
-  height: 8rem;
+  height: 50%;
   object-fit: cover;
   display: block;
 
@@ -185,6 +186,7 @@ export const Caption = styled.div`
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  height: 5rem;
 
   ${Username} {
     font-weight: 600;
