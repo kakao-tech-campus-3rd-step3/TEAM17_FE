@@ -82,6 +82,41 @@ export const StatItem = styled.div<{ $clickable?: boolean }>`
   }
 `;
 
+export const ActionButtons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+`;
+
+export const ActionButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: ${tokens.colors.text.darkGray};
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    color: ${tokens.colors.text.mediumGray};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${tokens.colors.orange.primary};
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+`;
+
 export const ProductSection = styled.div`
   background: ${tokens.colors.orange.muted};
   border-radius: 0.5rem;

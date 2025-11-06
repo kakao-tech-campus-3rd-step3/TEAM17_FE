@@ -7,12 +7,9 @@ import FeedInfoSection from '@/components/feed/FeedInfoSection';
 import CommentSection from '@/components/comment/CommentSection';
 import FeedLikersModal from '@/components/feed/FeedLikersModal';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useCommentActions } from '@/hooks/useFeeds';
+import { useCommentActions, useFeedLike, useFeedBookmark } from '@/hooks/useFeeds';
 import { fetchFeedById, deleteFeed } from '@/api/feedApi';
-import { useUser } from '@/hooks/useAuth';
-// TODO: 2단계에서 FeedInfoSection으로 이동할 예정
-// import { useFeedBookmark } from '@/hooks/useFeeds';
-// import { useAuth } from '@/hooks/useAuth';
+import { useUser, useAuth } from '@/hooks/useAuth';
 import type { FeedDetail, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
@@ -50,9 +47,9 @@ const FeedDetailData = () => {
   });
 
   const { addComment } = useCommentActions(feedId);
-  // TODO: 2단계에서 FeedInfoSection으로 이동할 예정
-  // const { toggleBookmark } = useFeedBookmark(feedId);
-  // const { isLogin } = useAuth();
+  const { toggleLike } = useFeedLike(feedId);
+  const { toggleBookmark } = useFeedBookmark(feedId);
+  const { isLogin } = useAuth();
 
   // 작성자 확인: 현재 사용자와 피드 작성자 비교
   const isAuthor = currentUser?.userId === feed?.author.userId;
@@ -100,24 +97,48 @@ const FeedDetailData = () => {
     }
   };
 
-  // TODO: 2단계에서 FeedInfoSection으로 이동할 예정
-  // const handleLike = (isLiked: boolean, likeCount: number) => {
-  //   setLocalFeed((prev) => ({ ...prev, isLiked, likeCount }));
-  //   queryClient.setQueryData(QUERY_KEYS.feeds.detail(feedId), (old: FeedDetail | undefined) => {
-  //     if (!old) return old;
-  //     return { ...old, isLiked, likeCount };
-  //   });
-  // };
+  const handleLike = () => {
+    if (!isLogin) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
+    toggleLike();
+  };
 
-  // TODO: 2단계에서 FeedInfoSection으로 이동할 예정
-  // const handleBookmark = (_isBookmarked: boolean, _bookmarkCount: number) => {
-  //   if (!isLogin) {
-  //     alert('로그인이 필요한 기능입니다.');
-  //     navigate('/login');
-  //     return;
-  //   }
-  //   toggleBookmark();
-  // };
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: '피드 공유',
+          text: feed?.description || '',
+          url: window.location.href,
+        })
+        .catch((error) => {
+          console.error('공유 실패:', error);
+        });
+    } else {
+      // 공유 API를 지원하지 않는 경우 클립보드에 복사
+      navigator.clipboard
+        .writeText(window.location.href)
+        .then(() => {
+          alert('링크가 클립보드에 복사되었습니다.');
+        })
+        .catch((error) => {
+          console.error('클립보드 복사 실패:', error);
+          alert('공유 기능을 사용할 수 없습니다.');
+        });
+    }
+  };
+
+  const handleBookmark = () => {
+    if (!isLogin) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
+    toggleBookmark();
+  };
 
   const handleAddComment = async (comment: CreateCommentRequest) => {
     try {
@@ -199,7 +220,13 @@ const FeedDetailData = () => {
           </LeftColumn>
 
           <RightColumn>
-            <FeedInfoSection feed={localFeed} onOpenLikers={() => setIsLikersModalOpen(true)} />
+            <FeedInfoSection
+              feed={localFeed}
+              onLike={handleLike}
+              onShare={handleShare}
+              onBookmark={handleBookmark}
+              onOpenLikers={() => setIsLikersModalOpen(true)}
+            />
             {isAuthor && (
               <ActionButtons>
                 <ActionButton onClick={handleEdit} type="button" aria-label="수정하기">

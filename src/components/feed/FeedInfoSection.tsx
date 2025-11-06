@@ -1,7 +1,8 @@
 import React from 'react';
-import { Heart, MessageSquare, Bookmark } from 'lucide-react';
+import { Heart, MessageSquare, Share, Bookmark } from 'lucide-react';
 import type { FeedDetail } from '@/types/Feed';
 import { formatFeedDate } from '@/utils/date';
+import { tokens } from '@/styles/tokens';
 import {
   InfoContainer,
   UserProfile,
@@ -13,14 +14,25 @@ import {
   PostDate,
   StatsSection,
   StatItem,
+  ActionButtons,
+  ActionButton,
 } from '@/components/feed/FeedInfoSection.styles';
 
 interface FeedInfoSectionProps {
   feed: FeedDetail;
+  onLike: () => void;
+  onShare: () => void;
+  onBookmark: () => void;
   onOpenLikers?: () => void;
 }
 
-const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({ feed, onOpenLikers }) => {
+const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({
+  feed,
+  onLike,
+  onShare,
+  onBookmark,
+  onOpenLikers,
+}) => {
   const handleLikeCountClick = () => {
     if (onOpenLikers && feed.likeCount > 0) {
       onOpenLikers();
@@ -56,6 +68,35 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({ feed, onOpenLikers })
           {feed.bookmarkCount || 0}개
         </StatItem>
       </StatsSection>
+
+      {/* 액션 버튼 */}
+      <ActionButtons>
+        <ActionButton onClick={onLike}>
+          <Heart
+            size={20}
+            fill={feed.isLiked ? tokens.colors.orange.primary : 'none'}
+            color={tokens.colors.orange.primary}
+          />
+          좋아요
+        </ActionButton>
+        <ActionButton onClick={onShare}>
+          <Share size={20} />
+          공유
+        </ActionButton>
+        <ActionButton
+          onClick={onBookmark}
+          type="button"
+          aria-label={feed.isBookmarked ? '북마크 취소' : '북마크'}
+          aria-pressed={feed.isBookmarked}
+        >
+          <Bookmark
+            size={20}
+            fill={feed.isBookmarked ? tokens.colors.orange.primary : 'none'}
+            color={tokens.colors.orange.primary}
+          />
+          북마크
+        </ActionButton>
+      </ActionButtons>
 
       <PostDate>{formatFeedDate(feed.createdAt)}</PostDate>
     </InfoContainer>
