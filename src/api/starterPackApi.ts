@@ -1,4 +1,5 @@
 import axiosInstance from './axiosInstance';
+import { ensureCsrfToken } from '@/utils/csrf';
 import type {
   StarterPack,
   StarterPackResponse,
@@ -96,6 +97,7 @@ export const deleteStarterPack = async (id: number): Promise<void> => {
 // 스타터팩 좋아요 토글
 export const toggleStarterPackLike = async (id: number): Promise<LikeStarterPackResponse> => {
   try {
+    await ensureCsrfToken();
     const response = await axiosInstance.post<LikeStarterPackResponse>(
       `/api/starterPack/packs/${id}/like`
     );
@@ -111,6 +113,7 @@ export const toggleStarterPackBookmark = async (
   id: number
 ): Promise<BookmarkStarterPackResponse> => {
   try {
+    await ensureCsrfToken();
     const response = await axiosInstance.post<BookmarkStarterPackResponse>(
       `/api/starterPack/packs/${id}/bookmark`
     );
@@ -187,6 +190,7 @@ export const createPackComment = async (
   parentId?: number | null
 ): Promise<PackCommentResponse> => {
   try {
+    await ensureCsrfToken();
     const requestBody: { content: string; parentId?: number | null } = {
       content,
     };
@@ -212,6 +216,7 @@ export const updatePackComment = async (
   content: string
 ): Promise<PackCommentResponse> => {
   try {
+    await ensureCsrfToken();
     const response = await axiosInstance.put<PackCommentResponse>(
       `/api/starterPack/comments/${commentId}`,
       {
@@ -228,6 +233,7 @@ export const updatePackComment = async (
 // 스타터팩 댓글 삭제
 export const deletePackComment = async (commentId: number): Promise<void> => {
   try {
+    await ensureCsrfToken();
     await axiosInstance.delete(`/api/starterPack/comments/${commentId}`);
   } catch (error) {
     console.error(`Failed to delete comment ${commentId}:`, error);
