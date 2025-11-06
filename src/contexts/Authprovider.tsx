@@ -5,7 +5,7 @@ import { AuthContext } from './AuthContext';
 import { getUser, logout } from '@/api/auth';
 import type { ReactNode } from 'react';
 import type { AuthUser } from '@/types/auth';
-
+import axiosInstance from '@/api/axiosInstance';
 /**
  * AuthProvider: 앱 전역에서 로그인 상태를 관리
  */
@@ -19,7 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const userData = await getUser(); 
+        const userData = await getUser();
         setUser(userData);
         setIsLogin(true);
       } catch (error) {
@@ -44,12 +44,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const handleLogout = async () => {
     try {
       await logout();
+
+      delete axiosInstance.defaults.headers.common['Authorization'];
     } catch (error) {
       console.error('로그아웃 중 오류 발생:', error);
     } finally {
       setUser(null);
       setIsLogin(false);
-      navigate('/login', { replace: true }); 
+      navigate('/login', { replace: true });
     }
   };
 

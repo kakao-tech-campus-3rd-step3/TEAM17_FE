@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import {
   TotalContainer,
   LayoutLine,
@@ -18,6 +20,8 @@ const FeedWriting = () => {
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [error, setError] = useState('');
+
+  const navigate = useNavigate();
 
   const { mutate: uploadFeed } = useUploadFeed();
 
@@ -44,12 +48,17 @@ const FeedWriting = () => {
 
     setError('');
 
-    uploadFeed({
-      description,
-      imageUrl,
-      categoryId,
-      hashtagNames: tags,
-    });
+    uploadFeed(
+      {
+        description,
+        imageUrl,
+        categoryId,
+        hashtagNames: tags,
+      },
+      {
+        onSuccess: () => navigate('/feed'),
+      }
+    );
   };
 
   return (
