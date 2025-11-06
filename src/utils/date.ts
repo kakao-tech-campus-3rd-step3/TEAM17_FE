@@ -91,11 +91,13 @@ export const formatFeedDate = (dateString: string): string => {
   const now = new Date();
   const postDate = new Date(dateString);
 
-  // 오늘인지 확인 (년, 월, 일 비교)
-  const isToday =
-    now.getFullYear() === postDate.getFullYear() &&
-    now.getMonth() === postDate.getMonth() &&
-    now.getDate() === postDate.getDate();
+  // 오늘 날짜 (시간 제외, 00:00:00)
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  // 게시물 날짜 (시간 제외, 00:00:00)
+  const postDay = new Date(postDate.getFullYear(), postDate.getMonth(), postDate.getDate());
+
+  // 오늘인지 확인
+  const isToday = today.getTime() === postDay.getTime();
 
   if (isToday) {
     // 오늘 작성된 게시물: "11시 38분" 형식
@@ -104,9 +106,10 @@ export const formatFeedDate = (dateString: string): string => {
     return `${hours}시 ${minutes.toString().padStart(2, '0')}분`;
   }
 
-  // 어제 이전: "n일 전" 형식
-  const diffInSeconds = Math.floor((now.getTime() - postDate.getTime()) / 1000);
-  const diffInDays = Math.floor(diffInSeconds / 86400);
+  // 날짜 차이 계산 (밀리초 단위)
+  const diffInMs = today.getTime() - postDay.getTime();
+  // 일수 차이
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
   if (diffInDays === 1) {
     return '어제';
