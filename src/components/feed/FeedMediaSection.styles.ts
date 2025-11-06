@@ -4,28 +4,27 @@ import { tokens } from '@/styles/tokens';
 export const MediaContainer = styled.div`
   background: white;
   border-radius: 0.5rem;
-  padding: 1.25rem;
   box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
-  text-align: left;
-  height: fit-content;
+  overflow: hidden;
 `;
 
 export const ImageCarousel = styled.div`
   position: relative;
-  margin-bottom: 1rem;
 `;
 
 export const ImageContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 25rem;
-  border-radius: 0.5rem;
+  height: auto;
+  max-height: 40rem;
   overflow: hidden;
 
   img {
     width: 100%;
-    height: 100%;
+    height: auto;
+    max-height: 40rem;
     object-fit: cover;
+    display: block;
   }
 `;
 
