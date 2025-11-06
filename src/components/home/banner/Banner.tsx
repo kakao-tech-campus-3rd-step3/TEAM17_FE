@@ -129,27 +129,13 @@ const Banner = () => {
     setRightIndex((prev) => Math.min(RIGHT_TOTAL_ITEMS - 1, prev + 1));
   };
 
-  const handleLeftCardClick = () => {
-    // TODO: 팀에서 카테고리 분류 방식 확인 후 URL 설정
-  };
-
-  const handleRightCardClick = () => {
-    // TODO: 팀에서 카테고리 분류 방식 확인 후 URL 설정
-  };
-
   const leftItem = LEFT_BANNER_ITEMS[leftIndex];
   const rightItem = RIGHT_BANNER_ITEMS[rightIndex];
 
   return (
     <CarouselContainer>
       <CarouselWrapper>
-        <Card
-          key={`left-${leftItem.id}`}
-          $variant={leftItem.variant}
-          $imageUrl={leftItem.imageUrl}
-          onClick={handleLeftCardClick}
-          style={{ cursor: 'pointer' }}
-        >
+        <Card key={`left-${leftItem.id}`} $variant={leftItem.variant} $imageUrl={leftItem.imageUrl}>
           {leftIndex > 0 && (
             <NavigationButton
               onClick={handleLeftPrev}
@@ -185,8 +171,6 @@ const Banner = () => {
           key={`right-${rightItem.id}`}
           $variant={rightItem.variant}
           $imageUrl={rightItem.imageUrl}
-          onClick={handleRightCardClick}
-          style={{ cursor: 'pointer' }}
         >
           {rightIndex > 0 && (
             <NavigationButton

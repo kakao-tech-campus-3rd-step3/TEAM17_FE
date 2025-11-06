@@ -166,11 +166,11 @@ const StarterPackDetailData = () => {
   };
 
   const handleShare = () => {
-    console.log('Share clicked');
+    // 공유 기능 구현해야 함
   };
 
   const handleBookmark = () => {
-    console.log('Bookmark toggled');
+    // 북마크 기능은 이미 구현되어 있음
   };
 
   return (

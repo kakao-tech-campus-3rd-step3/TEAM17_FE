@@ -158,7 +158,6 @@ const StyleFeedPreview = () => {
   const handleShareClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     // 공유 기능 구현 (나중에 추가 가능)
-    console.log('Share clicked');
   }, []);
 
   if (loading) {
