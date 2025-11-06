@@ -16,6 +16,8 @@ import {
   StatItem,
   ActionButtons,
   ActionButton,
+  HashtagSection,
+  Hashtag,
 } from '@/components/feed/FeedInfoSection.styles';
 
 interface FeedInfoSectionProps {
@@ -97,6 +99,17 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({
           북마크
         </ActionButton>
       </ActionButtons>
+
+      {/* 해시태그 */}
+      {feed.hashtags && feed.hashtags.length > 0 && (
+        <HashtagSection>
+          {feed.hashtags.map((tag, index) => {
+            const tagName = typeof tag === 'string' ? tag : tag.hashtagName;
+            const tagKey = typeof tag === 'string' ? tag : tag.id;
+            return <Hashtag key={tagKey || index}>#{tagName}</Hashtag>;
+          })}
+        </HashtagSection>
+      )}
 
       <PostDate>{formatFeedDate(feed.createdAt)}</PostDate>
     </InfoContainer>

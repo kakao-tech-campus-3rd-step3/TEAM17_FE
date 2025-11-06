@@ -117,6 +117,28 @@ export const ActionButton = styled.button`
   }
 `;
 
+export const HashtagSection = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+`;
+
+export const Hashtag = styled.span`
+  background: ${tokens.colors.orange.muted};
+  color: ${tokens.colors.feed.hashtag};
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${tokens.colors.orange.light};
+    color: ${tokens.colors.orange.dark};
+  }
+`;
+
 export const ProductSection = styled.div`
   background: ${tokens.colors.orange.muted};
   border-radius: 0.5rem;
