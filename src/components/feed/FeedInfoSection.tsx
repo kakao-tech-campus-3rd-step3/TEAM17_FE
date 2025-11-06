@@ -1,5 +1,6 @@
 import React from 'react';
 import type { FeedDetail } from '@/types/Feed';
+import { formatFeedDate } from '@/utils/date';
 import {
   InfoContainer,
   UserProfile,
@@ -29,7 +30,7 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({ feed }) => {
 
       {/* 본문 내용 */}
       <PostContent>{feed.description}</PostContent>
-      <PostDate>{feed.createdAt}</PostDate>
+      <PostDate>{formatFeedDate(feed.createdAt)}</PostDate>
     </InfoContainer>
   );
 };
