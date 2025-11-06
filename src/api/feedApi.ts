@@ -42,8 +42,37 @@ export const fetchFeeds = async (
 // 특정 피드 상세 조회
 export const fetchFeedById = async (id: number): Promise<FeedDetail> => {
   try {
-    const response = await axiosInstance.get<FeedDetail>(`/api/feeds/${id}`);
-    return response.data;
+    const response = await axiosInstance.get<
+      FeedDetail & {
+        stats?: { likeCount?: number; commentCount?: number; bookmarkCount?: number };
+        interactionStatus?: { isLiked?: boolean; isBookmarked?: boolean };
+      }
+    >(`/api/feeds/${id}`);
+    const data = response.data;
+
+    const likeCount =
+      typeof data.likeCount === 'number' ? data.likeCount : (data.stats?.likeCount ?? 0);
+    const commentCount =
+      typeof data.commentCount === 'number' ? data.commentCount : (data.stats?.commentCount ?? 0);
+    const bookmarkCount =
+      typeof data.bookmarkCount === 'number'
+        ? data.bookmarkCount
+        : (data.stats?.bookmarkCount ?? 0);
+    const isLiked =
+      typeof data.isLiked === 'boolean' ? data.isLiked : (data.interactionStatus?.isLiked ?? false);
+    const isBookmarked =
+      typeof data.isBookmarked === 'boolean'
+        ? data.isBookmarked
+        : (data.interactionStatus?.isBookmarked ?? false);
+
+    return {
+      ...data,
+      likeCount,
+      commentCount,
+      bookmarkCount,
+      isLiked,
+      isBookmarked,
+    };
   } catch (error) {
     console.error(`Failed to fetch feed ${id}:`, error);
     throw error;
