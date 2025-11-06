@@ -425,6 +425,7 @@ export const useStarterPackBookmark = (id: number) => {
           '북마크 처리에 실패했습니다.'
         )
       : null,
+    rawError: toggleBookmarkMutation.error,
   };
 };
 

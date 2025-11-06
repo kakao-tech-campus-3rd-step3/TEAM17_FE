@@ -11,6 +11,7 @@ import {
   usePackComments,
   usePackCommentActions,
   useStarterPackLike,
+  useStarterPackBookmark,
 } from '@/hooks/useStarterPacks';
 import { useAuth } from '@/hooks/useAuth';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
@@ -63,6 +64,11 @@ const StarterPackDetailData = () => {
   const { comments, refresh: refreshComments } = usePackComments(packId);
   const { addComment: addCommentApi } = usePackCommentActions(packId);
   const { toggleLike, error: likeError, rawError } = useStarterPackLike(packId);
+  const {
+    toggleBookmark,
+    error: bookmarkError,
+    rawError: bookmarkRawError,
+  } = useStarterPackBookmark(packId);
   const { isLogin } = useAuth();
   const [localComments, setLocalComments] = useState<Comment[]>([]);
   const prevCommentsKeyRef = useRef<string>('');
@@ -108,6 +114,21 @@ const StarterPackDetailData = () => {
       }
     }
   }, [rawError, likeError, navigate]);
+
+  // 북마크 에러 처리
+  useEffect(() => {
+    if (bookmarkRawError) {
+      const axiosError = bookmarkRawError as { response?: { status?: number } };
+      const status = axiosError?.response?.status;
+
+      if (status === 403) {
+        alert('로그인이 필요한 기능입니다.');
+        navigate('/login');
+      } else if (bookmarkError) {
+        alert(bookmarkError);
+      }
+    }
+  }, [bookmarkRawError, bookmarkError, navigate]);
 
   const handleLikeComment = useCallback(
     (commentId: number, isLiked: boolean, likeCount: number) => {
@@ -199,8 +220,17 @@ const StarterPackDetailData = () => {
   };
 
   const handleBookmark = () => {
-    // 북마크 기능은 이미 구현되어 있음
+    if (!isLogin) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
+    toggleBookmark();
   };
+
+  // 북마크 상태 확인
+  const packWithBookmark = displayPack as StarterPack & { isBookmarked?: boolean };
+  const isBookmarked = packWithBookmark?.isBookmarked ?? false;
 
   return (
     <StarterPackDetailPageContainer>
@@ -255,8 +285,17 @@ const StarterPackDetailData = () => {
                   <Share size={20} />
                   공유
                 </ActionButton>
-                <ActionButton onClick={handleBookmark}>
-                  <Bookmark size={20} />
+                <ActionButton
+                  onClick={handleBookmark}
+                  type="button"
+                  aria-label={isBookmarked ? '북마크 취소' : '북마크'}
+                  aria-pressed={isBookmarked}
+                >
+                  <Bookmark
+                    size={20}
+                    fill={isBookmarked ? '#3b82f6' : 'none'}
+                    color={isBookmarked ? '#3b82f6' : '#000'}
+                  />
                   북마크
                 </ActionButton>
               </ActionButtons>
