@@ -298,7 +298,7 @@ const StarterPackDetailData = () => {
                   />
                   좋아요
                 </ActionButton>
-                <ActionButton onClick={handleShare}>
+                <ActionButton onClick={handleShare} type="button">
                   <Share size={20} />
                   공유
                 </ActionButton>
