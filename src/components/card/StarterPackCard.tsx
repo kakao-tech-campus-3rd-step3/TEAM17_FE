@@ -3,6 +3,7 @@ import { Heart, MessageSquare, MoreHorizontal, Bookmark, Tag } from 'lucide-reac
 import type { StarterPack } from '@/types/StarterPack';
 import { tokens } from '@/styles/tokens';
 import defaultProfile from '@/assets/defaultProfile.png';
+import { formatFeedDate } from '@/utils/date';
 import {
   PostContainer,
   PostHeader,
@@ -171,7 +172,7 @@ const StarterPackCard: React.FC<Props> = ({
         </ProductsSection>
       )}
 
-      <TimeStamp>어제</TimeStamp>
+      {pack.createdAt && <TimeStamp>{formatFeedDate(pack.createdAt)}</TimeStamp>}
     </PostContainer>
   );
 };

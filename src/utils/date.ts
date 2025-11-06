@@ -81,3 +81,54 @@ export const formatSimpleDate = (dateString: string): string => {
     day: '2-digit',
   });
 };
+
+/**
+ * 피드 게시물 날짜 포맷팅 (오늘: "11시 38분", 어제 이전: "n일 전")
+ * @param dateString - ISO 8601 형식의 날짜 문자열
+ * @returns 포맷팅된 날짜 문자열
+ */
+export const formatFeedDate = (dateString: string): string => {
+  const now = new Date();
+  const postDate = new Date(dateString);
+
+  // 오늘 날짜
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  // 게시물 날짜
+  const postDay = new Date(postDate.getFullYear(), postDate.getMonth(), postDate.getDate());
+
+  // 오늘인지 확인
+  const isToday = today.getTime() === postDay.getTime();
+
+  if (isToday) {
+    // 오늘 작성된 게시물: "11시 38분" 형식
+    const hours = postDate.getHours();
+    const minutes = postDate.getMinutes();
+    return `${hours}시 ${minutes.toString().padStart(2, '0')}분`;
+  }
+
+  // 날짜 차이 계산 (밀리초 단위)
+  const diffInMs = today.getTime() - postDay.getTime();
+  // 일수 차이
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+  if (diffInDays === 1) {
+    return '어제';
+  }
+
+  if (diffInDays < 7) {
+    return `${diffInDays}일 전`;
+  }
+
+  if (diffInDays < 30) {
+    const weeks = Math.floor(diffInDays / 7);
+    return `${weeks}주 전`;
+  }
+
+  if (diffInDays < 365) {
+    const months = Math.floor(diffInDays / 30);
+    return `${months}개월 전`;
+  }
+
+  const years = Math.floor(diffInDays / 365);
+  return `${years}년 전`;
+};
