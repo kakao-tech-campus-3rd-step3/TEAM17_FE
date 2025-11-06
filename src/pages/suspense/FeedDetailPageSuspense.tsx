@@ -103,18 +103,19 @@ const FeedDetailData = () => {
   };
 
   const handleShare = () => {
+    if (!feed) return;
+
     if (navigator.share) {
       navigator
         .share({
           title: '피드 공유',
-          text: feed?.description || '',
+          text: feed.description || '',
           url: window.location.href,
         })
         .catch((error) => {
           console.error('공유 실패:', error);
         });
-    } else {
-      // 공유 API를 지원하지 않는 경우 클립보드에 복사
+    } else if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
       navigator.clipboard
         .writeText(window.location.href)
         .then(() => {
@@ -122,8 +123,18 @@ const FeedDetailData = () => {
         })
         .catch((error) => {
           console.error('클립보드 복사 실패:', error);
-          alert('공유 기능을 사용할 수 없습니다.');
+          alert('링크 복사에 실패했습니다. 다시 시도해주세요.');
         });
+    } else {
+      try {
+        window.prompt(
+          '공유 기능을 지원하지 않는 환경입니다. URL을 직접 복사해주세요.',
+          window.location.href
+        );
+      } catch (error) {
+        console.error('URL 안내 중 오류가 발생했습니다:', error);
+        alert(`아래 URL을 직접 복사해주세요:\n${window.location.href}`);
+      }
     }
   };
 
