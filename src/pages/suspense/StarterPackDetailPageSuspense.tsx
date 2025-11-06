@@ -59,7 +59,7 @@ import {
 } from '@/pages/StarterPackDetailPage.styles';
 
 const convertPackCommentToComment = (packComment: PackCommentResponse): Comment => {
-  return {
+  const baseComment: Comment = {
     commentId: packComment.id,
     author: {
       userId: packComment.author.id,
@@ -75,6 +75,12 @@ const convertPackCommentToComment = (packComment: PackCommentResponse): Comment 
     isDeleted: packComment.isDeleted ?? false,
     replies: [],
   };
+
+  if (packComment.parentId !== null && packComment.parentId !== undefined) {
+    (baseComment as Comment & { replyId: number }).replyId = packComment.id;
+  }
+
+  return baseComment;
 };
 
 const StarterPackDetailData = () => {
