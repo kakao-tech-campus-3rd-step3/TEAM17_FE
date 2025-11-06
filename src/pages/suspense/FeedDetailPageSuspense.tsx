@@ -105,22 +105,13 @@ const FeedDetailData = () => {
     });
   };
 
-  const handleBookmark = (isBookmarked: boolean, bookmarkCount: number) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleBookmark = (_isBookmarked: boolean, _bookmarkCount: number) => {
     if (!isLogin) {
       alert('로그인이 필요한 기능입니다.');
       navigate('/login');
       return;
     }
-
-    // 낙관적 업데이트
-    setLocalFeed((prev) => ({ ...prev, isBookmarked, bookmarkCount }));
-
-    queryClient.setQueryData(QUERY_KEYS.feeds.detail(feedId), (old: FeedDetail | undefined) => {
-      if (!old) return old;
-      return { ...old, isBookmarked, bookmarkCount };
-    });
-
-    // 실제 API 호출
     toggleBookmark();
   };
 
