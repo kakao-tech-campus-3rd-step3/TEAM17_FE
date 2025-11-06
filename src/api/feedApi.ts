@@ -1,4 +1,5 @@
 import axiosInstance from './axiosInstance';
+import { ensureCsrfToken } from '@/utils/csrf';
 import { FEED_API_CONSTANTS } from '@/constants/feed';
 import type {
   FeedPost,
@@ -87,6 +88,7 @@ export const deleteFeed = async (id: number): Promise<void> => {
 // 피드 좋아요 토글
 export const toggleFeedLike = async (id: number): Promise<LikePostResponse> => {
   try {
+    await ensureCsrfToken();
     const response = await axiosInstance.post<LikePostResponse>(`/api/feeds/${id}/like`);
     return response.data;
   } catch (error) {
@@ -100,6 +102,7 @@ export const toggleFeedBookmark = async (
   id: number
 ): Promise<{ isBookmarked: boolean; bookmarkCount: number }> => {
   try {
+    await ensureCsrfToken();
     const response = await axiosInstance.post<{ isBookmarked: boolean; bookmarkCount: number }>(
       `/api/feeds/${id}/bookmark`
     );
@@ -169,6 +172,7 @@ export const fetchComments = async (
 // parentId가 있으면 대댓글, 없으면 일반 댓글
 export const createComment = async (data: CreateCommentRequest): Promise<Comment> => {
   try {
+    await ensureCsrfToken();
     const requestBody: { content: string; parentId?: number | null } = {
       content: data.content,
     };
@@ -194,6 +198,7 @@ export const updateComment = async (
   data: { content: string }
 ): Promise<Comment> => {
   try {
+    await ensureCsrfToken();
     const response = await axiosInstance.put<Comment>(`/api/feeds/comments/${commentId}`, data);
     return response.data;
   } catch (error) {
@@ -205,6 +210,7 @@ export const updateComment = async (
 // 댓글 삭제
 export const deleteComment = async (commentId: number): Promise<void> => {
   try {
+    await ensureCsrfToken();
     await axiosInstance.delete(`/api/feeds/comments/${commentId}`);
   } catch (error) {
     console.error(`Failed to delete comment ${commentId}:`, error);

@@ -34,7 +34,20 @@ const MyPageContent = () => {
       )}
 
       {activeTab === 'scrap' && isOwner && (
-        <MyPageSection title="스크랩북" items={profile.bookmarkedFeeds ?? []} type="feed" />
+        <>
+          {profile.bookmarkedFeeds && profile.bookmarkedFeeds.length > 0 && (
+            <MyPageSection title="북마크한 피드" items={profile.bookmarkedFeeds} type="feed" />
+          )}
+          {profile.bookmarkedPacks && profile.bookmarkedPacks.length > 0 && (
+            <MyPageSection title="북마크한 팩" items={profile.bookmarkedPacks} type="pack" />
+          )}
+          {(!profile.bookmarkedFeeds || profile.bookmarkedFeeds.length === 0) &&
+            (!profile.bookmarkedPacks || profile.bookmarkedPacks.length === 0) && (
+              <div style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>
+                북마크한 게시글이 없습니다.
+              </div>
+            )}
+        </>
       )}
     </>
   );

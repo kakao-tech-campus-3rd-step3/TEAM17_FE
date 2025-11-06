@@ -198,8 +198,8 @@ export const CategoryTag = styled.div`
   align-items: center;
   gap: 0.25rem;
   padding: 0.25rem 0.75rem;
-  background-color: #f0f8ff;
-  color: #0095f6;
+  background-color: ${tokens.colors.orange.muted};
+  color: ${tokens.colors.orange.primary};
   border-radius: 1rem;
   font-size: 0.75rem;
   font-weight: 500;

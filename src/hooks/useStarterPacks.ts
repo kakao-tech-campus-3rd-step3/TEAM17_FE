@@ -309,6 +309,7 @@ export const useStarterPackLike = (id: number) => {
           '좋아요 처리에 실패했습니다.'
         )
       : null,
+    rawError: toggleLikeMutation.error,
   };
 };
 
@@ -424,6 +425,7 @@ export const useStarterPackBookmark = (id: number) => {
           '북마크 처리에 실패했습니다.'
         )
       : null,
+    rawError: toggleBookmarkMutation.error,
   };
 };
 
