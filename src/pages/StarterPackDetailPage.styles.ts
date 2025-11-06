@@ -283,8 +283,16 @@ export const SectionTitle = styled.h3`
 
 export const ProductsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const ProductCard = styled.div`
@@ -293,6 +301,9 @@ export const ProductCard = styled.div`
   padding: 1rem;
   background: #fafafa;
   transition: all 0.2s ease;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -306,6 +317,7 @@ export const ProductImage = styled.img`
   object-fit: cover;
   border-radius: 0.25rem;
   margin-bottom: 0.5rem;
+  aspect-ratio: 1;
 `;
 
 export const ProductName = styled.h4`

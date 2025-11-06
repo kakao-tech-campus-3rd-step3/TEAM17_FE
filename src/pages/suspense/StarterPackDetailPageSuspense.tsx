@@ -11,9 +11,11 @@ import {
   usePackComments,
   usePackCommentActions,
   useStarterPackLike,
+  usePackCommentLike,
   useStarterPackBookmark,
 } from '@/hooks/useStarterPacks';
 import { useAuth } from '@/hooks/useAuth';
+import { QUERY_KEYS } from '@/utils/queryKeys';
 import { formatFeedDate } from '@/utils/date';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
@@ -61,19 +63,21 @@ const StarterPackDetailData = () => {
   }
 
   const { data: displayPack } = useSuspenseQuery<StarterPack>({
-    queryKey: ['starterPack', packId],
+    queryKey: QUERY_KEYS.starterPacks.detail(packId),
     queryFn: () => fetchStarterPackById(packId),
     staleTime: 5 * 60 * 1000,
   });
 
   const { comments, refresh: refreshComments } = usePackComments(packId);
   const { addComment: addCommentApi } = usePackCommentActions(packId);
-  const { toggleLike, error: likeError, rawError } = useStarterPackLike(packId);
+  const { toggleLike } = useStarterPackLike(packId);
   const {
-    toggleBookmark,
-    error: bookmarkError,
-    rawError: bookmarkRawError,
-  } = useStarterPackBookmark(packId);
+    toggleLike: toggleCommentLike,
+    loading: commentLikeLoading,
+    error: commentLikeError,
+    rawError: commentLikeRawError,
+  } = usePackCommentLike(packId);
+  const { toggleBookmark } = useStarterPackBookmark(packId);
   const { isLogin } = useAuth();
   const [localComments, setLocalComments] = useState<Comment[]>([]);
   const prevCommentsKeyRef = useRef<string>('');
@@ -105,45 +109,40 @@ const StarterPackDetailData = () => {
     }
   }, [comments, currentCommentsKey]);
 
-  // 좋아요 에러 처리
+  // 댓글 좋아요 에러 처리
   useEffect(() => {
-    if (rawError) {
-      const axiosError = rawError as { response?: { status?: number } };
+    if (commentLikeRawError) {
+      const axiosError = commentLikeRawError as { response?: { status?: number } };
       const status = axiosError?.response?.status;
 
       if (status === 403) {
         alert('로그인이 필요한 기능입니다.');
         navigate('/login');
-      } else if (likeError) {
-        alert(likeError);
+      } else if (commentLikeError) {
+        alert(commentLikeError);
       }
     }
-  }, [rawError, likeError, navigate]);
-
-  // 북마크 에러 처리
-  useEffect(() => {
-    if (bookmarkRawError) {
-      const axiosError = bookmarkRawError as { response?: { status?: number } };
-      const status = axiosError?.response?.status;
-
-      if (status === 403) {
-        alert('로그인이 필요한 기능입니다.');
-        navigate('/login');
-      } else if (bookmarkError) {
-        alert(bookmarkError);
-      }
-    }
-  }, [bookmarkRawError, bookmarkError, navigate]);
+  }, [commentLikeRawError, commentLikeError, navigate]);
 
   const handleLikeComment = useCallback(
-    (commentId: number, isLiked: boolean, likeCount: number) => {
-      setLocalComments((prev) =>
-        prev.map((comment) =>
-          comment.commentId === commentId ? { ...comment, isLiked, likeCount } : comment
-        )
-      );
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (commentId: number, _isLiked: boolean, _likeCount: number) => {
+      // 로그인 체크
+      if (!isLogin) {
+        alert('로그인이 필요한 기능입니다.');
+        navigate('/login');
+        return;
+      }
+
+      // 로딩 가드
+      if (commentLikeLoading) {
+        return;
+      }
+
+      // 훅에서 낙관적 업데이트 및 API 호출 처리
+      toggleCommentLike(commentId);
     },
-    []
+    [isLogin, navigate, commentLikeLoading, toggleCommentLike]
   );
 
   const handleLikeReply = useCallback((replyId: number, isLiked: boolean, likeCount: number) => {

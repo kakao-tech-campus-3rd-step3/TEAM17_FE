@@ -11,6 +11,7 @@ import {
   createPackComment,
   updatePackComment,
   deletePackComment,
+  togglePackCommentLike,
 } from '@/api/starterPackApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
 import { parseAxiosError, createUserFriendlyMessage } from '@/utils/errorHandling';
@@ -21,6 +22,7 @@ import type {
   LikeStarterPackResponse,
   BookmarkStarterPackResponse,
   PackCommentResponse,
+  PagePackCommentResponse,
 } from '@/types/StarterPack';
 import type { Comment } from '@/types/Feed';
 
@@ -613,5 +615,98 @@ export const usePackCommentActions = (packId: number) => {
     loading,
     error,
     clearError,
+  };
+};
+
+// 스타터팩 댓글 좋아요 관리 훅
+export const usePackCommentLike = (packId: number) => {
+  const queryClient = useQueryClient();
+
+  const toggleLikeMutation = useMutation({
+    mutationFn: (commentId: number) => togglePackCommentLike(commentId),
+    onMutate: async (commentId) => {
+      await queryClient.cancelQueries({
+        queryKey: [...QUERY_KEYS.starterPacks.detail(packId), 'comments'],
+      });
+
+      const commentQueries = queryClient.getQueriesData<PagePackCommentResponse>({
+        queryKey: [...QUERY_KEYS.starterPacks.detail(packId), 'comments'],
+      });
+
+      // 낙관적 업데이트: 모든 페이지네이션 변형의 댓글 목록 캐시 업데이트
+      commentQueries.forEach(([queryKey, oldData]) => {
+        if (!oldData?.content) return;
+        queryClient.setQueryData(queryKey, {
+          ...oldData,
+          content: oldData.content.map((comment: PackCommentResponse) => {
+            if (comment.id !== commentId) return comment;
+            const newIsLiked = !comment.isLiked;
+            const newLikeCount = newIsLiked
+              ? (comment.likeCount || 0) + 1
+              : Math.max(0, (comment.likeCount || 0) - 1);
+            return {
+              ...comment,
+              isLiked: newIsLiked,
+              likeCount: newLikeCount,
+            };
+          }),
+        });
+      });
+
+      return { previousCommentQueries: commentQueries, commentId };
+    },
+    onSuccess: (result, commentId) => {
+      // 서버 응답으로 모든 페이지네이션 변형의 댓글 목록 캐시 업데이트
+      queryClient.setQueriesData(
+        { queryKey: [...QUERY_KEYS.starterPacks.detail(packId), 'comments'] },
+        (old: PagePackCommentResponse | undefined) => {
+          if (!old?.content) return old;
+          return {
+            ...old,
+            content: old.content.map((comment: PackCommentResponse) =>
+              comment.id === commentId
+                ? { ...comment, likeCount: result.likeCount, isLiked: result.isLiked }
+                : comment
+            ),
+          };
+        }
+      );
+
+      // pack-detail 캐시 무효화하여 commentCount 업데이트
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.starterPacks.detail(packId),
+      });
+    },
+    onError: (_error, _commentId, context) => {
+      // 실패 시 모든 매칭되는 쿼리 캐시를 이전 상태로 롤백
+      if (context?.previousCommentQueries) {
+        context.previousCommentQueries.forEach(([queryKey, data]) => {
+          if (data) {
+            queryClient.setQueryData(queryKey, data);
+          }
+        });
+      }
+      // 댓글 목록 무효화하여 서버 데이터로 복구
+      queryClient.invalidateQueries({
+        queryKey: [...QUERY_KEYS.starterPacks.detail(packId), 'comments'],
+      });
+    },
+  });
+
+  const toggleLike = (commentId: number) => {
+    if (toggleLikeMutation.isPending) return;
+    toggleLikeMutation.mutate(commentId);
+  };
+
+  return {
+    toggleLike,
+    loading: toggleLikeMutation.isPending,
+    error: toggleLikeMutation.error
+      ? createUserFriendlyMessage(
+          parseAxiosError(toggleLikeMutation.error),
+          '댓글 좋아요 처리에 실패했습니다.'
+        )
+      : null,
+    rawError: toggleLikeMutation.error,
   };
 };
