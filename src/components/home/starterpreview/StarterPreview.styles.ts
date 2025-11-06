@@ -84,10 +84,11 @@ export const Grid = styled.div`
 export const GridItem = styled.div`
   background-color: #e5e7eb;
   border-radius: 0.5rem;
-  height: 6rem;
+  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 
   @media (max-width: 768px) {
     height: 5rem;
@@ -155,6 +156,6 @@ export const EmptyState = styled.div`
 export const PackImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 0.5rem;
 `;
