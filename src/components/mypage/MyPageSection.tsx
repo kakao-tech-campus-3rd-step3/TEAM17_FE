@@ -7,17 +7,17 @@ import {
 } from '@/components/mypage/MyPageSection.styles';
 import { useMyPage } from '@/hooks/useMyPageContext';
 import { MY_PAGE_PREVIEW_LIMIT } from '@/constants/myPage';
-import type { FeedItem, PackItem } from '@/types/User';
+import type { FeedItem, PackItem, BookmarkedFeedItem } from '@/types/User';
 
 type Props = {
   title: string;
-  items: FeedItem[] | PackItem[];
+  items: FeedItem[] | PackItem[] | BookmarkedFeedItem[];
   type: 'feed' | 'pack';
 };
 
 const MyPageSection = ({ title, items, type }: Props) => {
   const navigate = useNavigate();
-  const { activeTab, setActiveTab, profile } = useMyPage();
+  const { activeTab, setActiveTab } = useMyPage();
 
   if (!items?.length) return null;
 
@@ -27,33 +27,33 @@ const MyPageSection = ({ title, items, type }: Props) => {
   };
 
   const visibleItems = activeTab === 'all' ? items.slice(0, MY_PAGE_PREVIEW_LIMIT) : items;
-  const totalCount =
-    type === 'feed' ? (profile?.feeds?.length ?? 0) : (profile?.packs?.length ?? 0);
 
   return (
     <SectionWrapper>
       <Header>
-        <h3>
-          {title} {totalCount}
-        </h3>
+        <h3>{title}</h3>
         {activeTab === 'all' && <button onClick={handleViewAll}>전체보기</button>}
       </Header>
 
       <Grid>
-        {visibleItems.map((item, index) => (
-          <PreviewImage
-            key={index}
-            src={type === 'feed' ? (item as FeedItem).imageUrl : (item as PackItem).mainImageUrl}
-            alt={title}
-            onClick={() => {
-              if (type === 'feed' && 'feedId' in item) {
-                navigate(`/feed/${item.feedId}`);
-              } else if (type === 'pack' && 'packId' in item) {
-                navigate(`/starterpack/${item.packId}`);
-              }
-            }}
-          />
-        ))}
+        {visibleItems.map((item, index) => {
+          const imageUrl =
+            type === 'feed'
+              ? 'imageUrl' in item
+                ? item.imageUrl
+                : (item as PackItem).mainImageUrl
+              : (item as PackItem).mainImageUrl;
+
+          const handleClick = () => {
+            if (type === 'feed' && 'feedId' in item) {
+              navigate(`/feed/${item.feedId}`);
+            } else if (type === 'pack' && 'packId' in item) {
+              navigate(`/starterpack/${item.packId}`);
+            }
+          };
+
+          return <PreviewImage key={index} src={imageUrl} alt={title} onClick={handleClick} />;
+        })}
       </Grid>
     </SectionWrapper>
   );

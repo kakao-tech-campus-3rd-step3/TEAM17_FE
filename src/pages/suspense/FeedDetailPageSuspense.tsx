@@ -7,9 +7,9 @@ import FeedInfoSection from '@/components/feed/FeedInfoSection';
 import CommentSection from '@/components/comment/CommentSection';
 import FeedLikersModal from '@/components/feed/FeedLikersModal';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useCommentActions } from '@/hooks/useFeeds';
+import { useCommentActions, useFeedBookmark } from '@/hooks/useFeeds';
 import { fetchFeedById, deleteFeed } from '@/api/feedApi';
-import { useUser } from '@/hooks/useAuth';
+import { useUser, useAuth } from '@/hooks/useAuth';
 import type { FeedDetail, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
@@ -47,6 +47,8 @@ const FeedDetailData = () => {
   });
 
   const { addComment } = useCommentActions(feedId);
+  const { toggleBookmark } = useFeedBookmark(feedId);
+  const { isLogin } = useAuth();
 
   // 작성자 확인: 현재 사용자와 피드 작성자 비교
   const isAuthor = currentUser?.userId === feed?.author.userId;
@@ -103,13 +105,14 @@ const FeedDetailData = () => {
     });
   };
 
-  const handleBookmark = (isBookmarked: boolean, bookmarkCount: number) => {
-    setLocalFeed((prev) => ({ ...prev, isBookmarked, bookmarkCount }));
-
-    queryClient.setQueryData(QUERY_KEYS.feeds.detail(feedId), (old: FeedDetail | undefined) => {
-      if (!old) return old;
-      return { ...old, isBookmarked, bookmarkCount };
-    });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleBookmark = (_isBookmarked: boolean, _bookmarkCount: number) => {
+    if (!isLogin) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
+    toggleBookmark();
   };
 
   const handleAddComment = async (comment: CreateCommentRequest) => {

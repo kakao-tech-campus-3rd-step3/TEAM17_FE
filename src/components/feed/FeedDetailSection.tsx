@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Heart, MessageCircle, Bookmark } from 'lucide-react';
 import type { FeedDetail } from '@/types/Feed';
 import { tokens } from '@/styles/tokens';
+import { formatFeedDate } from '@/utils/date';
 import {
   FeedDetailContainer,
   UserProfile,
@@ -79,7 +80,7 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
 
       {/* 본문 내용 */}
       <PostContent>{feed.description}</PostContent>
-      <PostDate>{feed.createdAt}</PostDate>
+      <PostDate>{formatFeedDate(feed.createdAt)}</PostDate>
 
       {/* 이미지 캐러셀 */}
       {images.length > 0 && (
