@@ -155,9 +155,15 @@ const StyleFeedPreview = () => {
     [navigate]
   );
 
-  const handleShareClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    // 공유 기능 구현 (나중에 추가 가능)
+  const handleShareClick = useCallback(async (feedId: number) => {
+    try {
+      const url = `${window.location.origin}/feed/${feedId}`;
+      await navigator.clipboard.writeText(url);
+      alert('링크가 복사되었습니다!');
+    } catch (error) {
+      console.error('링크 복사에 실패했습니다:', error);
+      alert('링크 복사에 실패했습니다. 다시 시도해주세요.');
+    }
   }, []);
 
   if (loading) {
@@ -272,7 +278,14 @@ const StyleFeedPreview = () => {
                 >
                   <MessageSquare size={16} color={tokens.colors.orange.primary} />
                 </ActionButton>
-                <ActionButton type="button" aria-label="공유하기" onClick={handleShareClick}>
+                <ActionButton
+                  type="button"
+                  aria-label="공유하기"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleShareClick(feed.feedId);
+                  }}
+                >
                   <Share size={16} color={tokens.colors.orange.primary} />
                 </ActionButton>
               </PostActions>

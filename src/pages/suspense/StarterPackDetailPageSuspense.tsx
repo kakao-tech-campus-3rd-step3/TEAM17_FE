@@ -165,8 +165,15 @@ const StarterPackDetailData = () => {
     toggleLike();
   };
 
-  const handleShare = () => {
-    // 공유 기능 구현해야 함
+  const handleShare = async () => {
+    try {
+      const url = `${window.location.origin}${window.location.pathname}`;
+      await navigator.clipboard.writeText(url);
+      alert('링크가 복사되었습니다!');
+    } catch (error) {
+      console.error('링크 복사에 실패했습니다:', error);
+      alert('링크 복사에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   const handleBookmark = () => {
