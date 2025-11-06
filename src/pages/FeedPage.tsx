@@ -110,17 +110,10 @@ const FeedPage = () => {
 
   const handleBookmark = useCallback(
     async (feedId: number, isBookmarked: boolean, bookmarkCount: number) => {
-      // 낙관적 업데이트 전 원본 상태 저장
-      let originalPost: FeedPostType | null = null;
+      // 낙관적 업데이트 전 원본 상태를 동기적으로 캡처
+      let previousPosts: FeedPostType[] | null = null;
       setPosts((prev) => {
-        const found = prev.find((p) => p.feedId === feedId);
-        if (found) {
-          originalPost = {
-            ...found,
-            isBookmarked: found.isBookmarked,
-            bookmarkCount: found.bookmarkCount,
-          };
-        }
+        previousPosts = prev;
         return prev.map((post) => {
           if (post.feedId !== feedId) return post;
           return {
@@ -147,14 +140,8 @@ const FeedPage = () => {
         queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.all });
       } catch (error) {
         console.error('Failed to toggle bookmark:', error);
-        // 실패 시 저장된 원본 상태로 롤백
-        if (originalPost) {
-          setPosts((prev) =>
-            prev.map((post) => {
-              if (post.feedId !== feedId) return post;
-              return originalPost as typeof post;
-            })
-          );
+        if (previousPosts) {
+          setPosts(previousPosts);
         }
       }
     },
