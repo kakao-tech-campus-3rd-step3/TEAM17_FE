@@ -51,11 +51,19 @@ const FeedDetailData = () => {
   // 작성자 확인: 현재 사용자와 피드 작성자 비교
   const isAuthor = currentUser?.userId === feed?.author.userId;
 
-  const [localFeed, setLocalFeed] = useState<FeedDetail>(feed);
+  const [localFeed, setLocalFeed] = useState<FeedDetail>({
+    ...feed,
+    comments: feed?.comments || [],
+  });
   const [isLikersModalOpen, setIsLikersModalOpen] = useState(false);
 
   useEffect(() => {
-    setLocalFeed(feed);
+    if (feed) {
+      setLocalFeed({
+        ...feed,
+        comments: feed.comments || [],
+      });
+    }
   }, [feed]);
 
   const handleBack = () => {
@@ -134,7 +142,7 @@ const FeedDetailData = () => {
   const handleLikeComment = (commentId: number, isLiked: boolean, likeCount: number) => {
     setLocalFeed((prev) => ({
       ...prev,
-      comments: prev.comments.map((comment) =>
+      comments: (prev.comments || []).map((comment) =>
         comment.commentId === commentId ? { ...comment, isLiked, likeCount } : comment
       ),
     }));
@@ -143,7 +151,7 @@ const FeedDetailData = () => {
   const handleLikeReply = (replyId: number, isLiked: boolean, likeCount: number) => {
     setLocalFeed((prev) => ({
       ...prev,
-      comments: prev.comments.map((comment) => ({
+      comments: (prev.comments || []).map((comment) => ({
         ...comment,
         replies:
           comment.replies?.map((reply) => {
@@ -207,7 +215,7 @@ const FeedDetailData = () => {
 
         <BottomSection>
           <CommentSection
-            comments={localFeed.comments}
+            comments={localFeed.comments || []}
             feedId={localFeed.feedId}
             onAddComment={handleAddComment}
             onAddReply={handleAddReply}
