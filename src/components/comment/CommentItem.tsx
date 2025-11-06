@@ -71,7 +71,11 @@ const CommentItem: React.FC<CommentItemProps> = ({
           <CommentAction onClick={handleLike}>
             <Heart size={14} fill={comment.isLiked ? 'currentColor' : 'none'} />
           </CommentAction>
-          <CommentLikeCount>{comment.likeCount}</CommentLikeCount>
+          <CommentLikeCount>
+            {typeof comment.likeCount === 'number' && !isNaN(comment.likeCount)
+              ? comment.likeCount
+              : 0}
+          </CommentLikeCount>
           <ReplyButton onClick={handleStartReply}>
             <ReplyIcon size={12} style={{ marginRight: '4px' }} />
             답글 달기

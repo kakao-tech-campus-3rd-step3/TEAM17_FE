@@ -2,8 +2,8 @@ import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from 'rea
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Share, Bookmark, Tag } from 'lucide-react';
 import defaultAvatar from '@/assets/icon-smile.svg';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { fetchStarterPackById } from '@/api/starterPackApi';
+import { useSuspenseQuery, useQueryClient } from '@tanstack/react-query';
+import { fetchStarterPackById, togglePackCommentLike } from '@/api/starterPackApi';
 import type { StarterPack } from '@/types/StarterPack';
 import type { Comment, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import CommentSection from '@/components/comment/CommentSection';
@@ -12,6 +12,7 @@ import {
   usePackCommentActions,
   useStarterPackLike,
 } from '@/hooks/useStarterPacks';
+import { QUERY_KEYS } from '@/utils/queryKeys';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
 import {
@@ -47,6 +48,7 @@ import {
 const StarterPackDetailData = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const packId = Number(id);
   if (!id || isNaN(packId)) {
@@ -54,7 +56,7 @@ const StarterPackDetailData = () => {
   }
 
   const { data: displayPack } = useSuspenseQuery<StarterPack>({
-    queryKey: ['starterPack', packId],
+    queryKey: QUERY_KEYS.starterPacks.detail(packId),
     queryFn: () => fetchStarterPackById(packId),
     staleTime: 5 * 60 * 1000,
   });
@@ -93,14 +95,49 @@ const StarterPackDetailData = () => {
   }, [comments, currentCommentsKey]);
 
   const handleLikeComment = useCallback(
-    (commentId: number, isLiked: boolean, likeCount: number) => {
+    async (commentId: number, isLiked: boolean, likeCount: number) => {
+      // 낙관적 업데이트
+      const oldIsLiked = isLiked;
+      const oldLikeCount = likeCount;
+      const newIsLiked = !isLiked;
+      const newLikeCount = newIsLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
+
       setLocalComments((prev) =>
         prev.map((comment) =>
-          comment.commentId === commentId ? { ...comment, isLiked, likeCount } : comment
+          comment.commentId === commentId
+            ? { ...comment, isLiked: newIsLiked, likeCount: newLikeCount }
+            : comment
         )
       );
+
+      try {
+        // API 호출
+        const result = await togglePackCommentLike(commentId);
+        // 서버 응답으로 업데이트
+        setLocalComments((prev) =>
+          prev.map((comment) =>
+            comment.commentId === commentId
+              ? { ...comment, isLiked: result.isLiked, likeCount: result.likeCount }
+              : comment
+          )
+        );
+        // 댓글 목록 캐시 무효화하여 서버 데이터와 동기화
+        await queryClient.invalidateQueries({
+          queryKey: [...QUERY_KEYS.starterPacks.detail(packId), 'comments'],
+        });
+      } catch (error) {
+        // 실패 시 롤백
+        setLocalComments((prev) =>
+          prev.map((comment) =>
+            comment.commentId === commentId
+              ? { ...comment, isLiked: oldIsLiked, likeCount: oldLikeCount }
+              : comment
+          )
+        );
+        console.error('Failed to toggle comment like:', error);
+      }
     },
-    []
+    [packId, queryClient]
   );
 
   const handleLikeReply = useCallback((replyId: number, isLiked: boolean, likeCount: number) => {

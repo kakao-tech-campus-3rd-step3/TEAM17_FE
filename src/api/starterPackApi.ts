@@ -1,4 +1,5 @@
 import axiosInstance from './axiosInstance';
+import { ensureCsrfToken } from '@/utils/csrf';
 import type {
   StarterPack,
   StarterPackResponse,
@@ -231,6 +232,22 @@ export const deletePackComment = async (commentId: number): Promise<void> => {
     await axiosInstance.delete(`/api/starterPack/comments/${commentId}`);
   } catch (error) {
     console.error(`Failed to delete comment ${commentId}:`, error);
+    throw error;
+  }
+};
+
+// 스타터팩 댓글 좋아요 토글
+export const togglePackCommentLike = async (
+  commentId: number
+): Promise<{ likeCount: number; isLiked: boolean }> => {
+  try {
+    await ensureCsrfToken();
+    const response = await axiosInstance.post<{ likeCount: number; isLiked: boolean }>(
+      `/api/starterPack/comments/${commentId}/like`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to toggle like for pack comment ${commentId}:`, error);
     throw error;
   }
 };

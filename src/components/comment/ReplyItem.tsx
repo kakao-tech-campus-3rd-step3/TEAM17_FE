@@ -48,7 +48,9 @@ const ReplyItem: React.FC<ReplyItemProps> = ({ reply, commentId, onLike, onStart
           <ReplyAction onClick={handleLike}>
             <Heart size={12} fill={reply.isLiked ? 'currentColor' : 'none'} />
           </ReplyAction>
-          <ReplyLikeCount>{reply.likeCount}</ReplyLikeCount>
+          <ReplyLikeCount>
+            {typeof reply.likeCount === 'number' && !isNaN(reply.likeCount) ? reply.likeCount : 0}
+          </ReplyLikeCount>
           <ReplyButton onClick={handleStartReply}>
             <ReplyIcon size={10} style={{ marginRight: '4px' }} />
             답글 달기

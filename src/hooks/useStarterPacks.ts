@@ -11,6 +11,7 @@ import {
   createPackComment,
   updatePackComment,
   deletePackComment,
+  togglePackCommentLike,
 } from '@/api/starterPackApi';
 import { QUERY_KEYS } from '@/utils/queryKeys';
 import { parseAxiosError, createUserFriendlyMessage } from '@/utils/errorHandling';
@@ -21,6 +22,7 @@ import type {
   LikeStarterPackResponse,
   BookmarkStarterPackResponse,
   PackCommentResponse,
+  PagePackCommentResponse,
 } from '@/types/StarterPack';
 import type { Comment } from '@/types/Feed';
 
@@ -611,5 +613,73 @@ export const usePackCommentActions = (packId: number) => {
     loading,
     error,
     clearError,
+  };
+};
+
+// 스타터팩 댓글 좋아요 관리 훅
+export const usePackCommentLike = (packId: number, commentId: number) => {
+  const queryClient = useQueryClient();
+
+  const toggleLikeMutation = useMutation({
+    mutationFn: () => togglePackCommentLike(commentId),
+    onMutate: async () => {
+      await queryClient.cancelQueries({
+        queryKey: [...QUERY_KEYS.starterPacks.detail(packId), 'comments'],
+      });
+
+      // 낙관적 업데이트를 위한 이전 댓글 데이터 저장
+      const previousComments = queryClient.getQueryData<PagePackCommentResponse | undefined>([
+        ...QUERY_KEYS.starterPacks.detail(packId),
+        'comments',
+      ]);
+
+      return { previousComments };
+    },
+    onSuccess: (result) => {
+      // 댓글 목록 캐시 업데이트
+      queryClient.setQueriesData(
+        { queryKey: [...QUERY_KEYS.starterPacks.detail(packId), 'comments'] },
+        (old: PagePackCommentResponse | undefined) => {
+          if (!old?.content) return old;
+          return {
+            ...old,
+            content: old.content.map((comment: PackCommentResponse) =>
+              comment.id === commentId
+                ? { ...comment, likeCount: result.likeCount, isLiked: result.isLiked }
+                : comment
+            ),
+          };
+        }
+      );
+    },
+    onError: (_, __, context) => {
+      // 실패 시 이전 상태로 롤백
+      if (context?.previousComments) {
+        queryClient.setQueryData(
+          [...QUERY_KEYS.starterPacks.detail(packId), 'comments'],
+          context.previousComments
+        );
+      }
+      // 댓글 목록 무효화하여 서버 데이터로 복구
+      queryClient.invalidateQueries({
+        queryKey: [...QUERY_KEYS.starterPacks.detail(packId), 'comments'],
+      });
+    },
+  });
+
+  const toggleLike = () => {
+    if (toggleLikeMutation.isPending) return;
+    toggleLikeMutation.mutate();
+  };
+
+  return {
+    toggleLike,
+    loading: toggleLikeMutation.isPending,
+    error: toggleLikeMutation.error
+      ? createUserFriendlyMessage(
+          parseAxiosError(toggleLikeMutation.error),
+          '댓글 좋아요 처리에 실패했습니다.'
+        )
+      : null,
   };
 };
