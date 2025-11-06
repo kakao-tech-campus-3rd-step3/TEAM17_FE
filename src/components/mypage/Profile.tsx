@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUser';
+import { useMyPage } from '@/hooks/useMyPageContext';
 import defaultProfile from '@/assets/defaultProfile.png';
 import icongrid from '@/assets/icon-grid.svg';
 import iconsmile from '@/assets/icon-smile.svg';
@@ -25,6 +26,7 @@ import ProfileEditModal from '@/components/mypage/ProfileEditModal';
 
 const Profile = () => {
   const { user } = useAuth();
+  const { isOwner } = useMyPage(); 
   const userId = user?.userId;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: profile, isLoading, isError } = useUserProfile(userId);
@@ -50,9 +52,12 @@ const Profile = () => {
           </RowContainer>
           <SubInfo>프로필 정보를 불러오지 못했습니다.</SubInfo>
         </InfoContainer>
-        <ButtonWrapper>
-          <EditButton onClick={() => setIsModalOpen(true)}>정보 수정</EditButton>
-        </ButtonWrapper>
+
+        {isOwner && (
+          <ButtonWrapper>
+            <EditButton onClick={() => setIsModalOpen(true)}>정보 수정</EditButton>
+          </ButtonWrapper>
+        )}
       </Container>
     );
   }
@@ -97,12 +102,14 @@ const Profile = () => {
           </RowContainer>
         </InfoContainer>
 
-        <ButtonWrapper>
-          <EditButton onClick={() => setIsModalOpen(true)}>정보 수정</EditButton>
-        </ButtonWrapper>
+        {isOwner && (
+          <ButtonWrapper>
+            <EditButton onClick={() => setIsModalOpen(true)}>정보 수정</EditButton>
+          </ButtonWrapper>
+        )}
       </Container>
 
-      {isModalOpen && (
+      {isOwner && isModalOpen && (
         <ProfileEditModal profile={profile} userId={userId} onClose={() => setIsModalOpen(false)} />
       )}
     </>
