@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, MessageSquare, Share, Bookmark } from 'lucide-react';
+import { Heart, MessageSquare, Share, Bookmark, Edit, Trash2 } from 'lucide-react';
 import type { FeedDetail } from '@/types/Feed';
 import { formatFeedDate } from '@/utils/date';
 import { tokens } from '@/styles/tokens';
@@ -18,6 +18,9 @@ import {
   ActionButton,
   HashtagSection,
   Hashtag,
+  OwnerActions,
+  OwnerButton,
+  OwnerDeleteButton,
 } from '@/components/feed/FeedInfoSection.styles';
 
 interface FeedInfoSectionProps {
@@ -26,6 +29,9 @@ interface FeedInfoSectionProps {
   onShare: () => void;
   onBookmark: () => void;
   onOpenLikers?: () => void;
+  isAuthor?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({
@@ -34,6 +40,9 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({
   onShare,
   onBookmark,
   onOpenLikers,
+  isAuthor = false,
+  onEdit,
+  onDelete,
 }) => {
   const handleLikeCountClick = () => {
     if (onOpenLikers && feed.likeCount > 0) {
@@ -112,6 +121,19 @@ const FeedInfoSection: React.FC<FeedInfoSectionProps> = ({
       </ActionButtons>
 
       <PostDate>{formatFeedDate(feed.createdAt)}</PostDate>
+
+      {isAuthor && (
+        <OwnerActions>
+          <OwnerButton type="button" onClick={onEdit} aria-label="수정하기">
+            <Edit size={18} />
+            수정
+          </OwnerButton>
+          <OwnerDeleteButton type="button" onClick={onDelete} aria-label="삭제하기">
+            <Trash2 size={18} />
+            삭제
+          </OwnerDeleteButton>
+        </OwnerActions>
+      )}
     </InfoContainer>
   );
 };

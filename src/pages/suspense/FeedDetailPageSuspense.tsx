@@ -1,7 +1,6 @@
 import { Suspense, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { Edit, Trash2 } from 'lucide-react';
 import FeedMediaSection from '@/components/feed/FeedMediaSection';
 import FeedInfoSection from '@/components/feed/FeedInfoSection';
 import CommentSection from '@/components/comment/CommentSection';
@@ -24,9 +23,6 @@ import {
   LeftColumn,
   RightColumn,
   BottomSection,
-  ActionButtons,
-  ActionButton,
-  DeleteButton,
 } from '@/pages/FeedDetailPage.styles';
 
 const FeedDetailData = () => {
@@ -226,19 +222,10 @@ const FeedDetailData = () => {
               onShare={handleShare}
               onBookmark={handleBookmark}
               onOpenLikers={() => setIsLikersModalOpen(true)}
+              isAuthor={isAuthor}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
-            {isAuthor && (
-              <ActionButtons>
-                <ActionButton onClick={handleEdit} type="button" aria-label="수정하기">
-                  <Edit size={20} />
-                  수정하기
-                </ActionButton>
-                <DeleteButton onClick={handleDelete} type="button" aria-label="삭제하기">
-                  <Trash2 size={20} />
-                  삭제하기
-                </DeleteButton>
-              </ActionButtons>
-            )}
           </RightColumn>
         </TopSection>
 
