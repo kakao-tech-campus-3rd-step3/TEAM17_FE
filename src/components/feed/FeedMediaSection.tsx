@@ -106,7 +106,9 @@ const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({
             />
           </EngagementIcon>
           <EngagementCount onClick={handleLikeCountClick} $clickable={feed.likeCount > 0}>
-            {feed.likeCount}
+            {typeof feed.likeCount === 'number' && !isNaN(feed.likeCount)
+              ? feed.likeCount.toLocaleString()
+              : '0'}
           </EngagementCount>
         </EngagementItem>
         <EngagementItem>

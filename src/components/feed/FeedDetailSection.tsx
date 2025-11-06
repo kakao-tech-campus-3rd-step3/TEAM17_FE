@@ -123,7 +123,11 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
               color={tokens.colors.orange.primary}
             />
           </EngagementIcon>
-          <EngagementCount>{feed.likeCount}</EngagementCount>
+          <EngagementCount>
+            {typeof feed.likeCount === 'number' && !isNaN(feed.likeCount)
+              ? feed.likeCount.toLocaleString()
+              : '0'}
+          </EngagementCount>
         </EngagementItem>
         <EngagementItem>
           <EngagementIcon>

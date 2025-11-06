@@ -1,5 +1,5 @@
 import { Heart, MessageSquare, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
-import { useState, useCallback, memo } from 'react';
+import { useState, useCallback, memo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { FeedPost as FeedPostType } from '@/types/Feed';
 import { tokens } from '@/styles/tokens';
@@ -35,13 +35,38 @@ interface FeedPostProps {
 const FeedPost = ({ post, onLike, onBookmark }: FeedPostProps) => {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(post.isLiked);
-  const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
+  const [likeCount, setLikeCount] = useState(() => {
+    const count = post.likeCount;
+    return typeof count === 'number' && !isNaN(count) ? count : 0;
+  });
   const [isBookmarked, setIsBookmarked] = useState(
     (post as typeof post & { isBookmarked?: boolean }).isBookmarked ?? false
   );
-  const [bookmarkCount, setBookmarkCount] = useState(
-    (post as typeof post & { bookmarkCount?: number }).bookmarkCount ?? 0
-  );
+  const [bookmarkCount, setBookmarkCount] = useState(() => {
+    const count = (post as typeof post & { bookmarkCount?: number }).bookmarkCount;
+    return typeof count === 'number' && !isNaN(count) ? count : 0;
+  });
+
+  useEffect(() => {
+    const newLikeCount = post.likeCount;
+    if (typeof newLikeCount === 'number' && !isNaN(newLikeCount)) {
+      setLikeCount(newLikeCount);
+    }
+    setIsLiked(post.isLiked);
+
+    const postWithBookmark = post as typeof post & {
+      bookmarkCount?: number;
+      isBookmarked?: boolean;
+    };
+    const newBookmarkCount = postWithBookmark.bookmarkCount;
+    if (typeof newBookmarkCount === 'number' && !isNaN(newBookmarkCount)) {
+      setBookmarkCount(newBookmarkCount);
+    }
+    const newIsBookmarked = postWithBookmark.isBookmarked;
+    if (typeof newIsBookmarked === 'boolean') {
+      setIsBookmarked(newIsBookmarked);
+    }
+  }, [post]);
 
   const handleLike = useCallback(async () => {
     const oldIsLiked = isLiked;
@@ -148,7 +173,9 @@ const FeedPost = ({ post, onLike, onBookmark }: FeedPostProps) => {
               color={tokens.colors.orange.primary}
             />
           </EngagementIcon>
-          <EngagementCount>{likeCount}</EngagementCount>
+          <EngagementCount>
+            {typeof likeCount === 'number' && !isNaN(likeCount) ? likeCount.toLocaleString() : '0'}
+          </EngagementCount>
         </EngagementItem>
         <EngagementItem onClick={handlePostClick}>
           <EngagementIcon role="button" aria-label="댓글 달기">
