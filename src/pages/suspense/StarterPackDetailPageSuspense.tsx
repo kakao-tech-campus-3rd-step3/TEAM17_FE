@@ -14,6 +14,7 @@ import {
   useStarterPackBookmark,
 } from '@/hooks/useStarterPacks';
 import { useAuth } from '@/hooks/useAuth';
+import { formatFeedDate } from '@/utils/date';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
 import {
@@ -30,6 +31,9 @@ import {
   MediaImage,
   InfoSection,
   StarterPackHeader,
+  UserInfo,
+  Avatar,
+  Username,
   StarterPackTitle,
   StarterPackDescription,
   CategoryTag,
@@ -43,6 +47,7 @@ import {
   ProductCard,
   ProductImage,
   ProductName,
+  TimeStamp,
   ErrorStateContainer,
 } from '@/pages/StarterPackDetailPage.styles';
 
@@ -252,8 +257,17 @@ const StarterPackDetailData = () => {
           <RightColumn>
             <InfoSection>
               <StarterPackHeader>
-                <StarterPackTitle>{displayPack.name}</StarterPackTitle>
+                <UserInfo>
+                  <Avatar
+                    src={displayPack.authorProfileImageUrl || defaultAvatar}
+                    alt={displayPack.authorNickname || '작성자'}
+                  />
+                  <Username>@{displayPack.authorNickname}</Username>
+                </UserInfo>
               </StarterPackHeader>
+
+              <StarterPackTitle>{displayPack.name}</StarterPackTitle>
+
               <StarterPackDescription>{displayPack.description}</StarterPackDescription>
 
               <CategoryTag>
@@ -269,10 +283,6 @@ const StarterPackDetailData = () => {
                 <StatItem>
                   <MessageSquare size={16} />
                   {displayPack.commentCount || 0}개
-                </StatItem>
-                <StatItem>
-                  <Bookmark size={16} />
-                  {displayPack.bookmarkCount || 0}개
                 </StatItem>
               </StatsSection>
 
@@ -299,6 +309,12 @@ const StarterPackDetailData = () => {
                   북마크
                 </ActionButton>
               </ActionButtons>
+
+              {(displayPack as StarterPack & { createdAt?: string }).createdAt && (
+                <TimeStamp>
+                  {formatFeedDate((displayPack as StarterPack & { createdAt?: string }).createdAt!)}
+                </TimeStamp>
+              )}
             </InfoSection>
           </RightColumn>
         </TopSection>
