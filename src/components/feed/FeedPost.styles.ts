@@ -61,9 +61,10 @@ export const PostImage = styled.img`
 export const PostActions = styled.div`
   display: flex;
   align-items: center;
-  padding: 0.375rem 1rem 0.5rem;
+  padding: 0.75rem 1rem;
   gap: 1.25rem;
   border-bottom: 1px solid ${tokens.colors.line.lightGray};
+  margin-bottom: 0.75rem;
 `;
 
 export const EngagementItem = styled.div`
@@ -137,15 +138,17 @@ export const LikesCount = styled.div`
   font-weight: 600;
   font-size: 0.875rem;
   color: ${tokens.colors.text.darkGray};
-  padding: 0 1rem 0.5rem;
+  padding: 0 1rem;
   text-align: left;
+  margin-bottom: 0.75rem;
 `;
 
 export const Caption = styled.div`
-  padding: 0 1rem 0.5rem;
+  padding: 0 1rem;
   font-size: 0.875rem;
-  line-height: 1.4;
+  line-height: 1.5;
   color: ${tokens.colors.text.darkGray};
+  margin-bottom: 0.75rem;
 
   ${Username} {
     font-weight: 600;
@@ -180,7 +183,7 @@ export const CommentsCount = styled.div`
 `;
 
 export const TimeStamp = styled.div`
-  padding: 0 1rem 0.75rem;
+  padding: 0 1rem 1rem;
   font-size: 0.625rem;
   color: ${tokens.colors.text.mediumGray};
   text-transform: uppercase;
@@ -191,49 +194,26 @@ export const CategoryTag = styled.div`
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  padding: 0 1rem 0.5rem;
+  padding: 0 1rem;
   font-size: 0.75rem;
   color: ${tokens.colors.orange.primary};
   font-weight: 500;
+  margin-bottom: 0.5rem;
 `;
 
-export const FeedTypeTag = styled.div<{ $feedType: string }>`
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  margin: 0 1rem 0.5rem;
-  font-size: 0.625rem;
-  font-weight: 600;
-  border-radius: 0.25rem;
+export const FeedTypeTag = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  margin: 0 1rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: ${tokens.colors.text.mediumGray};
+  background: #f3f4f6;
+  border: 1px solid ${tokens.colors.line.lightGray};
   text-transform: uppercase;
-  letter-spacing: 0.03125rem;
-  background-color: ${(props) => {
-    switch (props.$feedType) {
-      case 'INFO':
-        return '#e3f2fd';
-      case 'REVIEW':
-        return '#f3e5f5';
-      case 'QUESTION':
-        return '#fff3e0';
-      case 'TIP':
-        return '#e8f5e8';
-      default:
-        return '#f5f5f5';
-    }
-  }};
-  color: ${(props) => {
-    switch (props.$feedType) {
-      case 'INFO':
-        return '#1976d2';
-      case 'REVIEW':
-        return '#7b1fa2';
-      case 'QUESTION':
-        return '#f57c00';
-      case 'TIP':
-        return '#388e3c';
-      default:
-        return '#666';
-    }
-  }};
 `;
 
 export const ProductsSection = styled.div`

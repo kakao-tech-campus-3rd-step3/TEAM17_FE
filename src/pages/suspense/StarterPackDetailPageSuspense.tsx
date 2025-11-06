@@ -41,6 +41,8 @@ import {
   StarterPackTitle,
   StarterPackDescription,
   CategoryTag,
+  HashtagSection,
+  Hashtag,
   StatsSection,
   StatItem,
   ActionButtons,
@@ -369,6 +371,14 @@ const StarterPackDetailData = () => {
                 <Tag size={16} />
                 {displayPack.categoryName}
               </CategoryTag>
+
+              {displayPack.hashtags && displayPack.hashtags.length > 0 && (
+                <HashtagSection>
+                  {displayPack.hashtags.map((tag) => (
+                    <Hashtag key={tag.id}>#{tag.hashtagName}</Hashtag>
+                  ))}
+                </HashtagSection>
+              )}
 
               <StatsSection>
                 <StatItem>
