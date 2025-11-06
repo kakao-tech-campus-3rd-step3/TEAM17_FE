@@ -4,23 +4,25 @@ import { tokens } from '@/styles/tokens';
 export const InfoContainer = styled.div`
   background: ${tokens.colors.background.card};
   border-radius: 0.5rem;
-  padding: 1.25rem;
+  padding: 1.75rem 1.5rem;
   box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
   text-align: left;
   height: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 `;
 
 export const UserProfile = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  gap: 0.75rem;
 `;
 
 export const ProfileImage = styled.img`
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  margin-right: 0.75rem;
   object-fit: cover;
   border: 0.125rem solid ${tokens.colors.orange.light};
 `;
@@ -47,9 +49,9 @@ export const UserBio = styled.p`
 
 export const PostContent = styled.div`
   font-size: 1rem;
-  line-height: 1.25;
+  line-height: 1.6;
   color: ${tokens.colors.text.black};
-  margin-bottom: 0.5rem;
+  margin: 0;
   white-space: pre-line;
   text-align: left;
 `;
@@ -57,8 +59,127 @@ export const PostContent = styled.div`
 export const PostDate = styled.div`
   font-size: 0.875rem;
   color: ${tokens.colors.text.lightGray};
-  margin-bottom: 1rem;
   text-align: left;
+`;
+
+export const StatsSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+`;
+
+export const StatItem = styled.div<{ $clickable?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  color: ${tokens.colors.text.mediumGray};
+  cursor: ${(props) => (props.$clickable ? 'pointer' : 'default')};
+  transition: color 0.2s ease;
+
+  &:hover {
+    ${(props) => (props.$clickable ? `color: ${tokens.colors.orange.primary};` : '')}
+  }
+`;
+
+export const ActionButtons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+`;
+
+export const ActionButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.6rem;
+  color: ${tokens.colors.text.darkGray};
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    color: ${tokens.colors.text.mediumGray};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${tokens.colors.orange.primary};
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+`;
+
+export const HashtagSection = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+`;
+
+export const Hashtag = styled.span`
+  background: ${tokens.colors.orange.muted};
+  color: ${tokens.colors.feed.hashtag};
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${tokens.colors.orange.light};
+    color: ${tokens.colors.orange.dark};
+  }
+`;
+
+export const OwnerActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 1.25rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid ${tokens.colors.line.lightGray};
+`;
+
+export const OwnerButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: ${tokens.colors.text.mediumGray};
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background: ${tokens.colors.orange.muted};
+    color: ${tokens.colors.orange.dark};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${tokens.colors.orange.primary};
+    outline-offset: 2px;
+  }
+`;
+
+export const OwnerDeleteButton = styled(OwnerButton)`
+  color: #ef4444;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+  }
 `;
 
 export const ProductSection = styled.div`

@@ -128,7 +128,7 @@ const FeedPost = ({ post, onLike, onBookmark }: FeedPostProps) => {
             src={post.author.profileImageUrl}
             alt={post.author.name}
             onClick={handleProfileClick}
-            style={{ cursor: 'pointer' }} 
+            style={{ cursor: 'pointer' }}
           />
           <Username onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
             @{post.author.name}
@@ -197,7 +197,21 @@ const FeedPost = ({ post, onLike, onBookmark }: FeedPostProps) => {
         {post.category.categoryName}
       </CategoryTag>
 
-      <FeedTypeTag $feedType={post.feedType}>{post.feedType}</FeedTypeTag>
+      {Array.isArray(post.hashtags) && post.hashtags.length > 0 && (
+        <Caption as="div" style={{ color: tokens.colors.orange.primary, marginBottom: '0.75rem' }}>
+          {post.hashtags.map((hashtag) => {
+            const tagName = typeof hashtag === 'string' ? hashtag : hashtag.hashtagName;
+            const tagKey = typeof hashtag === 'string' ? hashtag : hashtag.id;
+            return (
+              <span key={tagKey} style={{ marginRight: '0.5rem', fontWeight: 500 }}>
+                #{tagName}
+              </span>
+            );
+          })}
+        </Caption>
+      )}
+
+      {post.feedType && <FeedTypeTag>{post.feedType}</FeedTypeTag>}
 
       <TimeStamp>{formatTimeAgo(post.createdAt)}</TimeStamp>
     </PostContainer>

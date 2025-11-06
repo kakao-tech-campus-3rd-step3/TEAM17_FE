@@ -120,7 +120,6 @@ const StyleFeedPreview = () => {
         likeCount: feed.likeCount ?? 0,
       };
 
-      // 낙관적 업데이트 (isPending 플래그 설정)
       const newIsLiked = !currentLike.isLiked;
       const newLikeCount = newIsLiked
         ? currentLike.likeCount + 1
