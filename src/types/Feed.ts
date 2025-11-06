@@ -12,6 +12,7 @@ export interface FeedPost {
     categoryId: number;
     categoryName: string;
   };
+  hashtags?: FeedHashtag[] | string[];
   likeCount: number;
   commentCount: number;
   bookmarkCount: number;

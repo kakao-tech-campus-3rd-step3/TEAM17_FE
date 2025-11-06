@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Bookmark } from 'lucide-react';
 import type { FeedDetail } from '@/types/Feed';
-import { tokens } from '@/styles/tokens';
 import {
   MediaContainer,
   ImageCarousel,
@@ -9,27 +7,13 @@ import {
   ImageNavigation,
   ImageCounter,
   ImageNavButton,
-  EngagementSection,
-  EngagementItem,
-  EngagementIcon,
-  EngagementCount,
-  HashtagSection,
-  Hashtag,
 } from '@/components/feed/FeedMediaSection.styles';
 
 interface FeedMediaSectionProps {
   feed: FeedDetail;
-  onLike: (isLiked: boolean, likeCount: number) => void;
-  onBookmark: (isBookmarked: boolean, bookmarkCount: number) => void;
-  onOpenLikers?: () => void;
 }
 
-const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({
-  feed,
-  onLike,
-  onBookmark,
-  onOpenLikers,
-}) => {
+const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({ feed }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // 이미지가 여러 개인 경우를 위한 배열
@@ -41,25 +25,6 @@ const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({
 
   const handleNextImage = () => {
     setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-
-  const handleLike = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onLike(!feed.isLiked, feed.isLiked ? feed.likeCount - 1 : feed.likeCount + 1);
-  };
-
-  const handleLikeCountClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onOpenLikers && feed.likeCount > 0) {
-      onOpenLikers();
-    }
-  };
-
-  const handleBookmark = () => {
-    onBookmark(
-      !feed.isBookmarked,
-      feed.isBookmarked ? feed.bookmarkCount - 1 : feed.bookmarkCount + 1
-    );
   };
 
   return (
@@ -93,52 +58,6 @@ const FeedMediaSection: React.FC<FeedMediaSectionProps> = ({
             )}
           </ImageContainer>
         </ImageCarousel>
-      )}
-
-      <EngagementSection>
-        <EngagementItem>
-          <EngagementIcon onClick={handleLike}>
-            <Heart
-              size={18}
-              strokeWidth={2}
-              fill={feed.isLiked ? tokens.colors.orange.primary : 'none'}
-              color={tokens.colors.orange.primary}
-            />
-          </EngagementIcon>
-          <EngagementCount onClick={handleLikeCountClick} $clickable={feed.likeCount > 0}>
-            {typeof feed.likeCount === 'number' && !isNaN(feed.likeCount)
-              ? feed.likeCount.toLocaleString()
-              : '0'}
-          </EngagementCount>
-        </EngagementItem>
-        <EngagementItem>
-          <EngagementIcon>
-            <MessageCircle size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
-          </EngagementIcon>
-          <EngagementCount>{feed.commentCount}</EngagementCount>
-        </EngagementItem>
-        <EngagementItem onClick={handleBookmark}>
-          <EngagementIcon>
-            <Bookmark
-              size={18}
-              strokeWidth={2}
-              fill={feed.isBookmarked ? tokens.colors.orange.primary : 'none'}
-              color={tokens.colors.orange.primary}
-            />
-          </EngagementIcon>
-          <EngagementCount>{feed.bookmarkCount}</EngagementCount>
-        </EngagementItem>
-      </EngagementSection>
-
-      {/* 해시태그 */}
-      {feed.hashtags && feed.hashtags.length > 0 && (
-        <HashtagSection>
-          {feed.hashtags.map((tag, index) => {
-            const tagName = typeof tag === 'string' ? tag : tag.hashtagName;
-            const tagKey = typeof tag === 'string' ? tag : tag.id;
-            return <Hashtag key={tagKey || index}>#{tagName}</Hashtag>;
-          })}
-        </HashtagSection>
       )}
     </MediaContainer>
   );
