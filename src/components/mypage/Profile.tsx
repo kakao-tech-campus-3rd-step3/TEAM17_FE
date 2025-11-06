@@ -37,8 +37,12 @@ const Profile = () => {
     enabled: !!targetId,
   });
 
-  if (!targetId) {
+  if (!paramId && !user) {
     return <div>로그인이 필요한 서비스입니다.</div>;
+  }
+
+  if (!targetId) {
+    return <div>프로필을 찾을 수 없습니다.</div>;
   }
 
   if (isLoading) return <div>로딩 중...</div>;
@@ -70,8 +74,11 @@ const Profile = () => {
 
   const displayNickname = profile.nickname?.trim() || '정보 없음';
   const displayHobby = profile.hobby?.trim() || '정보 없음';
-  const displayBio = profile.bio?.trim() ? profile.bio : '프로필 정보를 수정해주세요.';
-  const displayImage = profile.profileImageUrl?.trim() ? profile.profileImageUrl : defaultProfile;
+  const displayBio = profile.bio?.trim()
+    ? profile.bio
+    : '프로필 정보를 수정해주세요.';
+  const displayImage =
+    profile.profileImageUrl?.trim() || defaultProfile;
   const displayCount = profile.totalPostCount ?? 0;
   const displayPackCount = profile.packCount ?? 0;
   const displayFeedCount = profile.feedCount ?? 0;
@@ -110,7 +117,9 @@ const Profile = () => {
 
         {isOwner && (
           <ButtonWrapper>
-            <EditButton onClick={() => setIsModalOpen(true)}>정보 수정</EditButton>
+            <EditButton onClick={() => setIsModalOpen(true)}>
+              정보 수정
+            </EditButton>
           </ButtonWrapper>
         )}
       </Container>
