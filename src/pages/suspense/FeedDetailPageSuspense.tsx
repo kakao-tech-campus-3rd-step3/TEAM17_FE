@@ -1,13 +1,12 @@
 import { Suspense, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { Edit, Trash2 } from 'lucide-react';
 import FeedMediaSection from '@/components/feed/FeedMediaSection';
 import FeedInfoSection from '@/components/feed/FeedInfoSection';
 import CommentSection from '@/components/comment/CommentSection';
 import FeedLikersModal from '@/components/feed/FeedLikersModal';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useCommentActions, useFeedBookmark } from '@/hooks/useFeeds';
+import { useCommentActions, useFeedLike, useFeedBookmark } from '@/hooks/useFeeds';
 import { fetchFeedById, deleteFeed } from '@/api/feedApi';
 import { useUser, useAuth } from '@/hooks/useAuth';
 import type { FeedDetail, CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
@@ -24,9 +23,6 @@ import {
   LeftColumn,
   RightColumn,
   BottomSection,
-  ActionButtons,
-  ActionButton,
-  DeleteButton,
 } from '@/pages/FeedDetailPage.styles';
 
 const FeedDetailData = () => {
@@ -47,6 +43,7 @@ const FeedDetailData = () => {
   });
 
   const { addComment } = useCommentActions(feedId);
+  const { toggleLike } = useFeedLike(feedId);
   const { toggleBookmark } = useFeedBookmark(feedId);
   const { isLogin } = useAuth();
 
@@ -96,17 +93,52 @@ const FeedDetailData = () => {
     }
   };
 
-  const handleLike = (isLiked: boolean, likeCount: number) => {
-    setLocalFeed((prev) => ({ ...prev, isLiked, likeCount }));
-
-    queryClient.setQueryData(QUERY_KEYS.feeds.detail(feedId), (old: FeedDetail | undefined) => {
-      if (!old) return old;
-      return { ...old, isLiked, likeCount };
-    });
+  const handleLike = () => {
+    if (!isLogin) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
+    toggleLike();
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleBookmark = (_isBookmarked: boolean, _bookmarkCount: number) => {
+  const handleShare = () => {
+    if (!feed) return;
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: '피드 공유',
+          text: feed.description || '',
+          url: window.location.href,
+        })
+        .catch((error) => {
+          console.error('공유 실패:', error);
+        });
+    } else if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      navigator.clipboard
+        .writeText(window.location.href)
+        .then(() => {
+          alert('링크가 클립보드에 복사되었습니다.');
+        })
+        .catch((error) => {
+          console.error('클립보드 복사 실패:', error);
+          alert('링크 복사에 실패했습니다. 다시 시도해주세요.');
+        });
+    } else {
+      try {
+        window.prompt(
+          '공유 기능을 지원하지 않는 환경입니다. URL을 직접 복사해주세요.',
+          window.location.href
+        );
+      } catch (error) {
+        console.error('URL 안내 중 오류가 발생했습니다:', error);
+        alert(`아래 URL을 직접 복사해주세요:\n${window.location.href}`);
+      }
+    }
+  };
+
+  const handleBookmark = () => {
     if (!isLogin) {
       alert('로그인이 필요한 기능입니다.');
       navigate('/login');
@@ -191,28 +223,20 @@ const FeedDetailData = () => {
       <ContentContainer>
         <TopSection>
           <LeftColumn>
-            <FeedMediaSection
-              feed={localFeed}
-              onLike={handleLike}
-              onBookmark={handleBookmark}
-              onOpenLikers={() => setIsLikersModalOpen(true)}
-            />
+            <FeedMediaSection feed={localFeed} />
           </LeftColumn>
 
           <RightColumn>
-            <FeedInfoSection feed={localFeed} />
-            {isAuthor && (
-              <ActionButtons>
-                <ActionButton onClick={handleEdit} type="button" aria-label="수정하기">
-                  <Edit size={20} />
-                  수정하기
-                </ActionButton>
-                <DeleteButton onClick={handleDelete} type="button" aria-label="삭제하기">
-                  <Trash2 size={20} />
-                  삭제하기
-                </DeleteButton>
-              </ActionButtons>
-            )}
+            <FeedInfoSection
+              feed={localFeed}
+              onLike={handleLike}
+              onShare={handleShare}
+              onBookmark={handleBookmark}
+              onOpenLikers={() => setIsLikersModalOpen(true)}
+              isAuthor={isAuthor}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           </RightColumn>
         </TopSection>
 

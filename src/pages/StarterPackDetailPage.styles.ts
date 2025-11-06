@@ -206,6 +206,28 @@ export const CategoryTag = styled.div`
   margin-bottom: 1rem;
 `;
 
+export const HashtagSection = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+`;
+
+export const Hashtag = styled.span`
+  background: ${tokens.colors.orange.muted};
+  color: ${tokens.colors.feed.hashtag};
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${tokens.colors.orange.light};
+    color: ${tokens.colors.orange.dark};
+  }
+`;
+
 export const StatsSection = styled.div`
   display: flex;
   align-items: center;
@@ -264,6 +286,51 @@ export const DeleteButton = styled(ActionButton)`
   color: #ef4444;
 
   &:hover:not(:disabled) {
+    color: #dc2626;
+  }
+`;
+
+export const OwnerActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid ${tokens.colors.line.lightGray};
+`;
+
+export const OwnerButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: ${tokens.colors.text.mediumGray};
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.4rem;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background: ${tokens.colors.orange.muted};
+    color: ${tokens.colors.orange.dark};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${tokens.colors.orange.primary};
+    outline-offset: 2px;
+  }
+`;
+
+export const OwnerDeleteButton = styled(OwnerButton)`
+  color: #ef4444;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.1);
     color: #dc2626;
   }
 `;
