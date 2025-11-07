@@ -23,17 +23,23 @@ export const CarouselWrapper = styled.div`
   }
 `;
 
-export const Card = styled.div<{ $variant: 'left' | 'right' }>`
+export const Card = styled.div<{ $variant: 'left' | 'right'; $imageUrl?: string }>`
   position: relative;
   flex: 1;
   min-width: 0;
   height: 16rem;
   border-radius: 0.5rem;
   overflow: hidden;
-  background-image: ${({ $variant }) =>
-    $variant === 'left'
+  background-image: ${({ $variant, $imageUrl }) => {
+    if ($imageUrl) {
+      return `url(${$imageUrl})`;
+    }
+    return $variant === 'left'
       ? 'linear-gradient(135deg, #1e3a8a 0%, #581c87 100%)'
-      : 'linear-gradient(135deg, #22d3ee 0%, #2563eb 100%)'};
+      : 'linear-gradient(135deg, #22d3ee 0%, #2563eb 100%)';
+  }};
+  background-size: cover;
+  background-position: center;
   transition: transform 0.3s ease;
 
   @media (max-width: 768px) {

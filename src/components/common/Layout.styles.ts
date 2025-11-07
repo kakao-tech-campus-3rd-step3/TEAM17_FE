@@ -6,6 +6,7 @@ export const LayoutStyle = styled.div`
   margin-inline: auto;
   min-height: 100vh;
   text-align: center;
+  padding: 1.3rem;
 `;
 
 export default LayoutStyle;

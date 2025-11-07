@@ -33,7 +33,7 @@ export const Avatar = styled.img`
 export const Username = styled.span`
   font-weight: 600;
   font-size: 0.875rem;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
 `;
 
 export const MoreButton = styled.button`
@@ -41,7 +41,7 @@ export const MoreButton = styled.button`
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
 
   &:hover {
     background-color: #f5f5f5;
@@ -61,7 +61,7 @@ export const PostImage = styled.img`
 export const PostActions = styled.div`
   display: flex;
   align-items: center;
-  padding: 0.375rem 1rem 0.5rem;
+  padding: 0.75rem 1rem;
   gap: 1.25rem;
   border-bottom: 1px solid ${tokens.colors.line.lightGray};
 `;
@@ -120,11 +120,11 @@ export const ActionButton = styled.button`
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
   transition: color 0.2s ease;
 
   &:hover {
-    color: #8e8e8e;
+    color: ${tokens.colors.text.mediumGray};
   }
 
   &:disabled {
@@ -136,16 +136,16 @@ export const ActionButton = styled.button`
 export const LikesCount = styled.div`
   font-weight: 600;
   font-size: 0.875rem;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
   padding: 0 1rem 0.5rem;
   text-align: left;
 `;
 
 export const Caption = styled.div`
-  padding: 0 1rem 0.5rem;
+  padding: 1rem 1rem 0.75rem;
   font-size: 0.875rem;
-  line-height: 1.4;
-  color: #262626;
+  line-height: 1.6;
+  color: ${tokens.colors.text.darkGray};
 
   ${Username} {
     font-weight: 600;
@@ -171,18 +171,18 @@ export const Tags = styled.div`
 export const CommentsCount = styled.div`
   padding: 0 1rem 0.25rem;
   font-size: 0.875rem;
-  color: #8e8e8e;
+  color: ${tokens.colors.text.mediumGray};
   cursor: pointer;
 
   &:hover {
-    color: #262626;
+    color: ${tokens.colors.text.darkGray};
   }
 `;
 
 export const TimeStamp = styled.div`
   padding: 0 1rem 0.75rem;
   font-size: 0.625rem;
-  color: #8e8e8e;
+  color: ${tokens.colors.text.mediumGray};
   text-transform: uppercase;
   letter-spacing: 0.0125rem;
 `;
@@ -191,16 +191,16 @@ export const CategoryTag = styled.div`
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  padding: 0 1rem 0.5rem;
+  padding: 0.5rem 1rem 0.5rem;
   font-size: 0.75rem;
-  color: #0095f6;
+  color: ${tokens.colors.orange.primary};
   font-weight: 500;
 `;
 
-export const FeedTypeTag = styled.div<{ $feedType: string }>`
+export const FeedTypeTag = styled.div<{ $feedType?: string }>`
   display: inline-block;
   padding: 0.25rem 0.5rem;
-  margin: 0 1rem 0.5rem;
+  margin: 0 1rem 0.75rem;
   font-size: 0.625rem;
   font-weight: 600;
   border-radius: 0.25rem;
@@ -242,7 +242,7 @@ export const ProductsSection = styled.div`
   h4 {
     font-size: 0.75rem;
     font-weight: 600;
-    color: #8e8e8e;
+    color: ${tokens.colors.text.mediumGray};
     margin: 0 0 0.5rem 0;
     text-transform: uppercase;
     letter-spacing: 0.03125rem;
@@ -271,6 +271,6 @@ export const ProductImage = styled.img`
 
 export const ProductName = styled.span`
   font-size: 0.75rem;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
   font-weight: 500;
 `;

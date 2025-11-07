@@ -1,0 +1,1 @@
+export const MY_PAGE_PREVIEW_LIMIT = 6;

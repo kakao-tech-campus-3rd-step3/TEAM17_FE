@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const FooterWrap = styled.footer`
   background-color: #1f2937;
@@ -47,13 +48,30 @@ export const ColumnTitle = styled.h4`
 export const List = styled.ul`
   list-style: none;
   padding-left: 0;
-
+  margin: 0;
   font-size: 0.75rem;
   color: #d1d5db;
   line-height: 1.25rem;
+`;
 
-  & > li + li {
+export const ListItem = styled.li`
+  & + & {
     margin-top: 0.25rem;
+  }
+`;
+
+export const ListLink = styled(Link)`
+  color: #d1d5db;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+
+  &:visited {
+    color: #d1d5db;
   }
 `;
 

@@ -1,5 +1,5 @@
 import { Heart, MessageSquare, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
-import { useState, useCallback, memo } from 'react';
+import { useState, useCallback, memo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { FeedPost as FeedPostType } from '@/types/Feed';
 import { tokens } from '@/styles/tokens';
@@ -20,17 +20,48 @@ import {
   TimeStamp,
   CategoryTag,
   FeedTypeTag,
-} from './FeedPost.styles';
+} from '@/components/feed/FeedPost.styles';
 
 interface FeedPostProps {
   post: FeedPostType;
   onLike?: (feedId: number, isLiked: boolean, likeCount: number) => void | Promise<void>;
+  onBookmark?: (
+    feedId: number,
+    isBookmarked: boolean,
+    bookmarkCount: number
+  ) => void | Promise<void>;
 }
 
-const FeedPost = ({ post, onLike }: FeedPostProps) => {
+const FeedPost = ({ post, onLike, onBookmark }: FeedPostProps) => {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(post.isLiked);
-  const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
+  const [likeCount, setLikeCount] = useState(() => {
+    const count = post.likeCount;
+    return typeof count === 'number' && !isNaN(count) ? count : 0;
+  });
+  const [commentCount, setCommentCount] = useState(() => {
+    const count = post.commentCount;
+    return typeof count === 'number' && !isNaN(count) ? count : 0;
+  });
+  const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked ?? false);
+  const [bookmarkCount, setBookmarkCount] = useState(() => {
+    return typeof post.bookmarkCount === 'number' && !isNaN(post.bookmarkCount)
+      ? post.bookmarkCount
+      : 0;
+  });
+
+  useEffect(() => {
+    setLikeCount(typeof post.likeCount === 'number' && !isNaN(post.likeCount) ? post.likeCount : 0);
+    setIsLiked(post.isLiked ?? false);
+    setCommentCount(
+      typeof post.commentCount === 'number' && !isNaN(post.commentCount) ? post.commentCount : 0
+    );
+
+    setBookmarkCount(
+      typeof post.bookmarkCount === 'number' && !isNaN(post.bookmarkCount) ? post.bookmarkCount : 0
+    );
+    setIsBookmarked(post.isBookmarked ?? false);
+  }, [post]);
 
   const handleLike = useCallback(async () => {
     const oldIsLiked = isLiked;
@@ -52,9 +83,34 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
     }
   }, [isLiked, likeCount, post.feedId, onLike]);
 
+  const handleBookmark = useCallback(async () => {
+    const oldIsBookmarked = isBookmarked;
+    const oldBookmarkCount = bookmarkCount;
+    const newIsBookmarked = !isBookmarked;
+    const newBookmarkCount = newIsBookmarked ? bookmarkCount + 1 : Math.max(0, bookmarkCount - 1);
+
+    setIsBookmarked(newIsBookmarked);
+    setBookmarkCount(newBookmarkCount);
+
+    if (onBookmark) {
+      try {
+        await onBookmark(post.feedId, newIsBookmarked, newBookmarkCount);
+      } catch (error) {
+        setIsBookmarked(oldIsBookmarked);
+        setBookmarkCount(oldBookmarkCount);
+        console.error('Failed to toggle bookmark:', error);
+      }
+    }
+  }, [isBookmarked, bookmarkCount, post.feedId, onBookmark]);
+
   const handlePostClick = useCallback(() => {
     navigate(`/feed/${post.feedId}`);
   }, [navigate, post.feedId]);
+
+  //프로필 클릭 시 마이페이지 이동
+  const handleProfileClick = useCallback(() => {
+    navigate(`/mypage/${post.author.userId}`, { state: { hideScrap: true } });
+  }, [navigate, post.author.userId]);
 
   const formatTimeAgo = useCallback((dateString: string): string => {
     const now = new Date();
@@ -63,21 +119,11 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
 
     const rtf = new Intl.RelativeTimeFormat('ko', { numeric: 'auto' });
 
-    if (diffInSeconds < 60) {
-      return rtf.format(-diffInSeconds, 'second');
-    }
-    if (diffInSeconds < 3600) {
-      return rtf.format(-Math.floor(diffInSeconds / 60), 'minute');
-    }
-    if (diffInSeconds < 86400) {
-      return rtf.format(-Math.floor(diffInSeconds / 3600), 'hour');
-    }
-    if (diffInSeconds < 2592000) {
-      return rtf.format(-Math.floor(diffInSeconds / 86400), 'day');
-    }
-    if (diffInSeconds < 31536000) {
-      return rtf.format(-Math.floor(diffInSeconds / 2592000), 'month');
-    }
+    if (diffInSeconds < 60) return rtf.format(-diffInSeconds, 'second');
+    if (diffInSeconds < 3600) return rtf.format(-Math.floor(diffInSeconds / 60), 'minute');
+    if (diffInSeconds < 86400) return rtf.format(-Math.floor(diffInSeconds / 3600), 'hour');
+    if (diffInSeconds < 2592000) return rtf.format(-Math.floor(diffInSeconds / 86400), 'day');
+    if (diffInSeconds < 31536000) return rtf.format(-Math.floor(diffInSeconds / 2592000), 'month');
     return rtf.format(-Math.floor(diffInSeconds / 31536000), 'year');
   }, []);
 
@@ -85,8 +131,15 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
     <PostContainer>
       <PostHeader>
         <UserInfo>
-          <Avatar src={post.author.profileImageUrl} alt={post.author.name} />
-          <Username>@{post.author.name}</Username>
+          <Avatar
+            src={post.author.profileImageUrl}
+            alt={post.author.name}
+            onClick={handleProfileClick}
+            style={{ cursor: 'pointer' }}
+          />
+          <Username onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
+            @{post.author.name}
+          </Username>
         </UserInfo>
         <MoreButton>
           <MoreHorizontal size={20} />
@@ -117,16 +170,32 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
               color={tokens.colors.orange.primary}
             />
           </EngagementIcon>
-          <EngagementCount>{likeCount}</EngagementCount>
+          <EngagementCount>
+            {typeof likeCount === 'number' && !isNaN(likeCount) ? likeCount.toLocaleString() : '0'}
+          </EngagementCount>
         </EngagementItem>
         <EngagementItem onClick={handlePostClick}>
           <EngagementIcon role="button" aria-label="댓글 달기">
             <MessageSquare size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
           </EngagementIcon>
-          <EngagementCount>0</EngagementCount>
+          <EngagementCount>
+            {typeof commentCount === 'number' && !isNaN(commentCount)
+              ? commentCount.toLocaleString()
+              : '0'}
+          </EngagementCount>
         </EngagementItem>
-        <BookmarkButton type="button" aria-label="저장">
-          <Bookmark size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
+        <BookmarkButton
+          type="button"
+          onClick={handleBookmark}
+          aria-label={isBookmarked ? '북마크 취소' : '북마크'}
+          aria-pressed={isBookmarked}
+        >
+          <Bookmark
+            size={18}
+            strokeWidth={2}
+            fill={isBookmarked ? tokens.colors.orange.primary : 'none'}
+            color={tokens.colors.orange.primary}
+          />
         </BookmarkButton>
       </PostActions>
 
@@ -139,7 +208,21 @@ const FeedPost = ({ post, onLike }: FeedPostProps) => {
         {post.category.categoryName}
       </CategoryTag>
 
-      <FeedTypeTag $feedType={post.feedType}>{post.feedType}</FeedTypeTag>
+      {Array.isArray(post.hashtags) && post.hashtags.length > 0 && (
+        <Caption as="div" style={{ color: tokens.colors.orange.primary, marginBottom: '0.75rem' }}>
+          {post.hashtags.map((hashtag) => {
+            const tagName = typeof hashtag === 'string' ? hashtag : hashtag.hashtagName;
+            const tagKey = typeof hashtag === 'string' ? hashtag : hashtag.id;
+            return (
+              <span key={tagKey} style={{ marginRight: '0.5rem', fontWeight: 500 }}>
+                #{tagName}
+              </span>
+            );
+          })}
+        </Caption>
+      )}
+
+      {post.feedType && <FeedTypeTag>{post.feedType}</FeedTypeTag>}
 
       <TimeStamp>{formatTimeAgo(post.createdAt)}</TimeStamp>
     </PostContainer>

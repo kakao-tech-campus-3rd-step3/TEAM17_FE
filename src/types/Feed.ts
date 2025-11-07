@@ -12,8 +12,12 @@ export interface FeedPost {
     categoryId: number;
     categoryName: string;
   };
+  hashtags?: FeedHashtag[] | string[];
   likeCount: number;
+  commentCount: number;
+  bookmarkCount: number;
   isLiked: boolean;
+  isBookmarked: boolean;
   createdAt: string;
 }
 
@@ -80,6 +84,8 @@ export interface Comment {
   isLiked: boolean;
   parentId?: number | null;
   replies?: Comment[];
+  isMine?: boolean;
+  isDeleted?: boolean;
 }
 
 export interface Reply extends Comment {
@@ -141,14 +147,16 @@ export interface FeedProduct {
   linkUrl?: string;
 }
 
+export interface FeedHashtag {
+  id: number;
+  hashtagName: string;
+}
+
 export interface FeedDetail extends Omit<FeedPost, 'imageUrl' | 'author'> {
   imageUrl: string[];
   author: Member;
   comments: Comment[];
-  commentCount: number;
-  bookmarkCount: number;
-  isBookmarked: boolean;
-  hashtags: string[];
+  hashtags: FeedHashtag[] | string[];
   products?: FeedProduct[];
 }
 

@@ -24,7 +24,11 @@ export interface StarterPack {
   bookmarkCount: number;
   commentCount: number;
   authorNickname: string;
+  authorProfileImageUrl?: string;
   memberId: number;
+  isBookmarked?: boolean;
+  isLiked?: boolean;
+  createdAt?: string;
 }
 
 export interface StarterPackResponse {
@@ -123,6 +127,8 @@ export interface PackCommentResponse {
   updatedAt: string;
   author: AuthorInfo;
   isMine: boolean;
+  likeCount: number;
+  isLiked: boolean;
 }
 
 // 스타터팩 댓글 목록 응답

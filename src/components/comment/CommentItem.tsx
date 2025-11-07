@@ -2,8 +2,8 @@ import React from 'react';
 import { Heart, Reply as ReplyIcon, Flag } from 'lucide-react';
 import type { Comment } from '@/types/Feed';
 import { formatKoreanDate } from '@/utils/date';
-import ReplyList from './ReplyList';
-import ReplyInput from './ReplyInput';
+import ReplyList from '@/components/comment/ReplyList';
+import ReplyInput from '@/components/comment/ReplyInput';
 import {
   CommentItem as StyledCommentItem,
   CommentAuthor,
@@ -17,7 +17,7 @@ import {
   CommentLikeCount,
   ReplyButton,
   ReportButton,
-} from './CommentSection.styles';
+} from '@/components/comment/CommentSection.styles';
 
 interface CommentItemProps {
   comment: Comment;
@@ -71,7 +71,11 @@ const CommentItem: React.FC<CommentItemProps> = ({
           <CommentAction onClick={handleLike}>
             <Heart size={14} fill={comment.isLiked ? 'currentColor' : 'none'} />
           </CommentAction>
-          <CommentLikeCount>{comment.likeCount}</CommentLikeCount>
+          <CommentLikeCount>
+            {typeof comment.likeCount === 'number' && !isNaN(comment.likeCount)
+              ? comment.likeCount
+              : 0}
+          </CommentLikeCount>
           <ReplyButton onClick={handleStartReply}>
             <ReplyIcon size={12} style={{ marginRight: '4px' }} />
             답글 달기

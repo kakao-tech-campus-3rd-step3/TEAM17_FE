@@ -1,15 +1,13 @@
 import React from 'react';
-import { Wrap, Item, IconBox, Icon, Label } from './Category.styles';
+import { Wrap, Item, IconBox, Icon, Label } from '@/components/category/Category.styles';
 
 import ShoppingCartIcon from '@/assets/icon-shopping-cart.svg';
 import CameraIcon from '@/assets/icon-camera.svg';
-import UsersIcon from '@/assets/icon-users.svg';
 import SmileIcon from '@/assets/icon-smile.svg';
 
 const NAV = [
   { to: '/starterpack', label: '취미팩 보러가기', icon: ShoppingCartIcon },
   { to: '/feed', label: '피드', icon: CameraIcon },
-  { to: '/party', label: '파티원 모집', icon: UsersIcon },
   { to: '/mypage', label: '마이페이지', icon: SmileIcon },
 ] as const;
 

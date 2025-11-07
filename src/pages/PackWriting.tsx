@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import {
   TotalContainer,
   LayoutLine,
@@ -27,6 +29,8 @@ const PackWriting = () => {
   const [price, setPrice] = useState<number | null>(null);
   const [items, setItems] = useState<WriteProduct[]>([]);
   const [error, setError] = useState('');
+
+  const navigate = useNavigate();
 
   const { mutate: uploadPack } = useUploadPack();
 
@@ -62,15 +66,20 @@ const PackWriting = () => {
 
     setError('');
 
-    uploadPack({
-      categoryId,
-      name,
-      price,
-      mainImageUrl,
-      description,
-      items,
-      hashtagNames: tags,
-    });
+    uploadPack(
+      {
+        categoryId,
+        name,
+        price,
+        mainImageUrl,
+        description,
+        items,
+        hashtagNames: tags,
+      },
+      {
+        onSuccess: () => navigate('/starterpack'), 
+      }
+    );
   };
 
   return (

@@ -21,6 +21,7 @@ type BannerItem = {
   badge: string;
   variant: 'left' | 'right';
   alpha: number;
+  imageUrl?: string;
 };
 
 const LEFT_BANNER_ITEMS: BannerItem[] = [
@@ -31,6 +32,7 @@ const LEFT_BANNER_ITEMS: BannerItem[] = [
     badge: '리뷰',
     variant: 'left',
     alpha: 0.3,
+    imageUrl: 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=800&h=400&fit=crop',
   },
   {
     id: 2,
@@ -39,6 +41,7 @@ const LEFT_BANNER_ITEMS: BannerItem[] = [
     badge: '팁',
     variant: 'left',
     alpha: 0.3,
+    imageUrl: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=800&h=400&fit=crop',
   },
   {
     id: 3,
@@ -47,6 +50,7 @@ const LEFT_BANNER_ITEMS: BannerItem[] = [
     badge: '리뷰',
     variant: 'left',
     alpha: 0.3,
+    imageUrl: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&h=400&fit=crop',
   },
   {
     id: 4,
@@ -55,6 +59,7 @@ const LEFT_BANNER_ITEMS: BannerItem[] = [
     badge: '정보공유',
     variant: 'left',
     alpha: 0.3,
+    imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=400&fit=crop',
   },
 ];
 
@@ -66,6 +71,7 @@ const RIGHT_BANNER_ITEMS: BannerItem[] = [
     badge: '정보공유',
     variant: 'right',
     alpha: 0.2,
+    imageUrl: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800&h=400&fit=crop',
   },
   {
     id: 2,
@@ -74,6 +80,7 @@ const RIGHT_BANNER_ITEMS: BannerItem[] = [
     badge: '리뷰',
     variant: 'right',
     alpha: 0.2,
+    imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=400&fit=crop',
   },
   {
     id: 3,
@@ -82,6 +89,7 @@ const RIGHT_BANNER_ITEMS: BannerItem[] = [
     badge: '팁',
     variant: 'right',
     alpha: 0.2,
+    imageUrl: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&h=400&fit=crop',
   },
   {
     id: 4,
@@ -90,6 +98,7 @@ const RIGHT_BANNER_ITEMS: BannerItem[] = [
     badge: '정보공유',
     variant: 'right',
     alpha: 0.2,
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=400&fit=crop',
   },
 ];
 
@@ -120,28 +129,13 @@ const Banner = () => {
     setRightIndex((prev) => Math.min(RIGHT_TOTAL_ITEMS - 1, prev + 1));
   };
 
-  const handleLeftCardClick = () => {
-    // TODO: 팀에서 카테고리 분류 방식 확인 후 URL 설정
-    console.log('Left card clicked:', leftItem);
-  };
-
-  const handleRightCardClick = () => {
-    // TODO: 팀에서 카테고리 분류 방식 확인 후 URL 설정
-    console.log('Right card clicked:', rightItem);
-  };
-
   const leftItem = LEFT_BANNER_ITEMS[leftIndex];
   const rightItem = RIGHT_BANNER_ITEMS[rightIndex];
 
   return (
     <CarouselContainer>
       <CarouselWrapper>
-        <Card
-          key={`left-${leftItem.id}`}
-          $variant={leftItem.variant}
-          onClick={handleLeftCardClick}
-          style={{ cursor: 'pointer' }}
-        >
+        <Card key={`left-${leftItem.id}`} $variant={leftItem.variant} $imageUrl={leftItem.imageUrl}>
           {leftIndex > 0 && (
             <NavigationButton
               onClick={handleLeftPrev}
@@ -176,8 +170,7 @@ const Banner = () => {
         <Card
           key={`right-${rightItem.id}`}
           $variant={rightItem.variant}
-          onClick={handleRightCardClick}
-          style={{ cursor: 'pointer' }}
+          $imageUrl={rightItem.imageUrl}
         >
           {rightIndex > 0 && (
             <NavigationButton

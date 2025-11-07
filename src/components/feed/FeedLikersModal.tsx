@@ -18,7 +18,7 @@ import {
   EmptyState,
   LoadMoreButton,
   LoadingContainer,
-} from './FeedLikersModal.styles';
+} from '@/components/feed/FeedLikersModal.styles';
 
 interface FeedLikersModalProps {
   feedId: number;

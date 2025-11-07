@@ -13,8 +13,7 @@ import Login from '@/pages/Login';
 import MyPage from '@/pages/MyPage';
 import PackWriting from '@/pages/PackWriting';
 import FeedWriting from '@/pages/FeedWriting';
-// TODO: 디자인 확인 후 삭제 가능한 임시 Mock 페이지
-import FeedMockPage from '@/pages/mock/FeedMockPage';
+import ErrorPage from '@/pages/404Page';
 
 export const Router = () => (
   <Routes>
@@ -26,6 +25,10 @@ export const Router = () => (
       <Route path="/starterpack" element={<StarterListPageSuspense />} />
       <Route path="/starterpack/:id" element={<StarterPackDetailPageSuspense />} />
       <Route
+        path="/mypage/:userId"
+        element={<MyPage />} // 다른 사람 페이지는 로그인 없어도 조회 가능
+      />
+      <Route
         path="/mypage/*"
         element={
           <ProtectedRoute>
@@ -33,12 +36,12 @@ export const Router = () => (
           </ProtectedRoute>
         }
       />
+
       <Route path="/feed" element={<FeedPageSuspense />} />
       <Route path="/feed/:id" element={<FeedDetailPageSuspense />} />
       <Route path="/pack-writing" element={<PackWriting />} />
       <Route path="/feed-writing" element={<FeedWriting />} />
-      {/* TODO: 디자인 확인 후 삭제 가능 - Mock 페이지 */}
-      <Route path="/mock/feed" element={<FeedMockPage />} />
+      <Route path="*" element={<ErrorPage />} />
     </Route>
   </Routes>
 );

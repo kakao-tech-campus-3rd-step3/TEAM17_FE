@@ -1,23 +1,28 @@
-import { Suspense, useCallback } from 'react';
+import { Suspense, useCallback, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useSuspenseQuery, useQueryClient } from '@tanstack/react-query';
-import { fetchFeeds, toggleFeedLike } from '@/api/feedApi';
+import { fetchFeeds, toggleFeedLike, toggleFeedBookmark } from '@/api/feedApi';
 import type { FeedPost as FeedPostType, FeedResponse } from '@/types/Feed';
+import { FEED_CONSTANTS, FEED_CATEGORIES, type FeedCategoryKey } from '@/constants/feed';
+import { CATEGORY_MAPPING } from '@/constants/starterPack';
 import FeedPost from '@/components/feed/FeedPost';
 import SuspenseFallback from '@/components/common/SuspenseFallback';
 import ErrorBoundaryWithRecovery from '@/components/common/ErrorBoundaryWithRecovery';
+import { QUERY_KEYS } from '@/utils/queryKeys';
 import {
   FeedContainer,
   FeedHeader,
+  FeedHeaderTop,
   FeedTitle,
   HeaderWriteButton,
+  CategoryTabs,
+  CategoryBtn,
   FeedGrid,
-  LoadMoreButton,
   EmptyState,
-} from '../FeedPage.styles';
+} from '@/pages/FeedPage.styles';
 
-const FEED_CONSTANTS = {
+const FEED_PAGE_CONSTANTS = {
   INITIAL_PAGE: 0,
   INITIAL_PAGE_SIZE: 12,
   LOAD_MORE_PAGE_SIZE: 12,
@@ -27,12 +32,34 @@ const FeedData = () => {
   const navigate = useNavigate();
   const { isLogin } = useAuth();
   const queryClient = useQueryClient();
+  const [activeCategory, setActiveCategory] = useState<FeedCategoryKey>(
+    FEED_CONSTANTS.DEFAULT_CATEGORY
+  );
 
   const { data: feedResponse } = useSuspenseQuery<FeedResponse>({
-    queryKey: ['feeds', FEED_CONSTANTS.INITIAL_PAGE, FEED_CONSTANTS.INITIAL_PAGE_SIZE],
-    queryFn: () => fetchFeeds(FEED_CONSTANTS.INITIAL_PAGE, FEED_CONSTANTS.INITIAL_PAGE_SIZE),
+    queryKey: ['feeds', FEED_PAGE_CONSTANTS.INITIAL_PAGE, FEED_PAGE_CONSTANTS.INITIAL_PAGE_SIZE],
+    queryFn: () =>
+      fetchFeeds(FEED_PAGE_CONSTANTS.INITIAL_PAGE, FEED_PAGE_CONSTANTS.INITIAL_PAGE_SIZE),
     staleTime: 5 * 60 * 1000,
   });
+
+  const matchCategory = (post: FeedPostType, category: FeedCategoryKey) => {
+    if (category === '전체') return true;
+    const postCategory = post.category.categoryName?.trim() ?? '';
+    const activeCategoryTrimmed = category.trim();
+
+    if (postCategory === activeCategoryTrimmed) return true;
+
+    const mappedCategory = CATEGORY_MAPPING[postCategory] as FeedCategoryKey | undefined;
+    if (mappedCategory && mappedCategory === activeCategoryTrimmed) return true;
+
+    return false;
+  };
+
+  const filteredPosts = useMemo(() => {
+    if (!feedResponse?.content) return [];
+    return feedResponse.content.filter((post) => matchCategory(post, activeCategory));
+  }, [feedResponse?.content, activeCategory]);
 
   const handleWriteClick = () => {
     if (!isLogin) {
@@ -40,15 +67,15 @@ const FeedData = () => {
       navigate('/login');
       return;
     }
-    navigate('/feedwriting');
+    navigate('/feed-writing');
   };
 
   const handleLike = useCallback(
     async (feedId: number, isLiked: boolean, likeCount: number) => {
       const queryKey = [
         'feeds',
-        FEED_CONSTANTS.INITIAL_PAGE,
-        FEED_CONSTANTS.INITIAL_PAGE_SIZE,
+        FEED_PAGE_CONSTANTS.INITIAL_PAGE,
+        FEED_PAGE_CONSTANTS.INITIAL_PAGE_SIZE,
       ] as const;
 
       const previousData = queryClient.getQueryData<FeedResponse>(queryKey);
@@ -88,12 +115,79 @@ const FeedData = () => {
     [queryClient]
   );
 
+  const handleBookmark = useCallback(
+    async (feedId: number, isBookmarked: boolean, bookmarkCount: number) => {
+      const queryKey = [
+        'feeds',
+        FEED_PAGE_CONSTANTS.INITIAL_PAGE,
+        FEED_PAGE_CONSTANTS.INITIAL_PAGE_SIZE,
+      ] as const;
+
+      const previousData = queryClient.getQueryData<FeedResponse>(queryKey);
+
+      if (!previousData) return;
+
+      queryClient.setQueryData<FeedResponse>(queryKey, (old) => {
+        if (!old?.content) return old;
+        return {
+          ...old,
+          content: old.content.map((post) => {
+            if (post.feedId !== feedId) return post;
+            return {
+              ...post,
+              isBookmarked,
+              bookmarkCount,
+            };
+          }),
+        };
+      });
+
+      try {
+        const response = await toggleFeedBookmark(feedId);
+        queryClient.setQueryData<FeedResponse>(queryKey, (old) => {
+          if (!old?.content) return old;
+          return {
+            ...old,
+            content: old.content.map((post) => {
+              if (post.feedId !== feedId) return post;
+              return {
+                ...post,
+                isBookmarked: response.isBookmarked,
+                bookmarkCount: response.bookmarkCount,
+              };
+            }),
+          };
+        });
+        // 북마크 변경 시 프로필 데이터 갱신
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.all });
+      } catch {
+        queryClient.setQueryData(queryKey, previousData);
+      }
+    },
+    [queryClient]
+  );
+
   if (!feedResponse?.content || feedResponse.content.length === 0) {
     return (
       <FeedContainer>
         <FeedHeader>
-          <FeedTitle>피드</FeedTitle>
-          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          <FeedHeaderTop>
+            <FeedTitle>피드</FeedTitle>
+            <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          </FeedHeaderTop>
+          <CategoryTabs role="tablist" aria-label="피드 카테고리">
+            {FEED_CATEGORIES.map((category) => (
+              <CategoryBtn
+                key={category}
+                role="tab"
+                aria-selected={activeCategory === category}
+                $active={activeCategory === category}
+                onClick={() => setActiveCategory(category)}
+              >
+                {category}
+              </CategoryBtn>
+            ))}
+          </CategoryTabs>
         </FeedHeader>
         <EmptyState>
           <p>아직 게시물이 없습니다.</p>
@@ -105,20 +199,45 @@ const FeedData = () => {
   return (
     <FeedContainer>
       <FeedHeader>
-        <FeedTitle>피드</FeedTitle>
-        <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+        <FeedHeaderTop>
+          <FeedTitle>피드</FeedTitle>
+          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+        </FeedHeaderTop>
+        <CategoryTabs role="tablist" aria-label="피드 카테고리">
+          {FEED_CATEGORIES.map((category) => (
+            <CategoryBtn
+              key={category}
+              role="tab"
+              aria-selected={activeCategory === category}
+              $active={activeCategory === category}
+              onClick={() => setActiveCategory(category)}
+            >
+              {category}
+            </CategoryBtn>
+          ))}
+        </CategoryTabs>
       </FeedHeader>
 
-      <FeedGrid>
-        {feedResponse.content?.map((post: FeedPostType) => (
-          <FeedPost key={post.feedId} post={post} onLike={handleLike} />
-        ))}
-      </FeedGrid>
+      {filteredPosts.length === 0 && (
+        <EmptyState>
+          <p>
+            아직 {activeCategory === '전체' ? '게시물' : `${activeCategory} 카테고리 게시물`}이
+            없습니다.
+          </p>
+        </EmptyState>
+      )}
 
-      {!feedResponse.last && (
-        <LoadMoreButton onClick={() => {}} disabled={false}>
-          더 보기
-        </LoadMoreButton>
+      {filteredPosts.length > 0 && (
+        <FeedGrid>
+          {filteredPosts.map((post: FeedPostType) => (
+            <FeedPost
+              key={post.feedId}
+              post={post}
+              onLike={handleLike}
+              onBookmark={handleBookmark}
+            />
+          ))}
+        </FeedGrid>
       )}
     </FeedContainer>
   );

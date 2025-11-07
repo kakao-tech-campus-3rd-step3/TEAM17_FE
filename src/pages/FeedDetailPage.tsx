@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Edit, Trash2 } from 'lucide-react';
 import FeedMediaSection from '@/components/feed/FeedMediaSection';
 import FeedInfoSection from '@/components/feed/FeedInfoSection';
 import CommentSection from '@/components/comment/CommentSection';
 import type { CreateCommentRequest, CreateReplyRequest } from '@/types/Feed';
 import { useFeedDetail } from '@/hooks/useFeedDetail';
-import { useCommentActions } from '@/hooks/useFeeds';
+import { useCommentActions, useFeedBookmark, useFeedLike } from '@/hooks/useFeeds';
+import { useUser, useAuth } from '@/hooks/useAuth';
+import { deleteFeed } from '@/api/feedApi';
 import {
   FeedDetailPageContainer,
   PageHeader,
@@ -20,24 +23,86 @@ import {
   LeftColumn,
   RightColumn,
   BottomSection,
-} from './FeedDetailPage.styles';
+  ActionButtons,
+  ActionButton,
+  DeleteButton,
+} from '@/pages/FeedDetailPage.styles';
 
 const FeedDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { feed, loading, error, updateFeed, refetch } = useFeedDetail(id);
+  const { data: currentUser } = useUser();
+  const { isLogin } = useAuth();
 
   // feedId가 있을 때만 댓글 액션 훅 사용
   const feedId = feed?.feedId;
   const { addComment: addCommentApi } = useCommentActions(feedId || 0);
+  const { toggleLike } = useFeedLike(feedId || 0);
+  const { toggleBookmark } = useFeedBookmark(feedId || 0);
 
-  const handleLike = (isLiked: boolean, likeCount: number) => {
-    updateFeed({ isLiked, likeCount });
-  };
+  // 작성자 확인: 현재 사용자와 피드 작성자 비교
+  const isAuthor = currentUser?.userId === feed?.author.userId;
 
-  const handleBookmark = (isBookmarked: boolean, bookmarkCount: number) => {
-    updateFeed({ isBookmarked, bookmarkCount });
-  };
+  const handleLike = useCallback(() => {
+    if (!feed || !feedId) return;
+    if (!isLogin) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
+
+    const newIsLiked = !feed.isLiked;
+    const newLikeCount = newIsLiked
+      ? (feed.likeCount ?? 0) + 1
+      : Math.max(0, (feed.likeCount ?? 0) - 1);
+
+    updateFeed({ isLiked: newIsLiked, likeCount: newLikeCount });
+    toggleLike();
+  }, [feed, feedId, isLogin, navigate, toggleLike, updateFeed]);
+
+  const handleShare = useCallback(() => {
+    if (!feed) return;
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: '피드 공유',
+          text: feed.description || '',
+          url: window.location.href,
+        })
+        .catch((shareError) => {
+          console.error('공유 실패:', shareError);
+        });
+    } else {
+      navigator.clipboard
+        .writeText(window.location.href)
+        .then(() => {
+          alert('링크가 클립보드에 복사되었습니다.');
+        })
+        .catch((clipboardError) => {
+          console.error('클립보드 복사 실패:', clipboardError);
+          alert('공유 기능을 사용할 수 없습니다.');
+        });
+    }
+  }, [feed]);
+
+  const handleBookmark = useCallback(() => {
+    if (!feed || !feedId) return;
+    if (!isLogin) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
+
+    const newIsBookmarked = !feed.isBookmarked;
+    const newBookmarkCount = newIsBookmarked
+      ? (feed.bookmarkCount ?? 0) + 1
+      : Math.max(0, (feed.bookmarkCount ?? 0) - 1);
+
+    updateFeed({ isBookmarked: newIsBookmarked, bookmarkCount: newBookmarkCount });
+    toggleBookmark();
+  }, [feed, feedId, isLogin, navigate, toggleBookmark, updateFeed]);
 
   const handleAddComment = async (comment: CreateCommentRequest) => {
     if (feedId === undefined) return;
@@ -99,6 +164,31 @@ const FeedDetailPage: React.FC = () => {
     navigate(-1);
   };
 
+  // 수정 핸들러
+  const handleEdit = () => {
+    if (!feedId) return;
+    navigate(`/feed-writing?edit=${feedId}`);
+  };
+
+  // 삭제 핸들러
+  const handleDelete = async () => {
+    if (!feedId) return;
+
+    const confirmed = window.confirm(
+      '정말로 이 피드를 삭제하시겠습니까?\n삭제된 피드는 복구할 수 없습니다.'
+    );
+    if (!confirmed) return;
+
+    try {
+      await deleteFeed(feedId);
+      alert('피드가 삭제되었습니다.');
+      navigate('/feed');
+    } catch (error) {
+      console.error('Failed to delete feed:', error);
+      alert('피드 삭제에 실패했습니다.');
+    }
+  };
+
   if (loading) {
     return (
       <FeedDetailPageContainer>
@@ -151,11 +241,28 @@ const FeedDetailPage: React.FC = () => {
       <ContentContainer>
         <TopSection>
           <LeftColumn>
-            <FeedMediaSection feed={feed} onLike={handleLike} onBookmark={handleBookmark} />
+            <FeedMediaSection feed={feed} />
           </LeftColumn>
 
           <RightColumn>
-            <FeedInfoSection feed={feed} />
+            <FeedInfoSection
+              feed={feed}
+              onLike={handleLike}
+              onShare={handleShare}
+              onBookmark={handleBookmark}
+            />
+            {isAuthor && (
+              <ActionButtons>
+                <ActionButton onClick={handleEdit} type="button" aria-label="수정하기">
+                  <Edit size={20} />
+                  수정하기
+                </ActionButton>
+                <DeleteButton onClick={handleDelete} type="button" aria-label="삭제하기">
+                  <Trash2 size={20} />
+                  삭제하기
+                </DeleteButton>
+              </ActionButtons>
+            )}
           </RightColumn>
         </TopSection>
 

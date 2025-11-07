@@ -172,40 +172,24 @@ export const Avatar = styled.img`
 export const Username = styled.span`
   font-weight: 600;
   font-size: 0.875rem;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
 `;
 
 export const TitleWrapper = styled.div`
   position: relative;
 `;
 
-export const MoreButton = styled.button`
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  color: #262626;
-
-  &:hover {
-    background-color: #f5f5f5;
-    border-radius: 50%;
-  }
-`;
-
 export const StarterPackTitle = styled.h1`
   font-size: 1.25rem;
   font-weight: 600;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
   margin: 0 0 0.5rem 0;
 `;
 
 export const StarterPackDescription = styled.p`
   font-size: 0.875rem;
   line-height: 1.4;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
   margin: 0 0 1rem 0;
 `;
 
@@ -214,12 +198,34 @@ export const CategoryTag = styled.div`
   align-items: center;
   gap: 0.25rem;
   padding: 0.25rem 0.75rem;
-  background-color: #f0f8ff;
-  color: #0095f6;
+  background-color: ${tokens.colors.orange.muted};
+  color: ${tokens.colors.orange.primary};
   border-radius: 1rem;
   font-size: 0.75rem;
   font-weight: 500;
   margin-bottom: 1rem;
+`;
+
+export const HashtagSection = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+`;
+
+export const Hashtag = styled.span`
+  background: ${tokens.colors.orange.muted};
+  color: ${tokens.colors.feed.hashtag};
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${tokens.colors.orange.light};
+    color: ${tokens.colors.orange.dark};
+  }
 `;
 
 export const StatsSection = styled.div`
@@ -234,7 +240,7 @@ export const StatItem = styled.div`
   align-items: center;
   gap: 0.25rem;
   font-size: 0.875rem;
-  color: #8e8e8e;
+  color: ${tokens.colors.text.mediumGray};
 `;
 
 export const ActionButtons = styled.div`
@@ -245,20 +251,87 @@ export const ActionButtons = styled.div`
 `;
 
 export const ActionButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
+  font-size: 0.875rem;
   transition: color 0.2s ease;
 
-  &:hover {
-    color: #8e8e8e;
+  &:hover:not(:disabled) {
+    color: ${tokens.colors.text.mediumGray};
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${tokens.colors.orange.primary};
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+`;
+
+export const ActionButtonRight = styled(ActionButton)`
+  margin-left: auto;
+`;
+
+export const DeleteButton = styled(ActionButton)`
+  color: #ef4444;
+
+  &:hover:not(:disabled) {
+    color: #dc2626;
+  }
+`;
+
+export const OwnerActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid ${tokens.colors.line.lightGray};
+`;
+
+export const OwnerButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: ${tokens.colors.text.mediumGray};
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.4rem;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background: ${tokens.colors.orange.muted};
+    color: ${tokens.colors.orange.dark};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${tokens.colors.orange.primary};
+    outline-offset: 2px;
+  }
+`;
+
+export const OwnerDeleteButton = styled(OwnerButton)`
+  color: #ef4444;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
   }
 `;
 
@@ -271,14 +344,22 @@ export const ProductsSection = styled.div`
 export const SectionTitle = styled.h3`
   font-size: 1rem;
   font-weight: 600;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
   margin: 0 0 1rem 0;
 `;
 
 export const ProductsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const ProductCard = styled.div`
@@ -287,6 +368,9 @@ export const ProductCard = styled.div`
   padding: 1rem;
   background: #fafafa;
   transition: all 0.2s ease;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -300,12 +384,13 @@ export const ProductImage = styled.img`
   object-fit: cover;
   border-radius: 0.25rem;
   margin-bottom: 0.5rem;
+  aspect-ratio: 1;
 `;
 
 export const ProductName = styled.h4`
   font-size: 0.875rem;
   font-weight: 500;
-  color: #262626;
+  color: ${tokens.colors.text.darkGray};
   margin: 0;
   text-align: center;
 `;
@@ -323,7 +408,7 @@ export const ErrorStateContainer = styled.div`
 
 export const TimeStamp = styled.div`
   font-size: 0.625rem;
-  color: #8e8e8e;
+  color: ${tokens.colors.text.mediumGray};
   text-transform: uppercase;
   letter-spacing: 0.0125rem;
   margin-top: 1rem;

@@ -72,7 +72,10 @@ export const generateMockFeedPosts = (count: number = 20): FeedPost[] => {
       feedType,
       category,
       likeCount: 100 + i * 50,
+      commentCount: 10 + (i % 7),
+      bookmarkCount: 20 + (i % 5),
       isLiked: i % 3 === 0,
+      isBookmarked: i % 4 === 0,
       createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
     });
   }

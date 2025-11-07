@@ -1,6 +1,10 @@
 import React from 'react';
-import { Heart, MessageSquare, Share, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; 
+import { Heart, MessageSquare, MoreHorizontal, Bookmark, Tag } from 'lucide-react';
 import type { StarterPack } from '@/types/StarterPack';
+import { tokens } from '@/styles/tokens';
+import defaultProfile from '@/assets/defaultProfile.png';
+import { formatFeedDate } from '@/utils/date';
 import {
   PostContainer,
   PostHeader,
@@ -10,8 +14,10 @@ import {
   MoreButton,
   PostImage,
   PostActions,
-  ActionButton,
-  LikesCount,
+  EngagementItem,
+  EngagementIcon,
+  EngagementCount,
+  BookmarkButton,
   Caption,
   TimeStamp,
   CategoryTag,
@@ -30,15 +36,46 @@ type Props = {
   isLiked: boolean;
   onToggleLike: (id: number) => void;
   onOpen: (pack: StarterPack) => void;
+  onToggleBookmark?: (id: number) => void;
 };
 
-const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen }) => {
+const StarterPackCard: React.FC<Props> = ({
+  pack,
+  isLiked,
+  onToggleLike,
+  onOpen,
+  onToggleBookmark,
+}) => {
+  const navigate = useNavigate(); 
+  const isBookmarked = pack.isBookmarked ?? false;
+
+  const handleAvatarError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const target = e.currentTarget;
+    if (target.src !== defaultProfile) {
+      target.src = defaultProfile;
+    }
+  };
+
+const handleProfileClick = () => {
+  if (!pack.memberId) return;
+  navigate(`/mypage/${pack.memberId}`, { state: { hideScrap: true } });
+};
+
+
   return (
     <PostContainer>
       <PostHeader>
         <UserInfo>
-          <Avatar src="/default-avatar.png" alt="스타터팩" />
-          <Username>@{pack.authorNickname}</Username>
+          <Avatar
+            src={pack.authorProfileImageUrl || defaultProfile}
+            alt={pack.authorNickname}
+            onError={handleAvatarError}
+            onClick={handleProfileClick}
+            style={{ cursor: 'pointer' }}
+          />
+          <Username onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
+            @{pack.authorNickname}
+          </Username>
         </UserInfo>
         <MoreButton>
           <MoreHorizontal size={20} />
@@ -48,33 +85,57 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
       <PostImage src={pack.mainImageUrl} alt={pack.name} onClick={() => onOpen(pack)} />
 
       <PostActions>
-        <ActionButton
+        <EngagementItem
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onToggleLike(pack.id);
           }}
-          type="button"
           aria-label={isLiked ? '좋아요 취소' : '좋아요'}
           aria-pressed={isLiked}
         >
-          <Heart
-            size={24}
-            fill={isLiked ? '#ef4444' : 'none'}
-            color={isLiked ? '#ef4444' : '#000'}
-          />
-        </ActionButton>
-        <ActionButton type="button" aria-label="댓글 달기">
-          <MessageSquare size={24} />
-        </ActionButton>
-        <ActionButton type="button" aria-label="공유하기">
-          <Share size={24} />
-        </ActionButton>
-        <ActionButton type="button" aria-label="저장" $alignRight>
-          <Bookmark size={24} />
-        </ActionButton>
-      </PostActions>
+          <EngagementIcon>
+            <Heart
+              size={18}
+              strokeWidth={2}
+              fill={isLiked ? tokens.colors.orange.primary : 'none'}
+              color={tokens.colors.orange.primary}
+            />
+          </EngagementIcon>
+          <EngagementCount>{(pack.likeCount ?? 0).toLocaleString()}</EngagementCount>
+        </EngagementItem>
 
-      <LikesCount>{(pack.likeCount ?? 0).toLocaleString()}개 좋아요</LikesCount>
+        <EngagementItem
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpen(pack);
+          }}
+          aria-label="댓글 달기"
+        >
+          <EngagementIcon>
+            <MessageSquare size={18} strokeWidth={2} color={tokens.colors.orange.primary} />
+          </EngagementIcon>
+          <EngagementCount>{(pack.commentCount ?? 0).toLocaleString()}</EngagementCount>
+        </EngagementItem>
+
+        <BookmarkButton
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleBookmark?.(pack.id);
+          }}
+          aria-label={isBookmarked ? '북마크 취소' : '북마크'}
+          aria-pressed={isBookmarked}
+        >
+          <Bookmark
+            size={18}
+            strokeWidth={2}
+            fill={isBookmarked ? tokens.colors.orange.primary : 'none'}
+            color={tokens.colors.orange.primary}
+          />
+        </BookmarkButton>
+      </PostActions>
 
       <Caption>
         <Username>@{pack.authorNickname}</Username> {pack.description}
@@ -85,7 +146,7 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
         {pack.categoryName}
       </CategoryTag>
 
-      {pack.hashtags && pack.hashtags.length > 0 && (
+      {pack.hashtags?.length > 0 && (
         <HashtagContainer>
           {pack.hashtags.map((hashtag) => (
             <HashtagSpan key={hashtag.id}>#{hashtag.hashtagName}</HashtagSpan>
@@ -93,12 +154,11 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
         </HashtagContainer>
       )}
 
-      {pack.items && pack.items.length > 0 && (
+      {pack.items?.length > 0 && (
         <ProductsSection>
           <h4>관련 제품</h4>
           <ul role="list" aria-label="관련 제품 목록">
             {pack.items.slice(0, MAX_DISPLAY_ITEMS).map((item) => {
-              // name과 linkUrl 조합으로 고유한 key 생성
               const itemKey = `${item.name}-${item.linkUrl}`;
               const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
                 e.currentTarget.style.display = 'none';
@@ -122,7 +182,7 @@ const StarterPackCard: React.FC<Props> = ({ pack, isLiked, onToggleLike, onOpen 
         </ProductsSection>
       )}
 
-      <TimeStamp>어제</TimeStamp>
+      {pack.createdAt && <TimeStamp>{formatFeedDate(pack.createdAt)}</TimeStamp>}
     </PostContainer>
   );
 };

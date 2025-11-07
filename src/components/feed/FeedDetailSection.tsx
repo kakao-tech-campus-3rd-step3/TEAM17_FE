@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Heart, MessageCircle, Bookmark } from 'lucide-react';
 import type { FeedDetail } from '@/types/Feed';
 import { tokens } from '@/styles/tokens';
+import { formatFeedDate } from '@/utils/date';
 import {
   FeedDetailContainer,
   UserProfile,
@@ -29,7 +30,7 @@ import {
   ProductName,
   ProductDescription,
   ProductLink,
-} from './FeedDetailSection.styles';
+} from '@/components/feed/FeedDetailSection.styles';
 
 interface FeedDetailSectionProps {
   feed: FeedDetail;
@@ -79,7 +80,7 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
 
       {/* 본문 내용 */}
       <PostContent>{feed.description}</PostContent>
-      <PostDate>{feed.createdAt}</PostDate>
+      <PostDate>{formatFeedDate(feed.createdAt)}</PostDate>
 
       {/* 이미지 캐러셀 */}
       {images.length > 0 && (
@@ -123,7 +124,11 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
               color={tokens.colors.orange.primary}
             />
           </EngagementIcon>
-          <EngagementCount>{feed.likeCount}</EngagementCount>
+          <EngagementCount>
+            {typeof feed.likeCount === 'number' && !isNaN(feed.likeCount)
+              ? feed.likeCount.toLocaleString()
+              : '0'}
+          </EngagementCount>
         </EngagementItem>
         <EngagementItem>
           <EngagementIcon>
@@ -147,9 +152,11 @@ const FeedDetailSection: React.FC<FeedDetailSectionProps> = ({ feed, onLike, onB
       {/* 해시태그 */}
       {feed.hashtags && feed.hashtags.length > 0 && (
         <HashtagSection>
-          {feed.hashtags.map((tag) => (
-            <Hashtag key={tag}>{tag}</Hashtag>
-          ))}
+          {feed.hashtags.map((tag, index) => {
+            const tagName = typeof tag === 'string' ? tag : tag.hashtagName;
+            const tagKey = typeof tag === 'string' ? tag : tag.id;
+            return <Hashtag key={tagKey || index}>#{tagName}</Hashtag>;
+          })}
         </HashtagSection>
       )}
 

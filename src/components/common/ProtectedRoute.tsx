@@ -7,8 +7,12 @@ type ProtectedRouteProps = {
 };
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { isLogin } = useAuth();
+  const { isLogin, loading } = useAuth();
   const location = useLocation();
+
+  if (loading) {
+    return null;
+  }
 
   if (!isLogin) {
     return <Navigate to="/login" replace state={{ from: location }} />;

@@ -1,24 +1,31 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import FeedPost from '@/components/feed/FeedPost';
 import { useAuth } from '@/hooks/useAuth';
 import type { FeedPost as FeedPostType, FeedResponse } from '@/types/Feed';
-import { fetchFeeds } from '@/api/feedApi';
+import { fetchFeeds, toggleFeedBookmark } from '@/api/feedApi';
+import { FEED_CONSTANTS, FEED_CATEGORIES, type FeedCategoryKey } from '@/constants/feed';
+import { CATEGORY_MAPPING } from '@/constants/starterPack';
+import { QUERY_KEYS } from '@/utils/queryKeys';
 import {
   FeedContainer,
   FeedHeader,
+  FeedHeaderTop,
   FeedTitle,
   HeaderWriteButton,
+  CategoryTabs,
+  CategoryBtn,
   FeedGrid,
   LoadingContainer,
   LoadingSpinner,
   ErrorContainer,
   ErrorMessage,
-  LoadMoreButton,
   EmptyState,
-} from './FeedPage.styles';
+  LoadMoreObserver,
+} from '@/pages/FeedPage.styles';
 
-const FEED_CONSTANTS = {
+const FEED_PAGE_CONSTANTS = {
   INITIAL_PAGE: 0,
   INITIAL_PAGE_SIZE: 12,
   LOAD_MORE_PAGE_SIZE: 12,
@@ -27,12 +34,18 @@ const FEED_CONSTANTS = {
 const FeedPage = () => {
   const navigate = useNavigate();
   const { isLogin } = useAuth();
+  const queryClient = useQueryClient();
   const [posts, setPosts] = useState<FeedPostType[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState<number>(FEED_CONSTANTS.INITIAL_PAGE);
+  const [currentPage, setCurrentPage] = useState<number>(FEED_PAGE_CONSTANTS.INITIAL_PAGE);
   const [isLastPage, setIsLastPage] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<FeedCategoryKey>(
+    FEED_CONSTANTS.DEFAULT_CATEGORY
+  );
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const handleWriteClick = () => {
     if (!isLogin) {
@@ -40,7 +53,7 @@ const FeedPage = () => {
       navigate('/login');
       return;
     }
-    navigate('/feedwriting');
+    navigate('/feed-writing');
   };
 
   useEffect(() => {
@@ -50,12 +63,12 @@ const FeedPage = () => {
         setError(null);
 
         const response: FeedResponse = await fetchFeeds(
-          FEED_CONSTANTS.INITIAL_PAGE,
-          FEED_CONSTANTS.INITIAL_PAGE_SIZE
+          FEED_PAGE_CONSTANTS.INITIAL_PAGE,
+          FEED_PAGE_CONSTANTS.INITIAL_PAGE_SIZE
         );
 
         setPosts(response?.content ?? []);
-        setCurrentPage(response?.number ?? FEED_CONSTANTS.INITIAL_PAGE);
+        setCurrentPage(response?.number ?? FEED_PAGE_CONSTANTS.INITIAL_PAGE);
         setIsLastPage(response?.last ?? false);
       } catch (err) {
         setError('피드를 불러오는데 실패했습니다.');
@@ -74,7 +87,7 @@ const FeedPage = () => {
         setLoadingMore(true);
         const response: FeedResponse = await fetchFeeds(
           currentPage + 1,
-          FEED_CONSTANTS.LOAD_MORE_PAGE_SIZE
+          FEED_PAGE_CONSTANTS.LOAD_MORE_PAGE_SIZE
         );
 
         setPosts((prev) => [...prev, ...(response?.content ?? [])]);
@@ -95,12 +108,100 @@ const FeedPage = () => {
     );
   }, []);
 
+  const handleBookmark = useCallback(
+    async (feedId: number, isBookmarked: boolean, bookmarkCount: number) => {
+      // 낙관적 업데이트 전 원본 상태를 동기적으로 캡처
+      let previousPosts: FeedPostType[] | null = null;
+      setPosts((prev) => {
+        previousPosts = prev;
+        return prev.map((post) => {
+          if (post.feedId !== feedId) return post;
+          return {
+            ...post,
+            isBookmarked,
+            bookmarkCount,
+          };
+        });
+      });
+
+      try {
+        const response = await toggleFeedBookmark(feedId);
+        setPosts((prev) =>
+          prev.map((post) => {
+            if (post.feedId !== feedId) return post;
+            return {
+              ...post,
+              isBookmarked: response.isBookmarked,
+              bookmarkCount: response.bookmarkCount,
+            };
+          })
+        );
+        // 북마크 변경 시 프로필 데이터 갱신
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.all });
+      } catch (error) {
+        console.error('Failed to toggle bookmark:', error);
+        if (previousPosts) {
+          setPosts(previousPosts);
+        }
+      }
+    },
+    [queryClient]
+  );
+
+  const matchCategory = (post: FeedPostType, category: FeedCategoryKey) => {
+    if (category === '전체') return true;
+    const postCategory = post.category.categoryName?.trim() ?? '';
+    const activeCategoryTrimmed = category.trim();
+
+    if (postCategory === activeCategoryTrimmed) return true;
+
+    const mappedCategory = CATEGORY_MAPPING[postCategory] as FeedCategoryKey | undefined;
+    if (mappedCategory && mappedCategory === activeCategoryTrimmed) return true;
+
+    return false;
+  };
+
+  const filteredPosts = useMemo(() => {
+    return posts.filter((post) => matchCategory(post, activeCategory));
+  }, [posts, activeCategory]);
+
+  // Intersection Observer를 사용한 무한 스크롤
+  useEffect(() => {
+    if (isLastPage || loadingMore || loading) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          handleLoadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observerRef.current = observer;
+
+    const currentRef = loadMoreRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (observer && currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [isLastPage, loadingMore, loading, handleLoadMore]);
+
+  const showCategories = !loading && !error;
+
   if (loading) {
     return (
       <FeedContainer>
         <FeedHeader>
-          <FeedTitle>피드</FeedTitle>
-          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          <FeedHeaderTop>
+            <FeedTitle>피드</FeedTitle>
+            <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          </FeedHeaderTop>
         </FeedHeader>
         <LoadingContainer>
           <LoadingSpinner />
@@ -113,8 +214,10 @@ const FeedPage = () => {
     return (
       <FeedContainer>
         <FeedHeader>
-          <FeedTitle>피드</FeedTitle>
-          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          <FeedHeaderTop>
+            <FeedTitle>피드</FeedTitle>
+            <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+          </FeedHeaderTop>
         </FeedHeader>
         <ErrorContainer>
           <ErrorMessage>{error}</ErrorMessage>
@@ -123,38 +226,53 @@ const FeedPage = () => {
     );
   }
 
-  if (posts.length === 0) {
-    return (
-      <FeedContainer>
-        <FeedHeader>
-          <FeedTitle>피드</FeedTitle>
-          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
-        </FeedHeader>
-        <EmptyState>
-          <p>아직 게시물이 없습니다.</p>
-        </EmptyState>
-      </FeedContainer>
-    );
-  }
-
   return (
     <FeedContainer>
       <FeedHeader>
-        <FeedTitle>피드</FeedTitle>
-        <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+        <FeedHeaderTop>
+          <FeedTitle>피드</FeedTitle>
+          <HeaderWriteButton onClick={handleWriteClick}>글쓰기</HeaderWriteButton>
+        </FeedHeaderTop>
+        {showCategories && (
+          <CategoryTabs role="tablist" aria-label="피드 카테고리">
+            {FEED_CATEGORIES.map((category) => (
+              <CategoryBtn
+                key={category}
+                role="tab"
+                aria-selected={activeCategory === category}
+                $active={activeCategory === category}
+                onClick={() => setActiveCategory(category)}
+              >
+                {category}
+              </CategoryBtn>
+            ))}
+          </CategoryTabs>
+        )}
       </FeedHeader>
 
-      <FeedGrid>
-        {posts.map((post) => (
-          <FeedPost key={post.feedId} post={post} onLike={handleLike} />
-        ))}
-      </FeedGrid>
-
-      {!isLastPage && (
-        <LoadMoreButton onClick={handleLoadMore} disabled={loadingMore}>
-          {loadingMore ? '로딩 중...' : '더 보기'}
-        </LoadMoreButton>
+      {filteredPosts.length === 0 && (
+        <EmptyState>
+          <p>
+            아직 {activeCategory === '전체' ? '게시물' : `${activeCategory} 카테고리 게시물`}이
+            없습니다.
+          </p>
+        </EmptyState>
       )}
+
+      {filteredPosts.length > 0 && (
+        <FeedGrid>
+          {filteredPosts.map((post) => (
+            <FeedPost
+              key={post.feedId}
+              post={post}
+              onLike={handleLike}
+              onBookmark={handleBookmark}
+            />
+          ))}
+        </FeedGrid>
+      )}
+
+      {!isLastPage && <LoadMoreObserver ref={loadMoreRef} />}
     </FeedContainer>
   );
 };

@@ -1,4 +1,5 @@
 import axiosInstance from './axiosInstance';
+import { ensureCsrfToken } from '@/utils/csrf';
 import type {
   StarterPack,
   StarterPackResponse,
@@ -10,11 +11,70 @@ import type {
   PackCommentResponse,
 } from '@/types/StarterPack';
 
-// 모든 스타터팩 목록 조회
-export const fetchStarterPack = async (): Promise<StarterPackResponse> => {
+type RawStarterPack = StarterPack & {
+  stats?: { likeCount?: number; bookmarkCount?: number; commentCount?: number };
+  interactionStatus?: { isLiked?: boolean; isBookmarked?: boolean };
+};
+
+const normalizePack = ({ stats, interactionStatus, ...rest }: RawStarterPack): StarterPack => {
+  const likeCount =
+    typeof rest.likeCount === 'number' ? rest.likeCount : stats?.likeCount ?? 0;
+  const bookmarkCount =
+    typeof rest.bookmarkCount === 'number' ? rest.bookmarkCount : stats?.bookmarkCount ?? 0;
+  const commentCount =
+    typeof rest.commentCount === 'number' ? rest.commentCount : stats?.commentCount ?? 0;
+  const isLiked =
+    typeof rest.isLiked === 'boolean' ? rest.isLiked : interactionStatus?.isLiked ?? false;
+  const isBookmarked =
+    typeof rest.isBookmarked === 'boolean'
+      ? rest.isBookmarked
+      : interactionStatus?.isBookmarked ?? false;
+
+  return {
+    ...rest,
+    likeCount,
+    bookmarkCount,
+    commentCount,
+    isLiked,
+    isBookmarked,
+  };
+};
+
+const normalizePackCollection = (packs: RawStarterPack[] = []) => packs.map(normalizePack);
+
+export const fetchStarterPack = async (
+  page: number = 0,
+  size: number = 12,
+  options?: { sort?: string; category?: string }
+): Promise<StarterPackResponse> => {
   try {
-    const response = await axiosInstance.get<StarterPackResponse>('/api/starterPack/packs');
-    return response.data;
+    const params: Record<string, string | number> = {
+      page,
+      size,
+    };
+
+    if (options?.sort) {
+      params.sort = options.sort;
+    }
+
+    if (options?.category) {
+      params.category = options.category;
+    }
+
+    const response = await axiosInstance.get<Record<string, RawStarterPack[]>>(
+      '/api/starterPack/packs',
+      {
+        params,
+      }
+    );
+
+    const normalized: StarterPackResponse = {};
+
+    Object.keys(response.data).forEach((key) => {
+      normalized[key] = normalizePackCollection(response.data[key]);
+    });
+
+    return normalized;
   } catch (error) {
     console.error('Failed to fetch starter packs:', error);
     throw error;
@@ -24,8 +84,9 @@ export const fetchStarterPack = async (): Promise<StarterPackResponse> => {
 // 특정 스타터팩 조회
 export const fetchStarterPackById = async (id: number): Promise<StarterPack> => {
   try {
-    const response = await axiosInstance.get<StarterPack>(`/api/starterPack/packs/${id}`);
-    return response.data;
+    const response = await axiosInstance.get<RawStarterPack>(`/api/starterPack/packs/${id}`);
+
+    return normalizePack(response.data);
   } catch (error) {
     console.error(`Failed to fetch starter pack ${id}:`, error);
     throw error;
@@ -78,6 +139,7 @@ export const deleteStarterPack = async (id: number): Promise<void> => {
 // 스타터팩 좋아요 토글
 export const toggleStarterPackLike = async (id: number): Promise<LikeStarterPackResponse> => {
   try {
+    await ensureCsrfToken();
     const response = await axiosInstance.post<LikeStarterPackResponse>(
       `/api/starterPack/packs/${id}/like`
     );
@@ -93,6 +155,7 @@ export const toggleStarterPackBookmark = async (
   id: number
 ): Promise<BookmarkStarterPackResponse> => {
   try {
+    await ensureCsrfToken();
     const response = await axiosInstance.post<BookmarkStarterPackResponse>(
       `/api/starterPack/packs/${id}/bookmark`
     );
@@ -121,10 +184,17 @@ export const fetchStarterPackByCategory = async (
   categoryId: number
 ): Promise<StarterPackResponse> => {
   try {
-    const response = await axiosInstance.get<StarterPackResponse>(
+    const response = await axiosInstance.get<Record<string, RawStarterPack[]>>(
       `/api/starterPack/categories/${categoryId}/packs`
     );
-    return response.data;
+
+    const normalized: StarterPackResponse = {};
+
+    Object.keys(response.data).forEach((key) => {
+      normalized[key] = normalizePackCollection(response.data[key]);
+    });
+
+    return normalized;
   } catch (error) {
     console.error(`Failed to fetch starter packs by category ${categoryId}:`, error);
     throw error;
@@ -161,17 +231,26 @@ export const fetchPackComments = async (
   }
 };
 
-// 스타터팩 댓글 작성
+// 스타터팩 댓글 작성 (댓글/대댓글 작성)
+// parentId가 있으면 대댓글, 없으면 일반 댓글
 export const createPackComment = async (
   packId: number,
-  content: string
+  content: string,
+  parentId?: number | null
 ): Promise<PackCommentResponse> => {
   try {
+    await ensureCsrfToken();
+    const requestBody: { content: string; parentId?: number | null } = {
+      content,
+    };
+
+    if (parentId !== null && parentId !== undefined) {
+      requestBody.parentId = parentId;
+    }
+
     const response = await axiosInstance.post<PackCommentResponse>(
       `/api/starterPack/${packId}/comments`,
-      {
-        content,
-      }
+      requestBody
     );
     return response.data;
   } catch (error) {
@@ -186,6 +265,7 @@ export const updatePackComment = async (
   content: string
 ): Promise<PackCommentResponse> => {
   try {
+    await ensureCsrfToken();
     const response = await axiosInstance.put<PackCommentResponse>(
       `/api/starterPack/comments/${commentId}`,
       {
@@ -202,9 +282,26 @@ export const updatePackComment = async (
 // 스타터팩 댓글 삭제
 export const deletePackComment = async (commentId: number): Promise<void> => {
   try {
+    await ensureCsrfToken();
     await axiosInstance.delete(`/api/starterPack/comments/${commentId}`);
   } catch (error) {
     console.error(`Failed to delete comment ${commentId}:`, error);
+    throw error;
+  }
+};
+
+// 스타터팩 댓글 좋아요 토글
+export const togglePackCommentLike = async (
+  commentId: number
+): Promise<{ likeCount: number; isLiked: boolean }> => {
+  try {
+    await ensureCsrfToken();
+    const response = await axiosInstance.post<{ likeCount: number; isLiked: boolean }>(
+      `/api/starterPack/comments/${commentId}/like`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to toggle like for pack comment ${commentId}:`, error);
     throw error;
   }
 };

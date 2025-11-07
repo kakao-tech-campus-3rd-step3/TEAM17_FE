@@ -8,9 +8,11 @@ import {
   Column,
   ColumnTitle,
   List,
+  ListItem,
+  ListLink,
   Bottom,
   Copy,
-} from './Footer.styles';
+} from '@/components/common/Footer.styles';
 
 const Footer = () => {
   return (
@@ -25,19 +27,23 @@ const Footer = () => {
           <Column>
             <ColumnTitle>서비스</ColumnTitle>
             <List>
-              <li>스타터팩 보러가기</li> {/* Footer는 추후에 수정 예정 */}
-              <li>피드 보러가기</li>
-              <li>커뮤니티</li>
-              <li>파티원 모집</li>
+              <ListItem>
+                <ListLink to="/starterpack">스타터팩 보러가기</ListLink>
+              </ListItem>
+              <ListItem>
+                <ListLink to="/feed">피드 보러가기</ListLink>
+              </ListItem>
+              <ListItem>커뮤니티</ListItem>
+              <ListItem>파티원 모집</ListItem>
             </List>
           </Column>
           <Column>
             <ColumnTitle>고객지원</ColumnTitle>
             <List>
-              <li>공지사항</li>
-              <li>FAQ</li>
-              <li>문의하기</li>
-              <li>이용약관</li>
+              <ListItem>공지사항</ListItem>
+              <ListItem>FAQ</ListItem>
+              <ListItem>문의하기</ListItem>
+              <ListItem>이용약관</ListItem>
             </List>
           </Column>
         </LinksGrid>
