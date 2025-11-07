@@ -337,6 +337,33 @@ const StarterPackDetailData = () => {
                     <ProductCard key={itemKey}>
                       <ProductImage src={item.imageUrl || defaultAvatar} alt={item.name} />
                       <ProductName>{item.name}</ProductName>
+                      {item.linkUrl ? (
+                        <a
+                          href={item.linkUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: '#174A7E',
+                            fontSize: '0.9rem',
+                            textDecoration: 'underline',
+                            marginTop: '4px',
+                            display: 'inline-block',
+                          }}
+                        >
+                          상품 보러가기
+                        </a>
+                      ) : (
+                        <span
+                          style={{
+                            color: '#aaa',
+                            fontSize: '0.9rem',
+                            marginTop: '4px',
+                            display: 'inline-block',
+                          }}
+                        >
+                          링크 없음
+                        </span>
+                      )}
                     </ProductCard>
                   );
                 })}
